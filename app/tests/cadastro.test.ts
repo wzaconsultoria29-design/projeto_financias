@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { normalizarTelefone, enviarCadastro } from "@/lib/cadastro";
+import { normalizarTelefone, enviarCadastro, mascararTelefone } from "@/lib/cadastro";
 
 describe("normalizarTelefone", () => {
   it("aceita celular com máscara, com +55 e só dígitos", () => {
@@ -74,5 +74,21 @@ describe("enviarCadastro", () => {
     const r = await enviarCadastro(dados);
     expect(r.ok).toBe(false);
     expect(r.ok === false && r.mensagem).toContain("conectar");
+  });
+});
+
+
+describe("mascararTelefone", () => {
+  it("aplica a máscara de celular conforme a pessoa digita", () => {
+    expect(mascararTelefone("")).toBe("");
+    expect(mascararTelefone("1")).toBe("(1");
+    expect(mascararTelefone("11")).toBe("(11");
+    expect(mascararTelefone("119")).toBe("(11) 9");
+    expect(mascararTelefone("1199999")).toBe("(11) 99999");
+    expect(mascararTelefone("11999998888")).toBe("(11) 99999-8888");
+  });
+  it("ignora letras e limita a 11 dígitos", () => {
+    expect(mascararTelefone("(11) 99999-8888 999")).toBe("(11) 99999-8888");
+    expect(mascararTelefone("ab11")).toBe("(11");
   });
 });

@@ -10,6 +10,7 @@ export default defineConfig({
     command: "npx next dev -p 3100",
     url: "http://localhost:3100",
     reuseExistingServer: true,
+    env: { NEXT_PUBLIC_CADASTRO_URL: "https://cadastro.exemplo.test/webhook" },
     timeout: 120_000,
   },
   projects: [
