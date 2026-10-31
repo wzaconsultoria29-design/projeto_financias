@@ -9,9 +9,10 @@ vi.mock("@/lib/api", async (original) => ({
   salvarLancamento: vi.fn(),
   excluirLancamento: vi.fn(),
   minhaConta: vi.fn(),
+  listarCategorias: vi.fn(),
 }));
 
-import { listarLancamentos, salvarLancamento, excluirLancamento, minhaConta } from "@/lib/api";
+import { listarLancamentos, salvarLancamento, excluirLancamento, minhaConta, listarCategorias } from "@/lib/api";
 import LancamentosPage from "@/app/painel/lancamentos/page";
 import ContaPage from "@/app/painel/conta/page";
 import { coletarTodos } from "@/lib/exportar";
@@ -20,6 +21,7 @@ const listar = vi.mocked(listarLancamentos);
 const salvar = vi.mocked(salvarLancamento);
 const excluir = vi.mocked(excluirLancamento);
 const conta = vi.mocked(minhaConta);
+const categorias = vi.mocked(listarCategorias);
 
 function item(n: number, extra: Partial<LancamentoItem> = {}): LancamentoItem {
   return {
@@ -33,6 +35,7 @@ beforeEach(() => {
   listar.mockResolvedValue({ total: 2, itens: [item(1), item(2)] });
   salvar.mockResolvedValue("novo-id");
   excluir.mockResolvedValue(true);
+  categorias.mockResolvedValue([]);
 });
 
 describe("lançamentos: lista e filtros", () => {
@@ -126,6 +129,28 @@ describe("lançamentos: adicionar e editar", () => {
     await userEvent.click(screen.getByRole("button", { name: "Salvar" }));
     expect(await screen.findByText("Informe um valor maior que zero.")).toBeInTheDocument();
     expect(salvar).not.toHaveBeenCalled();
+  });
+});
+
+describe("categorias e formas de pagamento vindas do bot", () => {
+  it("o filtro inclui as categorias que o cliente já usa, sem repetir as padrão", async () => {
+    categorias.mockResolvedValue(["Alimentação", "Cuidados Pessoais", "Renda"]);
+    render(<LancamentosPage />);
+    await screen.findByText("Compra 1");
+    await waitFor(() => expect(within(screen.getByLabelText("Categoria")).getByRole("option", { name: "Renda" })).toBeInTheDocument());
+    const opcoes = within(screen.getByLabelText("Categoria")).getAllByRole("option").map((o) => o.textContent);
+    expect(opcoes).toContain("Cuidados Pessoais");
+    expect(opcoes.filter((o) => o === "Alimentação")).toHaveLength(1);
+  });
+
+  it("forma de pagamento em minúsculas do bot abre selecionada sem duplicar a opção", async () => {
+    listar.mockResolvedValue({ total: 1, itens: [item(1, { metodo_pagamento: "pix" })] });
+    render(<LancamentosPage />);
+    await screen.findByText("Compra 1");
+    await userEvent.click(screen.getByRole("button", { name: /Editar/ }));
+    const select = screen.getByLabelText("Forma de pagamento");
+    expect(select).toHaveValue("Pix");
+    expect(within(select).getAllByRole("option").filter((o) => /^pix$/i.test(o.textContent ?? ""))).toHaveLength(1);
   });
 });
 

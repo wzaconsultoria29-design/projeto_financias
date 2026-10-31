@@ -1,3 +1,4 @@
+import { canonico, METODOS } from "@/config/categorias";
 import { brl, dataCurta } from "@/lib/format";
 import type { LancamentoItem } from "@/lib/api";
 
@@ -21,7 +22,7 @@ export function TabelaLancamentos({ itens, onEditar, onExcluir }: Props) {
               <span className="text-sm text-suave">{dataCurta(i.data)}</span>
               <span className="min-w-0 truncate font-medium text-tinta" title={texto}>{texto}</span>
               <span className="truncate text-sm text-suave">{i.categoria ?? "Sem categoria"}</span>
-              <span className="truncate text-sm text-suave">{i.metodo_pagamento ?? "-"}</span>
+              <span className="truncate text-sm text-suave">{i.metodo_pagamento ? canonico(i.metodo_pagamento, METODOS) : "-"}</span>
               <span className={`font-medium tabular-nums md:text-right ${i.tipo === "receita" ? "text-floresta" : "text-tinta"}`}>
                 {sinal}{brl(i.valor)}
               </span>

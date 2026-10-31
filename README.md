@@ -1,66 +1,69 @@
 # Gastômetro v3
 
-Versão nova do Gastômetro, rodando em paralelo com a Fase 1 e a Fase 2 (que **não foram alteradas**).
+Assistente financeiro por WhatsApp: a pessoa manda um gasto (texto, áudio ou foto de cupom) e vê tudo em um painel. O nome "Gastômetro" é provisório: veja [`docs/RENOMEAR-MARCA.md`](docs/RENOMEAR-MARCA.md).
+
+A v3 roda em paralelo com a Fase 1, a Fase 2, o "Fluxo 3 - Cadastro Landing Page" e o "Pagamento Mercado Pago" antigos, que **não foram alterados**.
 
 ## Peças
 
 | Peça | Onde | Estado |
 |---|---|---|
-| Banco | Supabase `bfgmjovveboyidvhggpq` (conta nova) | Pronto: 5 migrações em `supabase/migrations` |
-| Cadastro da landing | n8n, pasta **Gastômetro v3**: `GASTOMETRO v3 - Cadastro Landing` (`a8ZDOhiKcSWYJZwp`) | Criado, **inativo** |
-| Agente WhatsApp | n8n, pasta **Gastômetro v3**: `GASTOMETRO v3 - Agente WhatsApp` (`By3B5EEDaRqXD2s5`) | Criado, **inativo** |
-| Landing page | (a fazer) | — |
-| Pagamento | (a fazer, Mercado Pago) | — |
+| Banco | Supabase `bfgmjovveboyidvhggpq` (conta nova, us-east-1), migrações em `supabase/migrations` (001 a 012) | Pronto |
+| Funções públicas de login | Supabase Edge Functions `login-iniciar` e `login-status` (`supabase/functions`) | Publicadas |
+| Cadastro | n8n, pasta **Gastômetro v3**: `GASTOMETRO v3 - Cadastro Landing` (`a8ZDOhiKcSWYJZwp`) | Ativo |
+| Agente WhatsApp | n8n, mesma pasta: `GASTOMETRO v3 - Agente WhatsApp` (`By3B5EEDaRqXD2s5`) | Ativo (Evolution API, instância `Projeto_financias`) |
+| Site e painel | `app/` (Next.js 16) | Pronto para publicar; falta GitHub e Vercel |
+| Pagamento | (a fazer, Mercado Pago v3) | Pendente |
 
-## Webhooks de produção (depois de ativar)
+## Planos (no banco, tabela `planos`)
+
+| Plano | Preço | Mensagens por mês | Números |
+|---|---|---|---|
+| Teste grátis | R$ 0, 7 dias | 50 | 1 |
+| Essencial | R$ 19 | 300 | 1 |
+| Family | R$ 39 | 800 | até 4 (aparece no site como "em breve"; o compartilhamento entre membros é a Fase 2 do app) |
+
+## Como o cliente usa
+
+1. Cadastro em `/cadastro` (nome, e-mail, WhatsApp e aceite dos termos). O site devolve um link `wa.me` com `ATIVAR <código>`.
+2. Ao enviar a mensagem, o bot confirma que o número é da pessoa e abre o período de teste.
+3. Dia a dia pelo WhatsApp: "gastei 32 no almoço", áudio, foto de cupom, "quanto gastei esta semana?".
+4. Painel em `/entrar`: o site mostra um código de 6 dígitos; a pessoa o envia ao bot (`PAINEL <código>`) e o painel abre sozinho. Sem senha.
+5. Painel: Visão geral (totais, comparação com o período anterior, dia a dia, categorias, maiores gastos, previsão do mês), Lançamentos (busca, filtros, criar, editar, excluir, exportar CSV) e Conta (plano, uso, dados, baixar ou apagar os dados).
+
+## Endereços de produção
 
 - Cadastro: `POST https://webhook.servidorwza.shop/webhook/gastometro-v3-cadastro`
-  - Corpo: `{ "nome": "...", "email": "...", "telefone": "(11) 99999-8888", "plano": "solo", "website": "" }`
-  - `website` é um campo escondido (isca para robôs): deve ir sempre vazio.
-  - Resposta: `{ "ok": true, "whatsapp_url": "https://wa.me/...?text=ATIVAR%20XXXXXX", "codigo_ativacao": "XXXXXX" }`
-- WhatsApp: `POST https://webhook.servidorwza.shop/webhook/gastometro-v3-whatsapp-<SEGREDO>`
-  - O painel da Evolution 2.3.7 não permite header customizado, então a proteção é um **caminho secreto** (o segredo está só no workflow e na instância; trate como senha).
-  - Instância configurada: `Projeto_financias`; número do bot: `5582991130317`.
+  - Corpo: `{ nome, email, telefone, plano, aceite, aceite_marketing, website }`. `website` é uma isca para robôs e deve ir vazio.
+  - Resposta: `{ ok, whatsapp_url, codigo_ativacao, ja_cadastrado }`.
+- WhatsApp: `POST https://webhook.servidorwza.shop/webhook/gastometro-v3-whatsapp-<SEGREDO>`. A Evolution 2.3.7 não aceita header customizado, então a proteção é o **caminho secreto**, que fica só no workflow e na instância (trate como senha).
+- Bot: número `5582991130317`.
 
-## Configuração antes de ativar
+## Rodar e testar o site localmente
 
-1. **Credenciais no n8n** (Credentials → New). Copie os valores direto das telas dos serviços; não cole chaves no chat.
-   - `Supabase Gastometro v3` (tipo *Supabase API*): Host `https://bfgmjovveboyidvhggpq.supabase.co` e a chave **service_role** (Supabase → Project Settings → API Keys).
-   - `Evolution API Key (header apikey)` (tipo *Header Auth*): Name `apikey`, Value = a chave **nova** da instância.
-   - (Não é mais necessária a credencial do webhook: a proteção agora é o caminho secreto.)
-2. Abra os dois workflows e escolha essas credenciais nos nós marcados em vermelho. O OpenAI já usa a credencial `OpenAi account 2`.
-3. Agente: nó **Config** → `evolution_url`, `instancia` (instância do número novo) e `checkout_url`.
-4. Cadastro: nó **Normalizar Dados e Config** → `numero_bot` (WhatsApp do bot, só dígitos com 55).
-5. No provedor do WhatsApp, configure o webhook para a URL do agente, evento `messages.upsert`, com o mesmo header de autenticação.
-6. Ative os dois workflows.
+```bash
+cd app
+cp .env.example .env.local     # só valores públicos; a chave anon/publishable do Supabase fica em Project Settings → API Keys
+npm install
+npm run dev                    # http://localhost:3000
+npm test                       # unitários
+npm run test:e2e               # navegador real, com serviços simulados (porta 3100)
+npm run build && npm run verificar:segredos
+```
 
-## Roteiro de teste (WhatsApp)
+Testes do banco (SQL, terminam com erro proposital para desfazer tudo; sucesso = saída com `FALHAS: 0`): `supabase/tests/*.test.sql`.
 
-1. Mandar `Oi` → boas-vindas (uma vez só) e resposta do agente.
-2. `Gastei 50 no mercado` → confirmação com `DEL#XXXXXX`.
-3. `Quanto gastei hoje?` → resumo vindo do banco.
-4. `DEL#XXXXXX` → lançamento apagado; repetir → "código não encontrado".
-5. Áudio e foto de cupom.
-6. Reenviar o mesmo webhook → não pode duplicar (deduplicação por `message_id`).
+## Publicar (o que falta e depende de você)
 
-## Decisões de projeto
+1. **GitHub**: criar o repositório e enviar o código (`git remote add origin ... && git push -u origin main`). O repositório inclui a pasta `app/` e `supabase/`.
+2. **Vercel**: importar o repositório, **Root Directory = `app`**, e cadastrar as variáveis de `app/.env.example` (todas públicas: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_CADASTRO_URL`, `NEXT_PUBLIC_BOT_NUMBER`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPPORT_EMAIL`, `NEXT_PUBLIC_LEGAL_ENTITY`).
+3. Com o endereço final em mãos:
+   - Supabase → Edge Functions → Secrets → `SITE_ORIGIN` = endereço do site (hoje as funções aceitam qualquer origem).
+   - n8n → Cadastro Landing → webhook → `allowedOrigins`: trocar `*` pelo endereço do site.
+   - n8n → Agente WhatsApp → nó **Config**: `checkout_url`, `politica_url` (`/privacidade`) e `termos_url` (`/termos`) com o endereço do site.
+4. Preencher `NEXT_PUBLIC_SUPPORT_EMAIL` e `NEXT_PUBLIC_LEGAL_ENTITY`, e revisar os textos de `app/src/config/legal.ts` com um advogado antes de abrir ao público (hoje as páginas mostram "Rascunho em revisão jurídica").
 
-- Identidade do usuário = telefone do WhatsApp. Mensagem recebida do número comprova a posse da linha.
-- O cadastro **não manda mensagem ativa**: devolve um link `wa.me` para a pessoa começar a conversa. Evita spam e banimento.
-- O modelo nunca recebe o id do usuário como parâmetro: ele é fixado nos nós, então um prompt malicioso não acessa dados de outra pessoa.
-- Somas e resumos são calculados no banco (`resumo_periodo`), nunca pelo modelo.
-- Mensagens recebidas contam na cota (texto, áudio e imagem); `DEL#` e `ATIVAR` não contam.
-
-## Pendências conhecidas
-
-- Pagamento: o workflow antigo `Gastômetro - Pagamento Mercado Pago` usa o banco antigo e tem token de exemplo; falta uma versão v3 (ativar assinatura, renovar período, inadimplência).
-- Link de checkout com identificação do usuário (hoje é um link genérico).
-- Turnstile (captcha) no formulário da landing e limite de requisições no cadastro.
-- Reset da cota na renovação (vem junto com o pagamento).
-- Agendar `limpar_dados_antigos()` (pg_cron).
-- Não testado de ponta a ponta: faltam as credenciais para rodar o agente de verdade.
-
-## Comandos do bot (n8n)
+## Comandos do bot
 
 | Mensagem do cliente | O que acontece |
 |---|---|
@@ -72,4 +75,27 @@ Versão nova do Gastômetro, rodando em paralelo com a Fase 1 e a Fase 2 (que **
 | `EXCLUIR MEUS DADOS` → `CONFIRMAR EXCLUSAO` | elimina os dados e anonimiza o cadastro |
 | qualquer outra coisa | classificador de escopo → agente (ou resposta fixa fora do escopo) |
 
-Variáveis do nó `Config`: `evolution_url`, `instancia`, `checkout_url`, `termos_versao`, `politica_url`, `termos_url` e **`nome_produto`** (nome da marca nas mensagens e no prompt).
+Variáveis do nó `Config` do agente: `evolution_url`, `instancia`, `checkout_url`, `termos_versao`, `politica_url`, `termos_url` e `nome_produto`.
+
+## Decisões de projeto
+
+- Identidade do usuário = telefone do WhatsApp. Mensagem recebida do número comprova a posse da linha.
+- O cadastro **não manda mensagem ativa**: devolve um link `wa.me`. Evita spam e banimento.
+- O modelo nunca recebe o id do usuário como parâmetro: ele é fixado nos nós, então um prompt malicioso não acessa dados de outra pessoa.
+- Somas, resumos e todo o painel são calculados no banco (funções `app_*` e `resumo_periodo`); o navegador nunca recebe lista bruta para somar.
+- O navegador só usa a chave pública. Cada tabela tem RLS; o painel só executa as funções `app_*`; as demais funções são exclusivas do `service_role` (n8n).
+- Login sem senha: código de 6 dígitos, vale 5 minutos, uso único, bloqueio após 5 erros em 10 minutos; a sessão é aberta com `verifyOtp` do Supabase Auth.
+- "Apagar" é lógico (`deleted_at`); "excluir meus dados" apaga lançamentos e conversas e anonimiza o cadastro (decisão do dono do produto: nada de apagar definitivo por enquanto).
+- Segurança do site: CSP (conexões só para o próprio site, Supabase e webhook de cadastro), `frame-ancestors 'none'`, HSTS, `nosniff`, `Referrer-Policy`. Detalhes de LGPD em [`docs/SEGURANCA-E-LGPD.md`](docs/SEGURANCA-E-LGPD.md).
+- Mensagens recebidas contam na cota (texto, áudio e imagem); `DEL#` e `ATIVAR` não contam.
+
+## Pendências conhecidas
+
+- **Pagamento**: falta o workflow v3 do Mercado Pago (ativar assinatura, renovar período, inadimplência, reset da cota) e o link de checkout com identificação do cliente.
+- **Aceite novo quando os termos mudam**: o bot guarda a versão aceita, mas ainda não pede novo aceite quando `termos_versao` muda.
+- **Limite por IP em `login-iniciar`**: hoje o limite é por sessão/código; falta limitar a criação de códigos por origem (Cloudflare/WAF ou tabela de contagem).
+- Turnstile (captcha) no cadastro e limite de requisições no webhook de cadastro.
+- Agendar `limpar_dados_antigos()` (pg_cron).
+- Fase 2 do app: plano Family com visão compartilhada, orçamentos com aviso no WhatsApp, insights, tendência de 6 meses.
+- Revisão jurídica dos termos e da política; definir encarregado (DPO) e responsável pelo tratamento.
+- Rotacionar as chaves da OpenAI e da Evolution que apareciam no JSON dos workflows antigos.

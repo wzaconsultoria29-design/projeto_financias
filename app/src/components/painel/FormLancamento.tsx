@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CATEGORIAS, METODOS } from "@/config/categorias";
+import { canonico, CATEGORIAS, METODOS } from "@/config/categorias";
 import { lerValor } from "@/lib/format";
 import { hojeIso } from "@/lib/periodo";
 import type { LancamentoInput, LancamentoItem } from "@/lib/api";
 
 type Props = {
   inicial: LancamentoItem | null;
+  categorias?: string[];
   ocupado: boolean;
   erro: string;
   onSalvar: (dados: LancamentoInput) => void;
@@ -20,13 +21,13 @@ function valorInicial(v: number | undefined): string {
   return v === undefined ? "" : v.toFixed(2).replace(".", ",");
 }
 
-export function FormLancamento({ inicial, ocupado, erro, onSalvar, onCancelar }: Props) {
+export function FormLancamento({ inicial, categorias: opcoesCategoria = CATEGORIAS, ocupado, erro, onSalvar, onCancelar }: Props) {
   const [tipo, setTipo] = useState<"despesa" | "receita">(inicial?.tipo ?? "despesa");
   const [valor, setValor] = useState(valorInicial(inicial?.valor));
   const [data, setData] = useState(inicial?.data.slice(0, 10) ?? hojeIso(new Date()));
-  const [categoria, setCategoria] = useState(inicial?.categoria ?? "");
+  const [categoria, setCategoria] = useState(canonico(inicial?.categoria ?? "", opcoesCategoria));
   const [descricao, setDescricao] = useState(inicial?.descricao ?? "");
-  const [metodo, setMetodo] = useState(inicial?.metodo_pagamento ?? "");
+  const [metodo, setMetodo] = useState(canonico(inicial?.metodo_pagamento ?? "", METODOS));
   const [aviso, setAviso] = useState("");
   const primeiro = useRef<HTMLInputElement>(null);
 
@@ -54,7 +55,7 @@ export function FormLancamento({ inicial, ocupado, erro, onSalvar, onCancelar }:
   }
 
   // Categoria que o bot criou e não está na lista continua selecionável.
-  const categorias = categoria && !CATEGORIAS.includes(categoria) ? [categoria, ...CATEGORIAS] : CATEGORIAS;
+  const categorias = categoria && !opcoesCategoria.includes(categoria) ? [categoria, ...opcoesCategoria] : opcoesCategoria;
   const metodos = metodo && !METODOS.includes(metodo) ? [metodo, ...METODOS] : METODOS;
 
   return (

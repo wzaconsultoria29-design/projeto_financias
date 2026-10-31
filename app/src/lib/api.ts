@@ -114,3 +114,10 @@ export async function minhaConta(): Promise<Conta> {
   if (error) throw erro(error.message);
   return data as Conta;
 }
+
+/** Categorias que o cliente já usa (o bot cria categorias livres). */
+export async function listarCategorias(): Promise<string[]> {
+  const { data, error } = await supabase.rpc("app_categorias");
+  if (error) throw erro(error.message);
+  return Array.isArray(data) ? (data as unknown[]).filter((c): c is string => typeof c === "string") : [];
+}

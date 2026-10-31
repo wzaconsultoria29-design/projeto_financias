@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CATEGORIAS } from "@/config/categorias";
-import { excluirLancamento, listarLancamentos, salvarLancamento, type LancamentoInput, type LancamentoItem } from "@/lib/api";
+import { mesclarCategorias } from "@/config/categorias";
+import { excluirLancamento, listarCategorias, listarLancamentos, salvarLancamento, type LancamentoInput, type LancamentoItem } from "@/lib/api";
 import { lancamentosParaCsv } from "@/lib/csv";
 import { baixarArquivo, coletarTodos } from "@/lib/exportar";
 import { hojeIso, intervalo, type Intervalo, type Preset } from "@/lib/periodo";
@@ -27,6 +27,7 @@ export default function LancamentosPage() {
   const [pagina, setPagina] = useState(0);
   const [recarga, setRecarga] = useState(0);
   const [resultado, setResultado] = useState<Resultado>();
+  const [usadas, setUsadas] = useState<string[]>([]);
 
   const [formAberto, setFormAberto] = useState(false);
   const [editando, setEditando] = useState<LancamentoItem | null>(null);
@@ -53,6 +54,18 @@ export default function LancamentosPage() {
       ativo = false;
     };
   }, [filtros, pagina, chave]);
+
+  // As categorias do cliente vêm do banco (o bot cria categorias livres); recarrega depois de salvar ou excluir.
+  useEffect(() => {
+    let ativo = true;
+    listarCategorias()
+      .then((c) => ativo && setUsadas(c))
+      .catch(() => {});
+    return () => {
+      ativo = false;
+    };
+  }, [recarga]);
+  const categorias = useMemo(() => mesclarCategorias(usadas), [usadas]);
 
   const mudarFiltro = useCallback((fn: () => void) => {
     fn();
@@ -178,7 +191,7 @@ export default function LancamentosPage() {
             className="rounded-[12px] border border-linha bg-superficie px-3 py-2.5 text-tinta"
           >
             <option value="">Todas</option>
-            {CATEGORIAS.map((c) => <option key={c} value={c}>{c}</option>)}
+            {categorias.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </label>
       </div>
@@ -222,7 +235,7 @@ export default function LancamentosPage() {
         </nav>
       )}
 
-      {formAberto && <FormLancamento inicial={editando} ocupado={ocupado} erro={erroAcao} onSalvar={salvar} onCancelar={fecharForm} />}
+      {formAberto && <FormLancamento inicial={editando} categorias={categorias} ocupado={ocupado} erro={erroAcao} onSalvar={salvar} onCancelar={fecharForm} />}
       {excluindo && <ConfirmarExclusao item={excluindo} ocupado={ocupado} erro={erroAcao} onConfirmar={confirmarExclusao} onCancelar={fecharExclusao} />}
     </div>
   );
