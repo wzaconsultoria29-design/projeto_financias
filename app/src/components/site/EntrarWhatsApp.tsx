@@ -109,7 +109,7 @@ export function EntrarWhatsApp() {
             Abrir WhatsApp
           </a>
           <p className="text-sm leading-relaxed text-suave">
-            Envie a mensagem que vai aparecer pronta e volte para esta página. Ela entra sozinha assim que o bot confirmar.
+            Envie a mensagem que vai aparecer pronta e volte para esta página. Ela entra sozinha assim que o bot confirmar. Nunca envie este código a pedido de outra pessoa: ele dá acesso ao seu painel.
           </p>
         </>
       )}

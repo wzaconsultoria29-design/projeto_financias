@@ -11,6 +11,7 @@ test.describe("entrar pelo WhatsApp", () => {
     await page.goto("/entrar");
     await page.getByRole("button", { name: "Gerar código" }).click();
     await expect(page.getByText("123456")).toBeVisible();
+    await expect(page.getByText(/Nunca envie este código a pedido de outra pessoa/)).toBeVisible();
     await expect(page.getByText(/^(4:5\d|5:00)$/)).toBeVisible();
     await expect(page.getByRole("link", { name: "Abrir WhatsApp" })).toHaveAttribute(
       "href",
