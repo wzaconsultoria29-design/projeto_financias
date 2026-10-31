@@ -12,7 +12,7 @@ import { PorCategoria } from "@/components/painel/PorCategoria";
 import { Projecao } from "@/components/painel/Projecao";
 import { SerieDiaria } from "@/components/painel/SerieDiaria";
 
-type Carga = { estado: "carregando" } | { estado: "erro"; mensagem: string } | { estado: "ok"; dados: VisaoGeral };
+type Resultado = { chave: string } & ({ estado: "erro"; mensagem: string } | { estado: "ok"; dados: VisaoGeral });
 
 function Esqueleto() {
   return (
@@ -30,25 +30,27 @@ function Esqueleto() {
 export default function PainelPage() {
   const [preset, setPreset] = useState<Preset>("mes");
   const [custom, setCustom] = useState<Intervalo>();
-  const [carga, setCarga] = useState<Carga>({ estado: "carregando" });
+  const [resultado, setResultado] = useState<Resultado>();
   const [tentativa, setTentativa] = useState(0);
 
   const periodo = useMemo(() => intervalo(preset, new Date(), custom), [preset, custom]);
+  // Um resultado só vale para o período e a tentativa que o geraram; qualquer outro caso é "carregando".
+  const chave = `${periodo.de}|${periodo.ate}|${tentativa}`;
+  const carga = resultado?.chave === chave ? resultado : ({ estado: "carregando" } as const);
   const maximo = hojeIso(new Date());
 
   useEffect(() => {
     let ativo = true;
-    setCarga({ estado: "carregando" });
     visaoGeral(periodo)
-      .then((dados) => ativo && setCarga({ estado: "ok", dados }))
+      .then((dados) => ativo && setResultado({ chave, estado: "ok", dados }))
       .catch((e: unknown) => {
         if (!ativo) return;
-        setCarga({ estado: "erro", mensagem: e instanceof Error ? e.message : "Algo deu errado. Tente de novo em instantes." });
+        setResultado({ chave, estado: "erro", mensagem: e instanceof Error ? e.message : "Algo deu errado. Tente de novo em instantes." });
       });
     return () => {
       ativo = false;
     };
-  }, [periodo, tentativa]);
+  }, [periodo, chave]);
 
   const tentarDeNovo = useCallback(() => setTentativa((n) => n + 1), []);
 
