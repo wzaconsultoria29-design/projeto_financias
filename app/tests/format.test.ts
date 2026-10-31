@@ -31,3 +31,20 @@ describe("datas", () => {
     expect(dataLonga("2026-10-31")).toBe("31/10/2026");
   });
 });
+
+import { lerValor } from "@/lib/format";
+
+describe("lerValor", () => {
+  it("aceita formatos brasileiros", () => {
+    expect(lerValor("12,50")).toBe(12.5);
+    expect(lerValor("1.234,56")).toBe(1234.56);
+    expect(lerValor("R$ 45")).toBe(45);
+    expect(lerValor("12.5")).toBe(12.5);
+  });
+  it("recusa vazio, texto, zero e negativo", () => {
+    expect(lerValor("")).toBeNull();
+    expect(lerValor("abc")).toBeNull();
+    expect(lerValor("0")).toBeNull();
+    expect(lerValor("-5")).toBeNull();
+  });
+});

@@ -25,3 +25,15 @@ export function dataLonga(iso: string): string {
   const [y, m, d] = iso.slice(0, 10).split("-");
   return `${d}/${m}/${y}`;
 }
+
+/** Lê "12,50", "1.234,56", "R$ 45" ou "12.5"; devolve null quando não é um valor positivo. */
+export function lerValor(texto: string): number | null {
+  const limpo = texto.replace(/R\$/gi, "").replace(/\s/g, "");
+  if (!/^\d[\d.,]*$/.test(limpo)) return null;
+  let normal: string;
+  if (limpo.includes(",")) normal = limpo.replace(/\./g, "").replace(",", ".");
+  else if (/^\d{1,3}(\.\d{3})+$/.test(limpo)) normal = limpo.replace(/\./g, "");
+  else normal = limpo;
+  const n = Number(normal);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
