@@ -59,3 +59,17 @@ Versão nova do Gastômetro, rodando em paralelo com a Fase 1 e a Fase 2 (que **
 - Reset da cota na renovação (vem junto com o pagamento).
 - Agendar `limpar_dados_antigos()` (pg_cron).
 - Não testado de ponta a ponta: faltam as credenciais para rodar o agente de verdade.
+
+## Comandos do bot (n8n)
+
+| Mensagem do cliente | O que acontece |
+|---|---|
+| `ACEITO` | registra o aceite dos termos (para quem chega sem passar pelo site) |
+| `ATIVAR <código>` | confirma o número do cadastro feito no site |
+| `PAINEL <código>` | confirma o login no painel (código mostrado no site) |
+| `DEL#XXXXXX` | apaga (marca como excluído) um lançamento do próprio cliente |
+| `MEUS DADOS` | resumo + arquivo CSV com todos os lançamentos |
+| `EXCLUIR MEUS DADOS` → `CONFIRMAR EXCLUSAO` | elimina os dados e anonimiza o cadastro |
+| qualquer outra coisa | classificador de escopo → agente (ou resposta fixa fora do escopo) |
+
+Variáveis do nó `Config`: `evolution_url`, `instancia`, `checkout_url`, `termos_versao`, `politica_url`, `termos_url` e **`nome_produto`** (nome da marca nas mensagens e no prompt).
