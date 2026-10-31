@@ -1,26 +1,178 @@
 @import "tailwindcss";
 
+/*
+  Sistema visual: neutro frio esverdeado + UMA cor de marca (verde-floresta).
+  Raio: cartões 20px, botões em pílula, campos 12px (regra única do projeto).
+  Tema claro por padrão; segue prefers-color-scheme (um tema por página, sem inversão de seções).
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --papel: #f3f5f1;
+  --superficie: #fafbf9;
+  --tinta: #10201a;
+  --suave: #475a52;
+  --linha: #d9e1db;
+  --floresta: #0e4a3a;
+  --folha: #ddebe3;
+  --botao: #0e4a3a;
+  --botao-fg: #f3f5f1;
+  --bloco: #0c3a2e;
+  --sobre-bloco: #e8f2ec;
+  --raio-cartao: 20px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --papel: #0b1411;
+    --superficie: #111d18;
+    --tinta: #e7efea;
+    --suave: #9fb3a9;
+    --linha: #21332b;
+    --floresta: #7fd6ae;
+    --folha: #16302a;
+    --botao: #8fe0bc;
+    --botao-fg: #062119;
+    --bloco: #123d31;
+    --sobre-bloco: #e8f2ec;
+  }
+}
+
+@theme inline {
+  --color-papel: var(--papel);
+  --color-superficie: var(--superficie);
+  --color-tinta: var(--tinta);
+  --color-suave: var(--suave);
+  --color-linha: var(--linha);
+  --color-floresta: var(--floresta);
+  --color-folha: var(--folha);
+  --color-bloco: var(--bloco);
+  --color-sobre-bloco: var(--sobre-bloco);
+  --font-sans: var(--font-corpo);
+  --font-display: var(--font-titulo);
+}
+
+html {
+  background: var(--papel);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--font-corpo), system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--floresta);
+  outline-offset: 3px;
+}
+
+@layer components {
+  .botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    border-radius: 999px;
+    background: var(--botao);
+    color: var(--botao-fg);
+    padding: 0.7rem 1.35rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s;
+  }
+  .botao:hover {
+    filter: brightness(1.08);
+  }
+  .botao:active {
+    transform: translateY(1px) scale(0.99);
+  }
+  .botao-contorno {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    border-radius: 999px;
+    border: 1px solid var(--linha);
+    color: var(--tinta);
+    padding: 0.7rem 1.35rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .botao-contorno:hover {
+    border-color: var(--floresta);
+  }
+  .botao-contorno:active {
+    transform: translateY(1px) scale(0.99);
+  }
+  .botao-bloco {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    border-radius: 999px;
+    background: var(--sobre-bloco);
+    color: #0c3a2e;
+    padding: 0.8rem 1.6rem;
+    font-weight: 600;
+    transition: transform 0.2s, filter 0.2s;
+  }
+  .botao-bloco:hover {
+    filter: brightness(0.95);
+  }
+  .botao-bloco:active {
+    transform: translateY(1px) scale(0.99);
+  }
+  .cartao {
+    border-radius: var(--raio-cartao);
+    border: 1px solid var(--linha);
+    background: var(--superficie);
+  }
+}
+
+/* Conversa de exemplo: as mensagens entram em sequência (conta a história do produto). */
+@keyframes bolha {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bolha {
+    animation: bolha 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i, 0) * 0.85s + 0.4s);
+  }
+}
+
+/* Revelar seções ao rolar (só onde o navegador suporta e sem preferência por menos movimento). */
+@keyframes revela {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .revela {
+      animation: revela linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 30%;
+    }
+  }
 }
