@@ -14,18 +14,18 @@ export function LandingHeader() {
     <OcultaAoRolar>
     <header>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-8">
-        <Link href="/" className="text-xl font-bold tracking-tight text-tinta">
+        <Link href="/" className="lh-marca text-xl font-bold tracking-tight text-tinta">
           {brand.name}
         </Link>
         <nav aria-label="Principal" className="hidden items-center gap-8 text-[15px] text-suave md:flex">
           {LINKS.map((l) => (
-            <a key={l.href} href={l.href} className="transition-colors hover:text-tinta">
+            <a key={l.href} href={l.href} className="lh-link transition-colors hover:text-tinta">
               {l.rotulo}
             </a>
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <Link href="/entrar" className="px-3 py-2 text-[15px] font-medium text-suave transition-colors hover:text-tinta">
+          <Link href="/entrar" className="lh-link px-3 py-2 text-[15px] font-medium text-suave transition-colors hover:text-tinta">
             Entrar
           </Link>
           <Link href="/cadastro" className="botao">

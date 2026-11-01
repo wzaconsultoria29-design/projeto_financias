@@ -15,7 +15,7 @@
 .lp-display {
   font-weight: 700;
   letter-spacing: -0.03em;
-  line-height: 0.95;
+  line-height: 1;
   text-transform: uppercase;
   text-wrap: balance;
 }
@@ -114,4 +114,229 @@ details.pergunta[open] {
 }
 .ctl:active {
   transform: scale(0.97);
+}
+
+/* ===== Camada de vida: cor, profundidade e movimento ===== */
+
+.lp {
+  --noite: #04261d;
+  --esmeralda: #0e4a3a;
+  --vivo: #2f9e74;
+  --lima: #c8f56a;
+  --menta: #d8f2e4;
+}
+
+/* Campo de cor do topo: verde profundo que se dissolve na página, com luz e granulação. */
+.hero-fundo {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(55% 45% at 50% -5%, rgba(47, 158, 116, 0.6), transparent 70%),
+    radial-gradient(35% 35% at 88% 38%, rgba(200, 245, 106, 0.2), transparent 70%),
+    radial-gradient(40% 40% at 8% 52%, rgba(47, 158, 116, 0.35), transparent 70%),
+    linear-gradient(180deg, #04261d 0%, #0a3a2c 34%, #14604a 58%, #7cc7a8 80%, var(--papel) 100%);
+}
+.grao::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.55'/></svg>");
+}
+
+/* Cabeçalho transparente sobre o topo; sólido depois de rolar. */
+.cabecalho[data-topo="true"] {
+  background: transparent;
+}
+.cabecalho[data-topo="true"] .lh-marca,
+.cabecalho[data-topo="true"] .lh-link:hover {
+  color: #fff;
+}
+.cabecalho[data-topo="true"] .lh-link {
+  color: rgba(255, 255, 255, 0.82);
+}
+.cabecalho[data-topo="true"] .botao {
+  background: var(--lima);
+  color: var(--noite);
+}
+
+.botao-lima {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border-radius: 999px;
+  background: var(--lima);
+  color: var(--noite);
+  padding: 0.95rem 1.9rem;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 10px 30px -10px rgba(200, 245, 106, 0.55);
+  transition: transform 0.2s var(--ease), filter 0.2s, box-shadow 0.2s;
+}
+.botao-lima:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 14px 36px -10px rgba(200, 245, 106, 0.7);
+}
+.botao-lima:active {
+  transform: translateY(1px) scale(0.98);
+}
+.botao-vidro {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  color: #fff;
+  padding: 0.95rem 1.9rem;
+  font-weight: 600;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.botao-vidro:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #fff;
+}
+
+/* Celular com bisel, brilho de borda e sombra longa. */
+.celular {
+  position: relative;
+  width: 300px;
+  border-radius: 46px;
+  background: linear-gradient(160deg, #1b2a24, #07100c);
+  padding: 9px;
+  box-shadow:
+    0 50px 90px -30px rgba(2, 20, 14, 0.7),
+    0 18px 40px -18px rgba(2, 20, 14, 0.5),
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.14),
+    inset 0 2px 0 rgba(255, 255, 255, 0.22);
+}
+.celular::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  z-index: 3;
+  width: 84px;
+  height: 22px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #050a08;
+}
+.celular-tela {
+  position: relative;
+  height: 590px;
+  overflow: hidden;
+  border-radius: 38px;
+  background: var(--superficie);
+}
+
+/* Objetos 3D fundidos ao fundo escuro: o preto da imagem some e o brilho fica. */
+.objeto3d {
+  mix-blend-mode: screen;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Cartões com profundidade. */
+.cartao-vivo {
+  background: var(--superficie);
+  border-radius: 28px;
+  box-shadow:
+    0 30px 60px -30px rgba(4, 38, 29, 0.35),
+    0 2px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .flutua {
+    animation: flutua 7s ease-in-out infinite;
+  }
+  .flutua-lento {
+    animation: flutua 10s ease-in-out infinite reverse;
+  }
+  .faixa {
+    animation: corre 46s linear infinite;
+  }
+  .faixa:hover {
+    animation-play-state: paused;
+  }
+  .ponto {
+    animation: ponto 1.2s ease-in-out infinite;
+  }
+  .ponto:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .ponto:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  .cresce {
+    transform-origin: left;
+    animation: cresce 1.8s var(--ease) infinite alternate;
+  }
+  .js .rise:not(.in) .cresce,
+  .js .rise:not(.in) .ponto {
+    animation-play-state: paused;
+  }
+  .entra-msg {
+    animation: entra-msg 0.5s var(--ease) both;
+  }
+}
+
+@keyframes flutua {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -14px;
+  }
+}
+@keyframes corre {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes ponto {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+@keyframes cresce {
+  from {
+    transform: scaleX(0.25);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes entra-msg {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Faixa escura da privacidade: noite verde com um foco de luz. */
+.fundo-noite {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(45% 60% at 88% 18%, rgba(47, 158, 116, 0.5), transparent 70%),
+    radial-gradient(40% 50% at 5% 90%, rgba(200, 245, 106, 0.12), transparent 70%),
+    linear-gradient(180deg, #04261d, #0a3a2c);
 }

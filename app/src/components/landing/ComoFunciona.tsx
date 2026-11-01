@@ -1,72 +1,63 @@
-import { Camera, Microphone } from "@phosphor-icons/react/dist/ssr";
-import { PainelFragmento } from "./PainelFragmento";
-import type { Gasto } from "@/lib/demo";
+import { Camera, Microphone, TextT } from "@phosphor-icons/react/dist/ssr";
+import { PERGUNTAS, responder } from "@/lib/demo-dados";
 
-const SEMANA: Gasto[] = [
-  { descricao: "Mercado", valor: 350.7, categoria: "Alimentação" },
-  { descricao: "Uber e combustível", valor: 142.5, categoria: "Transporte" },
-  { descricao: "Cinema e jantar", valor: 148, categoria: "Lazer" },
+const BARRAS = [
+  { nome: "Alimentação", pct: 62 },
+  { nome: "Transporte", pct: 34 },
+  { nome: "Lazer", pct: 18 },
 ];
 
-function Resposta({ children }: { children: React.ReactNode }) {
-  return <div data-ui className="rounded-[20px] bg-superficie p-5 text-[16px] leading-snug text-tinta">{children}</div>;
-}
-
-function Chamada({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-[20px] bg-folha p-5 text-[17px] text-tinta">{children}</div>;
+function Cartao({ titulo, texto, children }: { titulo: string; texto: string; children: React.ReactNode }) {
+  return (
+    <article className="cartao-vivo rise flex flex-col overflow-hidden p-7 md:p-8">
+      <h3 className="text-[clamp(1.5rem,1.2rem+1vw,2rem)] font-semibold leading-tight text-tinta">{titulo}</h3>
+      <p className="mt-3 max-w-[34ch] text-[17px] leading-relaxed text-suave">{texto}</p>
+      <div data-ui className="mt-8 flex min-h-[230px] flex-1 flex-col justify-end gap-2.5 rounded-[20px] bg-papel p-4">
+        {children}
+      </div>
+    </article>
+  );
 }
 
 export function ComoFunciona() {
+  const resposta = responder(PERGUNTAS[1]).split(". ")[0] + ".";
   return (
     <section id="como-funciona" className="mx-auto w-full max-w-7xl scroll-mt-16 px-4 py-24 md:px-8 md:py-32">
-      <div className="lg:ml-[25%]">
-        <h2 className="lp-display rise text-[clamp(2rem,4.2vw,3.5rem)] text-tinta">Como funciona</h2>
+      <h2 className="lp-display rise mx-auto text-center text-[clamp(2rem,4.4vw,3.75rem)] text-tinta">Como funciona</h2>
+      <p className="rise mx-auto mt-4 max-w-[48ch] text-center text-[18px] leading-relaxed text-suave">Você manda. O assistente entende, organiza e responde. O painel mostra o resto.</p>
 
-        <div className="mt-14 flex max-w-[560px] flex-col gap-20">
-          <div className="rise">
-            <p className="text-xl font-medium text-tinta">Primeiro, mande o gasto.</p>
-            <div className="mt-4">
-              <Chamada>gastei 87,50 no mercado</Chamada>
-            </div>
-            <div className="mt-4 md:ml-14">
-              <Resposta>
-                <p className="font-medium">Anotado.</p>
-                <p className="mt-2 text-suave">Despesa de <span className="font-medium text-tinta">R$ 87,50</span></p>
-                <p className="text-suave">Alimentação, Supermercado</p>
-                <p className="mt-2 text-suave">Para apagar, envie o código que vem junto.</p>
-              </Resposta>
-            </div>
+      <div className="mt-14 grid gap-5 lg:grid-cols-3">
+        <Cartao titulo="Mande do seu jeito" texto="Escreva, grave um áudio ou fotografe o cupom. Do jeito que você falaria com um amigo.">
+          <div className="mb-1 flex gap-2">
+            <span className="flex items-center gap-1.5 rounded-full bg-folha px-3 py-1.5 text-[14px] text-tinta"><TextT size={16} aria-hidden /> Texto</span>
+            <span className="flex items-center gap-1.5 rounded-full bg-folha px-3 py-1.5 text-[14px] text-tinta"><Microphone size={16} aria-hidden /> Áudio</span>
+            <span className="flex items-center gap-1.5 rounded-full bg-folha px-3 py-1.5 text-[14px] text-tinta"><Camera size={16} aria-hidden /> Foto</span>
           </div>
+          <p className="entra-msg self-end rounded-2xl rounded-br-md bg-[var(--botao)] px-4 py-2.5 text-[16px] text-[var(--botao-fg)]">gastei 87,50 no mercado</p>
+          <p className="flex w-fit items-center gap-1 self-start rounded-2xl rounded-bl-md bg-superficie px-4 py-3" aria-hidden>
+            <span className="ponto size-2 rounded-full bg-suave" />
+            <span className="ponto size-2 rounded-full bg-suave" />
+            <span className="ponto size-2 rounded-full bg-suave" />
+          </p>
+        </Cartao>
 
-          <div className="rise">
-            <p className="text-xl font-medium text-tinta">Depois, por áudio ou foto.</p>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <Chamada>
-                <span className="flex items-center gap-3"><Microphone size={22} aria-hidden /> Áudio, 4 segundos</span>
-              </Chamada>
-              <Chamada>
-                <span className="flex items-center gap-3"><Camera size={22} aria-hidden /> Foto do cupom</span>
-              </Chamada>
+        <Cartao titulo="Tudo no lugar, sozinho" texto="Valor, data e categoria entram sem você preencher nada. Se algo estiver errado, é só corrigir.">
+          {BARRAS.map((b) => (
+            <div key={b.nome}>
+              <div className="flex justify-between text-[15px] text-tinta">
+                <span className="font-medium">{b.nome}</span>
+              </div>
+              <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-folha">
+                <div className="cresce h-full rounded-full bg-floresta" style={{ width: `${b.pct}%` }} />
+              </div>
             </div>
-            <div className="mt-4 md:ml-14">
-              <Resposta>
-                <p className="font-medium">Entendi: R$ 120,00 de luz.</p>
-                <p className="mt-2 text-suave">Despesas Fixas, Luz</p>
-                <p className="text-suave">Se algo estiver errado, é só responder corrigindo.</p>
-              </Resposta>
-            </div>
-          </div>
-        </div>
+          ))}
+        </Cartao>
 
-        <div className="rise mt-20">
-          <p className="max-w-[560px] text-xl font-medium text-tinta">Por fim, pergunte.</p>
-          <div className="mt-4 max-w-[560px]">
-            <Chamada>quanto gastei essa semana?</Chamada>
-          </div>
-          <div className="mt-4 lg:w-[760px] lg:max-w-[calc(100vw-25%-4rem)]">
-            <PainelFragmento titulo="Esta semana" itens={SEMANA} recentes={0} />
-          </div>
-        </div>
+        <Cartao titulo="Pergunte e ele analisa" texto="Quando você perguntar, ele olha só os seus lançamentos e sugere algo leve. Nunca puxa assunto.">
+          <p className="self-end rounded-2xl rounded-br-md bg-[var(--botao)] px-4 py-2.5 text-[16px] text-[var(--botao-fg)]">{PERGUNTAS[1]}</p>
+          <p className="self-start rounded-2xl rounded-bl-md bg-superficie px-4 py-2.5 text-[15px] leading-snug text-tinta">{resposta}</p>
+        </Cartao>
       </div>
     </section>
   );

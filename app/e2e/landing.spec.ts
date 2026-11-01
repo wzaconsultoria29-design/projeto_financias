@@ -25,12 +25,12 @@ test.describe("landing", () => {
   });
 
   test("demonstração do topo: escrever um gasto muda o painel", async ({ page }) => {
-    const painel = page.locator('[aria-label="Mensagens"]').locator("xpath=ancestor::div[@data-ui]/following-sibling::div[@data-ui]");
-    await expect(painel).toContainText("R$ 2.040,40");
+    const visivel = (texto: string) => page.getByText(texto).and(page.locator(":visible")).first();
+    await expect(visivel("R$ 2.040,40")).toBeVisible();
     await page.getByLabel("Escreva um gasto").fill("gastei 32 no almoço");
     await page.getByRole("button", { name: "Enviar" }).click();
     await expect(page.getByText("Anotado: R$ 32,00, Almoço, Alimentação.")).toBeVisible();
-    await expect(painel).toContainText("R$ 2.072,40");
+    await expect(visivel("R$ 2.072,40")).toBeVisible();
   });
 
   test("demonstração do topo: frase sem valor recebe ajuda, não erro", async ({ page }) => {
@@ -61,19 +61,22 @@ test.describe("landing", () => {
     await expect(secao).toContainText("podemos definir um teto");
   });
 
-  test("planos: nomes selecionáveis, preço troca e Family aparece como em breve", async ({ page }) => {
+  test("planos: três cartões, o do meio em destaque e Family em breve", async ({ page }) => {
     const secao = page.locator("#planos");
     await secao.scrollIntoViewIfNeeded();
-    await expect(secao.getByRole("button", { name: "Essencial" })).toHaveAttribute("aria-pressed", "true");
-    await expect(secao).toContainText("R$ 19");
-    await secao.getByRole("button", { name: "Teste grátis" }).click();
-    await expect(secao).toContainText("por 7 dias");
-    await expect(secao).toContainText("Ganha mais 3 dias");
-    await secao.getByRole("button", { name: "Family" }).click();
-    await expect(secao).toContainText("R$ 39");
-    await expect(secao).toContainText("Em breve");
-    await expect(secao).toContainText("4 números");
-    await expect(secao.getByRole("link", { name: "Quero ser avisado" })).toHaveAttribute("href", /plano=family/);
+    await expect(secao.locator("[data-plano]")).toHaveCount(3);
+    const trial = secao.locator('[data-plano="trial"]');
+    await expect(trial).toContainText("Grátis");
+    await expect(trial).toContainText("por 7 dias");
+    await expect(trial).toContainText("Ganha mais 3 dias");
+    const essencial = secao.locator('[data-plano="essencial"]');
+    await expect(essencial).toContainText("R$ 19");
+    await expect(essencial).toContainText("Mais popular");
+    const family = secao.locator('[data-plano="family"]');
+    await expect(family).toContainText("R$ 39");
+    await expect(family).toContainText("Em breve");
+    await expect(family).toContainText("4 números");
+    await expect(family.getByRole("link", { name: "Quero ser avisado" })).toHaveAttribute("href", /plano=family/);
   });
 
   test("todo botão de começar leva ao cadastro", async ({ page }) => {

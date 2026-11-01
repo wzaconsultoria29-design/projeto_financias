@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { interpretar, type Gasto } from "@/lib/demo";
 import { MES_ANTERIOR } from "@/lib/demo-dados";
+import { Objeto3d } from "./Objeto3d";
 import { PainelFragmento } from "./PainelFragmento";
 
 const INICIAL = ["restaurante 142", "farmácia 87", "netflix 55,90", "uber 64,80", "conta de luz 128,40", "aluguel 1.150", "mercado 412,30"].join("\n");
@@ -21,7 +22,8 @@ export function Showcase() {
     <section id="painel" className="relative scroll-mt-16" aria-labelledby="titulo-painel">
       <h2 id="titulo-painel" className="sr-only">Do WhatsApp ao painel</h2>
       <div className="grid md:min-h-[90svh] md:grid-cols-2">
-        <div className="flex min-h-[62svh] flex-col bg-bloco px-5 pb-8 pt-12 text-sobre-bloco md:px-[8%] md:pt-[18%]">
+        <div className="fundo-noite relative flex min-h-[62svh] flex-col overflow-hidden px-5 pb-8 pt-12 text-sobre-bloco md:px-[8%] md:pt-[18%]">
+          <Objeto3d nome="moeda" className="absolute -right-4 top-6 size-32 md:right-8 md:size-44" />
           <label htmlFor="mensagens" className="text-[17px] text-sobre-bloco/80">
             Mensagens do mês, uma por linha. Pode editar.
           </label>

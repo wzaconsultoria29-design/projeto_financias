@@ -1,4 +1,5 @@
 import { Hero } from "@/components/landing/Hero";
+import { Faixa } from "@/components/landing/Faixa";
 import { ComoFunciona } from "@/components/landing/ComoFunciona";
 import { Showcase } from "@/components/landing/Showcase";
 import { Recursos } from "@/components/landing/Recursos";
@@ -11,6 +12,7 @@ export default function Home() {
   return (
     <main className="flex-1">
       <Hero />
+      <Faixa />
       <ComoFunciona />
       <Showcase />
       <Recursos />
