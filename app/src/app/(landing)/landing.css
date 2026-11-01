@@ -1,0 +1,117 @@
+/* Estilos exclusivos da landing. As cores vêm dos tokens globais (globals.css). */
+
+.lp {
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Texto de apoio mais escuro que no resto do app: a landing precisa ler firme (contraste acima de 8:1). */
+  --suave: #34443d;
+}
+@media (prefers-color-scheme: dark) {
+  .lp {
+    --suave: #b9cbc1;
+  }
+}
+
+/* Título de exibição: Jost 700, caixa alta, apertado (type system sorteado). */
+.lp-display {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+/* Linhas do título sobem de trás da própria linha de base. */
+.lines .line {
+  display: block;
+  overflow: hidden;
+  padding: 0.14em 0 0.08em;
+  margin: -0.14em 0 -0.08em;
+}
+.lines [data-line] {
+  display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .lines [data-line] {
+    transform: translateY(105%);
+    animation: line-up 900ms var(--ease) forwards;
+    animation-delay: calc(var(--i) * 110ms + 150ms);
+  }
+  .js .arrive {
+    opacity: 0;
+    animation: fade-up 700ms var(--ease) forwards;
+    animation-delay: 650ms;
+  }
+  .js .rise {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 700ms var(--ease), transform 700ms var(--ease);
+  }
+  .js .rise.in {
+    opacity: 1;
+    transform: none;
+  }
+  .barra-preenche {
+    transition: width 500ms var(--ease);
+  }
+}
+
+@keyframes line-up {
+  to {
+    transform: none;
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Perguntas: o marcador padrão do navegador sai e entra um + desenhado com duas barras. */
+details.pergunta > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details.pergunta > summary::-webkit-details-marker {
+  display: none;
+}
+details.pergunta .mais {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+details.pergunta .mais::before,
+details.pergunta .mais::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6.5px;
+  width: 16px;
+  height: 3px;
+  background: currentColor;
+  transition: transform 250ms var(--ease);
+}
+details.pergunta .mais::after {
+  transform: rotate(90deg);
+}
+details.pergunta[open] .mais::after {
+  transform: rotate(0deg);
+}
+details.pergunta[open] {
+  background: var(--botao);
+  color: var(--botao-fg);
+}
+
+/* Controles dos fragmentos: resposta imediata ao toque. */
+.ctl {
+  transition: background-color 150ms, color 150ms, transform 150ms var(--ease);
+}
+.ctl:active {
+  transform: scale(0.97);
+}

@@ -14,11 +14,11 @@ export type PlanoVitrine = {
 export const planos: PlanoVitrine[] = [
   {
     codigo: "trial",
-    nome: "Trial",
+    nome: "Teste grátis",
     preco: "Grátis",
     periodo: "por 7 dias",
     resumo: "Teste tudo, sem cartão.",
-    itens: ["Texto, áudio e foto no WhatsApp", "Painel completo", "50 mensagens para testar"],
+    itens: ["Texto, áudio e foto no WhatsApp", "Painel completo", "50 mensagens para testar", "Registrou 5 gastos? Ganha mais 3 dias"],
     cta: { texto: "Começar grátis", href: "/cadastro?plano=trial" },
   },
   {
@@ -28,7 +28,7 @@ export const planos: PlanoVitrine[] = [
     periodo: "por mês",
     resumo: "Para quem quer controle o mês inteiro.",
     destaque: true,
-    itens: ["Tudo do Trial", "300 mensagens por mês", "Comparação com o período anterior", "Exportação em CSV"],
+    itens: ["Tudo do Teste grátis", "300 mensagens por mês", "Comparação com o período anterior", "Exportação em CSV"],
     cta: { texto: "Começar grátis", href: "/cadastro?plano=essencial" },
   },
   {

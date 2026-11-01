@@ -6,8 +6,10 @@ export const metadata: Metadata = { title: "Criar conta" };
 const VALIDOS = ["trial", "essencial", "family"];
 
 export default async function CadastroPage({ searchParams }: PageProps<"/cadastro">) {
-  const { plano } = await searchParams;
+  const { plano, email } = await searchParams;
   const inicial = typeof plano === "string" && VALIDOS.includes(plano) ? plano : "trial";
+  // Vem da chamada final da landing; é só um preenchimento, o formulário valida de novo.
+  const emailInicial = typeof email === "string" && email.length <= 120 && !/[\s<>]/.test(email) ? email : "";
 
   return (
     <main className="mx-auto grid w-full max-w-7xl flex-1 gap-12 px-4 py-16 md:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
@@ -21,7 +23,7 @@ export default async function CadastroPage({ searchParams }: PageProps<"/cadastr
           <li>Seus dados são só seus: você pode baixar ou apagar tudo quando quiser.</li>
         </ul>
       </div>
-      <CadastroForm planoInicial={inicial} />
+      <CadastroForm planoInicial={inicial} emailInicial={emailInicial} />
     </main>
   );
 }

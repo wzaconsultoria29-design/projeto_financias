@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Geist } from "next/font/google";
+import { Jost } from "next/font/google";
 import "./globals.css";
 import { brand } from "@/config/brand";
 
-const titulo = Bricolage_Grotesque({ variable: "--font-titulo", subsets: ["latin"], display: "swap" });
-const corpo = Geist({ variable: "--font-corpo", subsets: ["latin"], display: "swap" });
+// Uma só família para o site e o painel: o texto de marketing e a interface do produto parecem a mesma coisa.
+const jost = Jost({ variable: "--font-jost", subsets: ["latin"], weight: ["400", "500", "600", "700"], display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: `${brand.name}: controle de gastos pelo WhatsApp`, template: `%s | ${brand.name}` },
@@ -13,7 +13,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${titulo.variable} ${corpo.variable} h-full antialiased`}>
+    <html lang="pt-BR" className={`${jost.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        {/* Marca que o JavaScript está ativo; as animações de entrada só se escondem com ele (sem JS o conteúdo fica visível). */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );

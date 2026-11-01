@@ -46,8 +46,8 @@
   --color-folha: var(--folha);
   --color-bloco: var(--bloco);
   --color-sobre-bloco: var(--sobre-bloco);
-  --font-sans: var(--font-corpo);
-  --font-display: var(--font-titulo);
+  --font-sans: var(--font-jost);
+  --font-display: var(--font-jost);
 }
 
 html {
@@ -63,7 +63,7 @@ html {
 body {
   background: var(--papel);
   color: var(--tinta);
-  font-family: var(--font-corpo), system-ui, sans-serif;
+  font-family: var(--font-jost), system-ui, sans-serif;
 }
 
 :focus-visible {

@@ -3,6 +3,8 @@ import { cabecalhosDeSeguranca } from "./src/lib/seguranca";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // O selo "N" do modo de desenvolvimento cobre o canto da tela nos prints e nos testes visuais.
+  devIndicators: false,
   turbopack: {
     rules: {
       "*.css": {

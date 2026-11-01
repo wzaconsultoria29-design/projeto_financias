@@ -14,9 +14,9 @@ type Erros = { nome?: string; email?: string; telefone?: string };
 const campo =
   "w-full rounded-[12px] border border-linha bg-superficie px-4 py-3 text-tinta placeholder:text-suave/70 focus-visible:border-floresta";
 
-export function CadastroForm({ planoInicial }: { planoInicial: string }) {
+export function CadastroForm({ planoInicial, emailInicial = "" }: { planoInicial: string; emailInicial?: string }) {
   const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(emailInicial);
   const [telefone, setTelefone] = useState("");
   const [plano, setPlano] = useState(planoInicial);
   const [aceite, setAceite] = useState(false);
