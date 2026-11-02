@@ -44,7 +44,7 @@ Achado novo, e crítico para esta entrega: **`verificar_acesso(telefone, p_criar
 5. **O bot confirma o número** e só então **libera o uso**. O teste de 7 dias começa nesse momento. A tela do painel percebe sozinha e passa a mostrar os dados reais.
 6. **Depois**: entra de novo com e-mail e código. Se perder o acesso ao e-mail, escreve "painel" ao bot e recebe um link de uso único.
 
-O bot **nunca cria conta**. Para número desconhecido ou ainda não conectado, responde uma vez com o link de cadastro e não grava nada.
+O bot **nunca cria conta** nem começa a conversa. Veja as regras em "Regras do bot".
 
 ## Estados da conta
 
@@ -56,6 +56,18 @@ O bot **nunca cria conta**. Para número desconhecido ou ainda não conectado, r
 | `bloqueado`, `cancelado` | regras de plano ou administração | conforme o plano |
 
 Número não confirmado dentro de 48 horas é liberado para quem o confirmar primeiro. O bot nunca entrega dados a número não confirmado.
+
+## Regras do bot: quem ele atende
+
+O contato **sempre começa no cliente**, vindo da landing. O bot nunca escreve primeiro e nunca cria conta. Ele responde só a quem tem acesso, e a quem não tem responde com o caminho para ter.
+
+| Quem escreve | O que o bot faz | O que grava |
+|---|---|---|
+| **Número sem cadastro** | Responde uma mensagem curta com o link da página de cadastro. No máximo uma resposta por hora para o mesmo número; as seguintes nesse intervalo são ignoradas (evita laço de mensagens e risco de banimento). | Nada pessoal. Só um carimbo de tempo do último convite, ligado a um código irreversível do número (hash), apagado em 24 horas. |
+| **Número com cadastro pendente** (e-mail ainda não confirmado, ou WhatsApp ainda não conectado) | Só a mensagem `ATIVAR <código>` conecta. Qualquer outra mensagem recebe uma resposta curta: "Falta conectar. Abra o painel e toque em Conectar WhatsApp", com o link. A resposta traz também o comando `NÃO FUI EU`, que cancela o cadastro pendente daquele número. | Nada de lançamentos. |
+| **Número conectado** | Atendimento normal (registrar, consultar, analisar sob pedido, apagar, dados). Bloqueio por limite ou plano continua como hoje. | Como hoje. |
+
+Por que `ATIVAR <código>` e não "qualquer mensagem do número": se alguém cadastrar o número de outra pessoa, a vítima mandando um simples "oi" ao bot seria conectada à conta desse alguém, que passaria a ver os gastos dela pelo painel. Exigir o código, que só quem fez o cadastro tem, e oferecer `NÃO FUI EU` fecha essa brecha.
 
 ## Regras do teste grátis
 
@@ -134,7 +146,8 @@ Nomes de tabelas e colunas, formato das telas (seguindo a landing e o painel atu
 
 ## Como saberemos que deu certo
 
-- Mensagem de número desconhecido ao bot não cria nenhuma linha no banco.
+- Mensagem de número desconhecido ao bot não cria conta nem lançamento; ele recebe o link de cadastro, no máximo uma vez por hora.
+- Número com cadastro pendente que manda "oi" não é conectado; só `ATIVAR <código>` conecta, e `NÃO FUI EU` cancela o cadastro pendente.
 - Cadastro sem nome, e-mail ou aceite é recusado no banco, não só na tela.
 - O painel abre com e-mail e código e com o bot desligado.
 - Código errado 5 vezes invalida o código; reenvio antes de 60 s é recusado.
