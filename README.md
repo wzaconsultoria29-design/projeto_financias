@@ -8,7 +8,7 @@ A v3 roda em paralelo com a Fase 1, a Fase 2, o "Fluxo 3 - Cadastro Landing Page
 
 | Peça | Onde | Estado |
 |---|---|---|
-| Banco | Supabase `bfgmjovveboyidvhggpq` (conta nova, us-east-1), migrações em `supabase/migrations` (001 a 012) | Pronto |
+| Banco | Supabase `bfgmjovveboyidvhggpq` (conta nova, us-east-1), migrações em `supabase/migrations` (001 a 014) | Pronto |
 | Funções públicas de login | Supabase Edge Functions `login-iniciar` e `login-status` (`supabase/functions`) | Publicadas |
 | Cadastro | n8n, pasta **Gastômetro v3**: `GASTOMETRO v3 - Cadastro Landing` (`a8ZDOhiKcSWYJZwp`) | Ativo |
 | Agente WhatsApp | n8n, mesma pasta: `GASTOMETRO v3 - Agente WhatsApp` (`By3B5EEDaRqXD2s5`) | Ativo (Evolution API, instância `Projeto_financias`) |
@@ -62,6 +62,18 @@ Testes do banco (SQL, terminam com erro proposital para desfazer tudo; sucesso =
    - n8n → Cadastro Landing → webhook → `allowedOrigins`: trocar `*` pelo endereço do site.
    - n8n → Agente WhatsApp → nó **Config**: `checkout_url`, `politica_url` (`/privacidade`) e `termos_url` (`/termos`) com o endereço do site.
 4. Preencher `NEXT_PUBLIC_SUPPORT_EMAIL` e `NEXT_PUBLIC_LEGAL_ENTITY`, e revisar os textos de `app/src/config/legal.ts` com um advogado antes de abrir ao público (hoje as páginas mostram "Rascunho em revisão jurídica").
+
+## Quem o bot atende (desde 2026-11-04)
+
+O contato começa sempre no cliente, vindo da landing. O bot nunca escreve primeiro e nunca cria conta.
+
+- **Número sem cadastro:** recebe o link de cadastro (`cadastro_url` no nó **Config**), no máximo uma vez por hora. O registro da mensagem é apagado na hora (função `descartar_mensagem`); só fica um carimbo com hash do número por 24 horas.
+- **Cadastro pendente** (número ainda não conectado): só `ATIVAR <código>` conecta. Outras mensagens recebem "falta conectar". `NÃO FUI EU` cancela e apaga o cadastro pendente.
+- **Número conectado:** atendimento normal.
+- O teste de 7 dias começa quando o WhatsApp é conectado, não no cadastro.
+- O cadastro exige nome, e-mail válido (único), celular com DDD e aceite; o banco recusa o resto.
+
+O desenho completo (login por e-mail, link de recuperação pelo WhatsApp, troca de plano) está em [`docs/superpowers/specs/2026-11-02-cadastro-login-planos-design.md`](docs/superpowers/specs/2026-11-02-cadastro-login-planos-design.md). Feitos até aqui: bot fechado, cadastro exigente e conexão pelo `ATIVAR`. Falta: código por e-mail, link de recuperação, sessões, troca de plano.
 
 ## Comandos do bot
 
