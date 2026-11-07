@@ -4,6 +4,8 @@ import type { Painel } from "@/lib/api";
 import { brl } from "@/lib/format";
 import { eixo, valorCurto } from "@/lib/painel";
 import { mesCurto, rotuloDoMes } from "@/lib/periodo";
+import { manchetes } from "@/lib/narrativa";
+import { Capitulo } from "./Capitulo";
 import { QuadroVazio } from "./ParaOndeFoi";
 import { useLargura } from "./useLargura";
 
@@ -55,15 +57,18 @@ function Colunas({ p }: { p: Painel }) {
 
 export function Tendencia({ p }: { p: Painel }) {
   const temHistorico = p.tendencia.some((m) => m.receitas > 0 || m.despesas > 0);
+  const { tendencia } = manchetes(p);
 
   return (
-    <section className="cartao p-5 md:p-6" aria-labelledby="t-tend">
-      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
-        <h2 id="t-tend" className="font-display text-lg font-semibold text-tinta">
-          Últimos seis meses
-        </h2>
-        {temHistorico && (
-          <ul className="flex items-center gap-4 text-xs text-suave">
+    <Capitulo
+      id="tend"
+      titulo="Nos últimos meses"
+      manchete={temHistorico ? tendencia : null}
+      comoLer="Cada par de colunas é um mês. Verde é o que entrou e laranja é o que saiu."
+    >
+      {temHistorico ? (
+        <>
+          <ul className="mb-1 flex items-center gap-4 text-xs text-suave">
             <li className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-floresta" aria-hidden="true" />
               Receitas
@@ -73,11 +78,6 @@ export function Tendencia({ p }: { p: Painel }) {
               Despesas
             </li>
           </ul>
-        )}
-      </div>
-
-      {temHistorico ? (
-        <>
           <Colunas p={p} />
           <table aria-label="Receitas e despesas dos últimos seis meses" className="sr-only">
             <thead>
@@ -99,10 +99,8 @@ export function Tendencia({ p }: { p: Painel }) {
           </table>
         </>
       ) : (
-        <div className="mt-4">
-          <QuadroVazio>Ainda não há meses para comparar. Com o uso, esta comparação aparece aqui.</QuadroVazio>
-        </div>
+        <QuadroVazio>Ainda não há meses para comparar. Com o uso, esta comparação aparece aqui.</QuadroVazio>
       )}
-    </section>
+    </Capitulo>
   );
 }

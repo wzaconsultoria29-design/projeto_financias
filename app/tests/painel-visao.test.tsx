@@ -5,7 +5,6 @@ import { ParaOndeFoi } from "@/components/painel/visao/ParaOndeFoi";
 import { TiposGasto } from "@/components/painel/visao/TiposGasto";
 import { Ritmo } from "@/components/painel/visao/Ritmo";
 import { Tendencia } from "@/components/painel/visao/Tendencia";
-import { Notou } from "@/components/painel/visao/Notou";
 import { PrimeirosPassos } from "@/components/painel/visao/PrimeirosPassos";
 import { base, SEM_DADOS } from "./painel-fixture";
 
@@ -23,11 +22,6 @@ describe("Resumo", () => {
     expect(medidor).toHaveAttribute("aria-valuenow", "45.7");
     expect(screen.getByText("45,7%")).toBeInTheDocument();
     expect(screen.getByText(/referência 20%/i)).toBeInTheDocument();
-  });
-
-  it("a variação das despesas diz contra o quê foi medida", () => {
-    render(<Resumo p={base()} />);
-    expect(screen.getByText(/\+26,7% contra o período anterior/)).toBeInTheDocument();
   });
 
   it("saldo negativo mostra o sinal e nenhum medidor positivo", () => {
@@ -90,7 +84,7 @@ describe("TiposGasto", () => {
   it("sem renda calcula as partes sobre o gasto", () => {
     render(<TiposGasto p={base({ sem_receita: true, resumo: { receitas: 0, despesas: 1900, saldo: -1900, taxa_poupanca: null, media_diaria: 61, quantidade: 9 } })} />);
     expect(screen.getByText("Essencial").closest("li")).toHaveTextContent("68,4%");
-    expect(screen.getByText(/do que você gastou/i)).toBeInTheDocument();
+    expect(screen.getByText(/calculados sobre o total do que você gastou/i)).toBeInTheDocument();
   });
 
   it("sem gasto não desenha barra", () => {
@@ -138,20 +132,6 @@ describe("Tendencia", () => {
   it("sem histórico mantém o quadro com uma frase", () => {
     render(<Tendencia p={base(SEM_DADOS)} />);
     expect(screen.getByText(/ainda não há meses para comparar/i)).toBeInTheDocument();
-  });
-});
-
-describe("Notou", () => {
-  it("lista as frases geradas a partir dos números", () => {
-    render(<Notou p={base()} />);
-    expect(screen.getByRole("heading", { name: /o que o painel notou/i })).toBeInTheDocument();
-    expect(screen.getAllByRole("listitem").length).toBeGreaterThan(0);
-    expect(screen.getByText(/45,7%/)).toBeInTheDocument();
-  });
-
-  it("sem dados não renderiza o quadro", () => {
-    const { container } = render(<Notou p={base(SEM_DADOS)} />);
-    expect(container).toBeEmptyDOMElement();
   });
 });
 

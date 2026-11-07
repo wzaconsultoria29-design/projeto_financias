@@ -1,11 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { podeGastarPorDia } from "@/lib/painel";
 import { gravarEscondido, lerEscondido } from "@/lib/privacidade";
 import { Resumo } from "@/components/painel/visao/Resumo";
 import { CabecalhoPainel } from "@/components/painel/visao/CabecalhoPainel";
 import { EsqueletoPainel } from "@/components/painel/visao/EsqueletoPainel";
-import { PerguntasRapidas } from "@/components/painel/visao/PerguntasRapidas";
 import { base } from "./painel-fixture";
 
 const NO_MEIO_DO_MES = { previsto: 2100, dias_decorridos: 15, dias_no_mes: 31 };
@@ -124,19 +123,5 @@ describe("EsqueletoPainel", () => {
     expect(raiz).toHaveAttribute("aria-busy", "true");
     expect(raiz.querySelectorAll("[data-esqueleto-cartao]")).toHaveLength(9);
     expect(container.querySelector(".animate-pulse")).toBeNull();
-  });
-});
-
-describe("PerguntasRapidas", () => {
-  it("cada pergunta abre o WhatsApp do assistente já escrita", () => {
-    render(<PerguntasRapidas />);
-    expect(screen.getByRole("heading", { name: /pergunte pelo whatsapp/i })).toBeInTheDocument();
-    const lista = screen.getByRole("list", { name: /perguntas/i });
-    const links = within(lista).getAllByRole("link");
-    expect(links.length).toBeGreaterThanOrEqual(3);
-    const onde = within(lista).getByRole("link", { name: /onde posso economizar/i });
-    expect(onde).toHaveAttribute("href", "https://wa.me/5582991130317?text=Onde%20posso%20economizar%3F");
-    expect(onde).toHaveAttribute("target", "_blank");
-    expect(onde).toHaveAttribute("rel", expect.stringContaining("noopener"));
   });
 });

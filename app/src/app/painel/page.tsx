@@ -12,14 +12,19 @@ import { CabecalhoPainel, type Modo } from "@/components/painel/visao/CabecalhoP
 import { EsqueletoPainel } from "@/components/painel/visao/EsqueletoPainel";
 import { FixosVariaveis } from "@/components/painel/visao/FixosVariaveis";
 import { LancarRapido } from "@/components/painel/visao/LancarRapido";
-import { Notou } from "@/components/painel/visao/Notou";
+import { OQueMudou } from "@/components/painel/visao/OQueMudou";
 import { ParaOndeFoi } from "@/components/painel/visao/ParaOndeFoi";
-import { PerguntasRapidas } from "@/components/painel/visao/PerguntasRapidas";
 import { PrimeirosPassos } from "@/components/painel/visao/PrimeirosPassos";
+import { ProximosPassos } from "@/components/painel/visao/ProximosPassos";
 import { Resumo } from "@/components/painel/visao/Resumo";
 import { Ritmo } from "@/components/painel/visao/Ritmo";
 import { Tendencia } from "@/components/painel/visao/Tendencia";
 import { TiposGasto } from "@/components/painel/visao/TiposGasto";
+
+/** Uma célula da grade: o cartão dentro dela se estica, para os cartões da mesma linha fecharem a mesma borda de baixo. */
+function Celula({ className, children }: { className: string; children: React.ReactNode }) {
+  return <div className={`flex flex-col [&>*]:flex-1 ${className}`}>{children}</div>;
+}
 
 type Resultado = { chave: string } & ({ estado: "erro"; mensagem: string } | { estado: "ok"; dados: Painel });
 
@@ -53,6 +58,7 @@ export default function PainelPage() {
 
   const recarregar = useCallback(() => setTentativa((n) => n + 1), []);
   const dados = carga.estado === "ok" ? carga.dados : undefined;
+  const temFixos = dados ? dados.fixos.fixos_total + dados.fixos.variaveis_total > 0 : false;
   const subtitulo = dados ? veredito(dados) : `De ${dataCurta(periodo.de)} a ${dataCurta(periodo.ate)}`;
 
   return (
@@ -90,24 +96,35 @@ export default function PainelPage() {
       {dados && (
         <>
           <PrimeirosPassos p={dados} whatsappUrl={brand.botWaUrl("")} onLancar={() => setLancando(true)} />
-          {/*
-            Duas colunas (5 + 7 de 12, vão de 16px) que terminam quase niveladas. No celular os invólucros somem
-            (display: contents) e a ordem abaixo põe o saldo, o ritmo e o destino do dinheiro primeiro.
-          */}
-          <div className="flex flex-col gap-4 lg:grid lg:grid-cols-12 lg:items-start">
-            <div className="contents lg:col-span-5 lg:flex lg:flex-col lg:gap-4">
-              <div className="order-1 lg:order-none"><Resumo p={dados} /></div>
-              <div className="order-4 lg:order-none"><Notou p={dados} /></div>
-              <div className="order-6 lg:order-none"><TiposGasto p={dados} /></div>
-              <div className="order-7 lg:order-none"><FixosVariaveis p={dados} /></div>
-              <div className="order-9 lg:order-none"><MaioresGastos itens={dados.maiores} /></div>
-            </div>
-            <div className="contents lg:col-span-7 lg:flex lg:flex-col lg:gap-4">
-              <div className="order-2 lg:order-none"><Ritmo p={dados} /></div>
-              <div className="order-3 lg:order-none"><ParaOndeFoi p={dados} /></div>
-              <div className="order-8 lg:order-none"><Tendencia p={dados} /></div>
-              <div className="order-5 lg:order-none"><PerguntasRapidas /></div>
-            </div>
+          <Resumo p={dados} />
+          {/* A história em ordem, de cima para baixo: o que mudou, para onde foi, como se divide, o ritmo, os meses e o que fazer. */}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+            <Celula className="lg:col-span-5">
+              <OQueMudou p={dados} />
+            </Celula>
+            <Celula className="lg:col-span-7">
+              <ParaOndeFoi p={dados} />
+            </Celula>
+            <Celula className={temFixos ? "lg:col-span-7" : "lg:col-span-12"}>
+              <TiposGasto p={dados} />
+            </Celula>
+            {temFixos && (
+              <Celula className="lg:col-span-5">
+                <FixosVariaveis p={dados} />
+              </Celula>
+            )}
+            <Celula className="lg:col-span-12">
+              <Ritmo p={dados} />
+            </Celula>
+            <Celula className="lg:col-span-7">
+              <Tendencia p={dados} />
+            </Celula>
+            <Celula className="lg:col-span-5">
+              <MaioresGastos itens={dados.maiores} />
+            </Celula>
+            <Celula className="lg:col-span-12">
+              <ProximosPassos p={dados} onLancar={() => setLancando(true)} />
+            </Celula>
           </div>
         </>
       )}

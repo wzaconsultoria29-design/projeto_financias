@@ -69,6 +69,31 @@ test.describe("painel: visão geral", () => {
     expect(chamadas[0]).toEqual({ p_de: "2026-10-01", p_ate: "2026-10-31" });
   });
 
+  test("conta a história em ordem, com manchete e 'Como ler' em cada capítulo", async ({ page }) => {
+    await abrirPainel(page);
+    await expect(page.getByText("Sobraram R$ 1.600,00: você poupou 45,7% da renda.")).toBeVisible();
+    const titulos = await page.locator("main h2").allTextContents();
+    expect(titulos).toEqual([
+      "Como você está",
+      "O que mudou",
+      "Para onde foi o dinheiro",
+      "Essencial, supérfluo e investimento",
+      "Fixos e variáveis",
+      "O ritmo do período",
+      "Nos últimos meses",
+      "Maiores gastos",
+      "O que fazer agora",
+    ]);
+    await expect(page.getByText("Moradia levou mais da metade do que você gastou.")).toBeVisible();
+    await expect(page.getByText(/No ritmo atual, o mês fecha com R\$ 2\.100,00/)).toBeVisible();
+    await expect(page.getByText("Como ler", { exact: true })).toHaveCount(6);
+  });
+
+  test("o passo da categoria que subiu leva aos lançamentos já filtrados", async ({ page }) => {
+    await abrirPainel(page);
+    await expect(page.getByRole("link", { name: "Ver lançamentos" })).toHaveAttribute("href", "/painel/lancamentos?categoria=Alimenta%C3%A7%C3%A3o&de=2026-10-01&ate=2026-10-31");
+  });
+
   test("descrição com HTML é exibida como texto", async ({ page }) => {
     await abrirPainel(page);
     await expect(page.getByText("<img src=x onerror=alert(1)>")).toBeVisible();

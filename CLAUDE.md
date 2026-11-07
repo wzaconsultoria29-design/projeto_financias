@@ -45,7 +45,7 @@
 - **Testes reais com o bot só com o número do dono** e só depois do OK. Nunca enviar mensagem ao bot em nome de outros números.
 - **Fases 1 e 2 antigas** (workflows e banco antigo) e os fluxos "Fluxo 3 - Cadastro Landing Page" e "Pagamento Mercado Pago" antigos **não podem ser alterados**. A v3 roda em paralelo.
 - **Nunca repetir no chat chaves** que apareçam em JSON de workflows antigos (OpenAI e Evolution). O dono foi avisado para trocá-las (pendente).
-- O dono prefere: **Figma e Playwright para desenhar, construir, testar e tirar capturas de tela**; usar as skills de design instaladas (seção 8.6); ver o resultado de verdade (captura) antes de dizer que ficou bom.
+- O dono prefere: **Figma e Playwright para desenhar, construir, testar e tirar capturas de tela**; usar as skills de design instaladas (seção 8.7); ver o resultado de verdade (captura) antes de dizer que ficou bom.
 - **Honestidade nos relatórios:** dizer o que foi e o que não foi verificado. Corrigir os próprios erros na hora (ex.: em 2026-11-07 corrigi uma afirmação falsa sobre depoimentos).
 - O dono gosta de respostas objetivas, em português, com o que mudou e o que ele precisa decidir. Fechar tarefas com "o que falta" e uma pergunta única quando houver decisão.
 - Textos do site: **sem travessão (— ou –)** no texto visível (há teste que falha se aparecer); sem emoji; sem inventar prova.
@@ -109,12 +109,13 @@
 | Bot (n8n + Evolution) | **Ativo**. Bot **fechado**: só atende quem tem cadastro e conectou o WhatsApp. |
 | Site e painel | **Publicados na Vercel** (último deploy READY: commit `a401844`). Abre sem login da Vercel em 2026-11-07. |
 | Landing | Nova versão no ar (seção 9). |
-| Painel Visão geral | **Refeito** (seção 8.4). Lançamentos e Conta continuam como na Fase 1. |
+| Painel Visão geral | **Refeito como narrativa em 2026-11-07** (seção 8.4): abertura em cor cheia e sete capítulos com manchete e "Como ler". Construído e verificado localmente; **ainda não commitado nem publicado**. Lançamentos e Conta seguem como na Fase 1. |
 | Cadastro | **Fluxo antigo ainda em uso:** nome, e-mail, WhatsApp e aceite; devolve link `wa.me` com `ATIVAR <código>`. O fluxo novo em 3 passos **não foi construído**. |
 | Login | **Ainda por código pelo WhatsApp** (`/entrar`, `PAINEL <código>`). O login por e-mail e senha **não foi construído**. |
 | Pagamento | **Nada na v3.** Mercado Pago pendente (depende da conta do dono). |
 | Plano Family | Existe no banco; no site aparece "em breve". Compartilhamento entre membros **não existe**. |
-| Testes | 167 unitários (Vitest) e 100 de ponta a ponta (Playwright, 2 pulados por projeto), tudo verde em 2026-11-07. |
+| Testes | 221 unitários (Vitest) e 104 de ponta a ponta (Playwright, 2 pulados), tudo verde em 2026-11-07. |
+| Configurações | **Desenho aprovado em 2026-11-07, falta construir** (seção 8.5). Hoje só existe a página Conta (leitura). Exige as migrações 016, 017 e 018 (propostas, não aplicadas). |
 | Conta do dono | Colocada **manualmente no plano Family** em 2026-11-07 (seção 5.6). |
 
 ---
@@ -259,7 +260,7 @@ Só leitura; `authenticated`; período inválido (invertido ou maior que 3660 di
 - Tema claro por padrão, segue `prefers-color-scheme` (um tema por página).
 - Neutro frio esverdeado + **uma cor de marca (verde-floresta)**: `--papel #f3f5f1`, `--superficie #fafbf9`, `--tinta #10201a`, `--suave #475a52`, `--linha #d9e1db`, `--floresta #0e4a3a`, `--folha #ddebe3`. Escuro: papel `#0b1411`, floresta `#7fd6ae`, etc.
 - **Raio:** cartões 20px, botões em pílula, campos 12px (regra única).
-- **Cores de dados do painel** (paleta validada para daltonismo): `--d-azul #2a78d6` (escuro `#3987e5`), `--d-laranja #d9541a` (`#e8703a`), `--d-agua #159a69` (`#199e70`), `--d-cinza`, `--d-trilho`. **Receitas = verde-floresta; despesas = laranja; essencial/supérfluo/investimento = azul/laranja/verde-água; barras ordenadas = verde da marca (uma cor só).**
+- **Oito cores de categoria** `--c1` a `--c8` (azul, laranja, verde-água, amarelo, magenta, verde, violeta, vermelho; validadas, com versão escura): **a cor segue a categoria, nunca a posição** (`corDaCategoria` em `src/lib/narrativa.ts`: Alimentação laranja, Moradia/Habitação azul, Transporte verde-água, Lazer magenta, Saúde vermelho, Educação amarelo, Compras/Roupas/Assinaturas violeta, Contas/Despesas fixas/Seguros verde, Outras/Outros cinza; categoria nova recebe uma das oito por cálculo estável). **Essencial/supérfluo/investimento** usam tons da marca `--t1`, `--t2`, `--t3` para não repetir as cores das categorias. **Abertura** `--hero` (verde-escuro cheio), `--realce` (lima), `--coral`; **etiquetas** `--bom-bg/ink` (verde) e `--ruim-bg/ink` (laranja). Anteriores:  `--d-azul #2a78d6` (escuro `#3987e5`), `--d-laranja #d9541a` (`#e8703a`), `--d-agua #159a69` (`#199e70`), `--d-cinza`, `--d-trilho`. **Receitas = verde-floresta; despesas = laranja; essencial/supérfluo/investimento = azul/laranja/verde-água; barras ordenadas = verde da marca (uma cor só).**
 - Landing tem tokens próprios em `landing.css`: `--noite #04261d`, `--esmeralda #0e4a3a`, `--vivo #2f9e74`, `--lima #c8f56a`, `--menta #d8f2e4`.
 - Regras de dataviz seguidas: número grande para cifra única, medidor para razão contra limite, barra fina segmentada para partes, **sem eixo duplo**, rótulo direto + **tabela acessível** (`sr-only`) em cada gráfico, tooltip no gráfico de linha, sem gradiente nem sombra em repouso no painel, **cor diz bom/ruim, não subiu/desceu** (despesa subindo não é pintada de vermelho: tom calmo).
 - Acessibilidade: tabelas escondidas visualmente para leitor de tela, `role="img"` com resumo nos gráficos, alvos de toque de 44px+, `aria-pressed` no botão do olho, respeito a `prefers-reduced-motion`.
@@ -268,21 +269,32 @@ Só leitura; `authenticated`; período inválido (invertido ou maior que 3660 di
 Desenho: `docs/superpowers/specs/2026-11-06-painel-novo-design.md`. Estilo: **pastel-consumer** (da skill de design) com a paleta e a fonte da marca. **Pergunta da tela:** "Este mês estou no azul e para onde foi o dinheiro?" O **saldo é o maior número**; a frase abaixo do título (`veredito`) responde.
 - **Shell:** trilho de ícones no computador (marca + Visão geral, Lançamentos, Conta + inicial da pessoa + Sair), barra de abas no celular. Sem barra superior.
 - **Cabeçalho:** período (Mês, 30 dias, Ano, Personalizado), setas de mês (próximo desativado no mês atual), **Lançar** (abre o formulário na própria tela), **olho** (esconder valores), **Conversar no WhatsApp**.
-- **Duas colunas (5 + 7 de 12)** que terminam quase niveladas. Esquerda: Resumo, "O que o painel notou", Essencial/supérfluo/investimento, Fixos e variáveis, Maiores gastos. Direita: Ritmo do período, Para onde foi o dinheiro, Últimos seis meses, Pergunte pelo WhatsApp. No celular, ordem lógica própria (saldo, ritmo, destino do dinheiro…).
-- **Componentes:** `src/components/painel/visao/` (`Resumo`, `Ritmo`, `ParaOndeFoi`, `TiposGasto`, `FixosVariaveis`, `Tendencia`, `Notou`, `PrimeirosPassos`, `PerguntasRapidas`, `EsqueletoPainel`, `CabecalhoPainel`, `LancarRapido`, `useLargura`). Regras puras em `src/lib/painel.ts` (testadas): `gerarInsights` (até 4 frases; referência de poupança **20%**; aumento por categoria só se ≥ **R$ 50** e ≥ **15%**), `veredito`, `podeGastarPorDia`, `eixo`, `valorCurto`, `partesBrl`, `somarDias`, `mediaPorDiaSemana`, `participacao`.
-- **Resumo:** saldo (centavos menores e cinzas), receitas (verde, com `+`) e despesas (tinta), **taxa de poupança** em medidor com marca em 20%, variação das despesas **até o mesmo ponto** do período anterior. **Sem renda registrada:** mostra "Gasto no período", convida a registrar a renda e **não inventa taxa nem saldo**.
+- **Ordem da história (2026-11-07, substitui as duas colunas):** abertura em cor cheia (`Resumo`) e, abaixo, uma grade de 12 colunas em que cada linha fecha a mesma borda (`Celula` estica o cartão): **O que mudou** (5) e **Para onde foi o dinheiro** (7) · **Essencial/supérfluo/investimento** (7) e **Fixos e variáveis** (5) · **O ritmo do período** (12, gráfico à esquerda e números à direita) · **Nos últimos meses** (7) e **Maiores gastos** (5) · **O que fazer agora** (12). No celular, uma coluna na mesma ordem.
+- **Componentes:** `src/components/painel/visao/` (`Capitulo` = título, manchete, conteúdo e "Como ler" aberto por padrão; `Resumo` = abertura; `OQueMudou`, `ParaOndeFoi`, `TiposGasto`, `FixosVariaveis`, `Ritmo`, `Tendencia`, `ProximosPassos`, `PrimeirosPassos`, `EsqueletoPainel`, `CabecalhoPainel`, `LancarRapido`, `useLargura`). **Removidos:** `Notou` ("O que o painel notou") e `PerguntasRapidas` (viraram `ProximosPassos`). Regras puras e testadas: `src/lib/narrativa.ts` (`manchetes`, `oQueMudou`, `proximosPassos`, `corDaCategoria`) e `src/lib/painel.ts` (`veredito`, `podeGastarPorDia`, `eixo`, `valorCurto`, `partesBrl`, `somarDias`, `mediaPorDiaSemana`, `participacao`; `gerarInsights` ainda existe e é testado, mas a tela não o usa mais).
+- **Abertura (`Resumo`):** a **manchete** ("Sobraram R$ 1.600,00: você poupou 45,7% da renda."), o saldo (centavos menores), receitas (lima, com `+`) e despesas (coral), **taxa de poupança** em medidor com marca em 20%, "pode gastar por dia" e a explicação "a taxa de poupança é a parte da renda que sobrou". **Sem renda registrada:** mostra "Gasto no período", pede a renda e **não inventa taxa nem saldo**. A variação das despesas saiu daqui e mora em "O que mudou".
+- **Manchetes** (uma frase por capítulo, só com números do banco, nunca acusa nem dá conselho de investimento; `null` quando os dados não sustentam): comparam o **mês em andamento com o mesmo ponto** do mês anterior; **receitas só são comparadas em período fechado**; a tendência **ignora o mês em andamento**; "Outras" nunca é apontada como categoria que subiu ou caiu; variações de categoria menores que R$ 10 são ruído; o passo "categoria subiu" só aparece se subiu **≥ R$ 50 e ≥ 15%**; poupança abaixo de **20%** gera um passo calmo.
+- **O que fazer agora:** até 3 passos que dependem dos dados (registrar renda, passou da renda, categoria que subiu com link para `/painel/lancamentos?categoria=…&de=…&ate=…`, poupança baixa, perguntar ao assistente) e 3 perguntas prontas que abrem `wa.me/<bot>?text=…`. A página Lançamentos lê categoria e período do endereço (`lerFiltrosDaUrl`).
 - **Pode gastar por dia até o fim do mês (2026-11-07):** `(receitas − despesas)` dividido pelos **dias que faltam** (mínimo 1; no último dia conta o dia de hoje); só no mês em andamento e com renda; se passou da renda, frase direta em vez de número negativo.
 - **Esconder valores (olho):** classe `.dado` desfoca valores em reais (`[data-privado="true"] .dado`); a escolha fica no `localStorage` (`painel-valores-escondidos`) e sincroniza entre abas; sem armazenamento, vale até recarregar. O desfoque é só visual (leitor de tela ainda lê).
-- **Esqueleto de carregamento** com o mesmo desenho (duas colunas, **9 cartões**), cinza chapado, sem animação.
-- **Pergunte pelo WhatsApp:** 3 perguntas que abrem `wa.me/<bot>?text=<pergunta>` já escrita.
+- **Esqueleto de carregamento:** abertura em cor cheia e as mesmas linhas de cartões na mesma ordem (**9 cartões**, `data-esqueleto-cartao`), cinza chapado, sem animação.
+- **Cor com significado:** gastar mais ou categoria que subiu = etiqueta laranja; gastar menos ou receber mais = verde. Tema escuro conferido.
 - Estados: vazio mantém o quadro com uma frase; erro dentro da tela com "Tentar de novo"; conta nova mostra "Primeiros passos" (enquanto `historico_total < 5`).
 - **Limitação conhecida:** `parcelas` guarda só a quantidade; o painel **não projeta parcelas futuras**.
 - **Lançamentos** (busca, filtros, criar, editar, excluir, exportar CSV) e **Conta** (plano, uso, dados, baixar/apagar) seguem da Fase 1. A página Conta ainda é de leitura.
 
-### 8.5 Rotas
+### 8.5 Configurações (desenho aprovado em 2026-11-07; **a construir**)
+Rota `/painel/configuracoes` com menu lateral (lista no celular); `/painel/conta` redireciona; o ícone "Conta" do trilho vira "Configurações". Maquetes em `docs/mockups/2026-11-07/`; desenho completo em `docs/superpowers/specs/2026-11-07-painel-narrativo-e-configuracoes-design.md`.
+- **Conta:** nome editável; e-mail e WhatsApp somente leitura (mascarados); **renda mensal** e **custo de vida mensal** (alimentam a leitura do painel; "nada disso é compartilhado"); sessão atual e "Sair da conta". Criar senha só quando existir o login por e-mail e senha. **Migração 016 (proposta):** colunas novas em `usuarios`.
+- **Aparência e segurança:** tema **claro, escuro ou automático** (hoje o tema só segue o aparelho; o manual exige `data-theme` no CSS, no padrão da paleta de dataviz) e "**Ocultar valores ao abrir**" (liga o modo do olho já na entrada). Só no navegador.
+- **Plano e pagamentos:** plano atual, situação, período e uso das mensagens; comparação dos 3 planos; "**Pedir upgrade**" registra o pedido e **não troca o plano** (decisão de 2026-11-07); **histórico de pagamentos** (hoje "Nenhuma cobrança ainda"; as linhas da maquete são exemplo). **Migração 017 (proposta):** pedidos de plano e leitura de pagamentos.
+- **Acesso compartilhado (Family):** "Pessoas do grupo · n de 4", convite por **link com código** (vale 7 dias), copiar, cancelar, remover; só o titular gerencia; quem não tem Family vê o que o plano oferece e vai para "Plano e pagamentos". **Migração 018 (proposta):** grupos, membros e convites. **Visão compartilhada dos valores NÃO entra nesta etapa** (muda a RLS de `lancamentos` e das funções `app_*`); a tela avisa isso.
+- **WhatsApp, Notificações, Privacidade e dados:** páginas simples; Privacidade com exportar CSV, documentos e "Zona de risco" recolhida (excluir dados, com confirmação). O bot nunca escreve primeiro.
+- **Ritmo de entrega:** cada migração é escrita, **ensaiada** (teste SQL em transação desfeita), e só aplicada com o **OK do dono**.
+
+### 8.6 Rotas
 `/` landing · `/cadastro` · `/entrar` · `/termos` · `/privacidade` (textos são **rascunho em revisão jurídica**, `src/config/legal.ts`) · `/painel` · `/painel/lancamentos` · `/painel/conta`.
 
-### 8.6 Skills e ferramentas de design usadas
+### 8.7 Skills e ferramentas de design usadas
 Instaladas globalmente em `~/.claude/skills` (o dono pediu `npx skills add Leonxlnx/taste-skill`; já estava instalada): **`design-taste-frontend`** (v2; para telas de app segue `references/app-screens.md`; comandos `draw.mjs`, `lint.mjs`, `inspect.mjs`; arquivos de trabalho em `.taste-skill/`, ignorado pelo git), **`dataviz`**, **`impeccable`**, **`emil-design-eng`**, e as skills `superpowers` (TDD, planos, revisão). Figma (MCP) para objetos 3D; Playwright para capturas.
 
 ---
@@ -334,7 +346,9 @@ Levantamento técnico, **não é parecer jurídico**.
 |---|---|---|
 | `docs/MAPA-DE-PROCESSOS.md` | Jornada, 12 etapas (0 a 11), estado e o que falta, decisões, ordem sugerida | **Vigente** (decisão 4 sobre Família ainda diz "Proposto"; é **Decidida** desde 2026-11-06) |
 | `docs/superpowers/specs/2026-11-02-cadastro-login-planos-design.md` | Cadastro completo, login por e-mail, recuperação pelo WhatsApp, troca de plano | **Parcialmente superado** pelo fluxo de 3 passos do mapa |
-| `docs/superpowers/specs/2026-11-06-painel-novo-design.md` | Painel novo | Construído (primeira entrega) |
+| `docs/superpowers/specs/2026-11-06-painel-novo-design.md` | Painel novo (primeira versão) | **Superado em partes** pela narrativa de 2026-11-07 |
+| `docs/superpowers/specs/2026-11-07-painel-narrativo-e-configuracoes-design.md` | **Painel narrativo e Configurações** (desenho aprovado) | Painel construído; Configurações a construir |
+| `docs/mockups/2026-11-07/index.html` | Maquetes aprovadas pelo dono (Visão geral, celular, Conta, Aparência, Plano e pagamentos, Acesso compartilhado) | Referência visual |
 | `docs/superpowers/specs/2026-10-31-app-e-familia-design.md` | Site, painel e plano Família (visão compartilhada) | Parte construída; Família pendente |
 | `docs/superpowers/plans/2026-10-31-fase-1-app.md` | Plano da Fase 1 | Concluído |
 | `docs/SEGURANCA-E-LGPD.md` | Mapa de dados e lacunas | Vigente |
@@ -368,6 +382,12 @@ Levantamento técnico, **não é parecer jurídico**.
 | 2026-11-07 | Conta do dono colocada **manualmente** no Family (sem gateway, sem fim) | Testar o plano e o bot com Family |
 | 2026-11-07 | **Corrigido:** a landing do Gastômetro **não tem** depoimentos (aviso anterior era erro meu, confundi com o projeto Corpelle) | Evitar ação desnecessária |
 | 2026-11-07 | Criado este `CLAUDE.md` com a regra de manutenção | Não perder nada ao longo de meses ou anos |
+| 2026-11-07 | **Nova direção do painel:** o dono achou o painel pouco didático, sem leitura clara e fraco de cor. Passa a ser uma **narrativa** (abertura, capítulos com manchete e "Como ler", "O que fazer agora"), com **cor forte e com significado** | Aprovado pelas maquetes ("Sim, construir") |
+| 2026-11-07 | Essencial/supérfluo/investimento mantêm esses nomes também nas frases (não "necessário/desejo/futuro") | Mesma palavra em toda a tela |
+| 2026-11-07 | **Configurações** completas como as do Dinzo: Conta (renda e custo de vida), Aparência e segurança (tema, ocultar ao abrir), Plano e pagamentos, Acesso compartilhado (Família), WhatsApp, Notificações, Privacidade e dados | Aprovado pelas maquetes |
+| 2026-11-07 | **Upgrade sem pagamento:** "Pedir upgrade" só **registra o pedido** e avisa; **não troca o plano** até o Mercado Pago existir | Ninguém ganha plano pago de graça *(minha escolha)* |
+| 2026-11-07 | **Convite da Família por link com código** (sem depender de e-mail); **visão compartilhada dos valores fica para etapa própria** | Mexe em quem enxerga o quê no banco *(minha escolha)* |
+| 2026-11-07 | Ordem: painel (feito localmente) → Configurações → migrações 016 (renda e custo de vida), 017 (pedidos de plano e pagamentos), 018 (grupos e convites), cada uma **ensaiada e só aplicada com OK** | Segurança do banco |
 
 ---
 
@@ -377,6 +397,7 @@ Levantamento técnico, **não é parecer jurídico**.
 - **Entre 2026-10-31 e 2026-11-02 (datas exatas não registradas):** repositório no GitHub e projeto na Vercel; landing v3 (painel vivo, planos por nome); depois atmosfera de cor, celulares com profundidade, objetos 3D (commits `3b1ed27`, `b261e3d`). O primeiro deploy de produção da landing v3 aparece na Vercel por volta de 2026-11-01.
 - **2026-11-04/05:** migrações **013** e **014** aplicadas; bot fechado no n8n; documentos `MAPA-DE-PROCESSOS` e desenhos de cadastro/login.
 - **2026-11-06/07:** painel novo (commit `b10bc45`) com a migração **015** aplicada; landing com conversa clicável, topo vivo, planos, "por que é pago", barra fixa e trilha (`b17c513`); 4 ajustes do painel (`a401844`); conta do dono no Family; este arquivo.
+- **2026-11-07 (local, ainda sem commit):** painel narrativo (abertura, `Capitulo`, `OQueMudou`, `ProximosPassos`, `narrativa.ts`, cores por categoria, esqueleto novo), filtro de Lançamentos por endereço; maquetes e desenho em `docs/`. 221 unitários e 104 E2E verdes.
 - Deploys de produção da Vercel acompanham cada push na `feat/fase-1-app` (último verificado: `a401844`, READY).
 
 ---
@@ -394,7 +415,7 @@ Levantamento técnico, **não é parecer jurídico**.
 **Depende do dono (fora do código):** nome definitivo e **domínio**; provedor de **e-mail** transacional (Resend ou Brevo); **conta Mercado Pago**; **Cloudflare Turnstile**; remover a proteção da Vercel / tornar o link público no domínio final; **revisão jurídica** dos textos; razão social, CNPJ, DPO, e-mail de contato (`NEXT_PUBLIC_SUPPORT_EMAIL`, `NEXT_PUBLIC_LEGAL_ENTITY`); **trocar as chaves antigas** da OpenAI e da Evolution; 2FA nas contas; decidir API oficial do WhatsApp.
 
 **Ordem sugerida pelo mapa:**
-1. ~~Painel novo (Visão geral)~~ **feito**; faltam orçamentos e metas, lançar rápido avançado, tela de primeiros passos mais rica.
+1. ~~Painel novo (Visão geral)~~ **refeito como narrativa em 2026-11-07 (falta publicar)**; faltam orçamentos e metas, lançar rápido avançado, tela de primeiros passos mais rica.
 2. **Cadastro em 3 passos e login por e-mail e senha** (precisa de provedor de e-mail e Turnstile).
 3. **Pagamento** (Mercado Pago), regras de plano, boas-vindas completas no WhatsApp, avisos por e-mail.
 4. **Configurações da conta** (trocar senha, ajustar dados, mudar de plano, excluir conta).

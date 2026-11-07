@@ -5,7 +5,7 @@ import { mesclarCategorias } from "@/config/categorias";
 import { excluirLancamento, listarCategorias, listarLancamentos, salvarLancamento, type LancamentoInput, type LancamentoItem } from "@/lib/api";
 import { lancamentosParaCsv } from "@/lib/csv";
 import { baixarArquivo, coletarTodos } from "@/lib/exportar";
-import { hojeIso, intervalo, type Intervalo, type Preset } from "@/lib/periodo";
+import { hojeIso, intervalo, lerFiltrosDaUrl, type Intervalo, type Preset } from "@/lib/periodo";
 import { ConfirmarExclusao } from "@/components/painel/ConfirmarExclusao";
 import { EstadoVazio } from "@/components/painel/EstadoVazio";
 import { FormLancamento } from "@/components/painel/FormLancamento";
@@ -19,11 +19,13 @@ const mensagemDe = (e: unknown) => (e instanceof Error ? e.message : ERRO_PADRAO
 type Resultado = { chave: string } & ({ estado: "erro"; mensagem: string } | { estado: "ok"; total: number; itens: LancamentoItem[] });
 
 export default function LancamentosPage() {
-  const [preset, setPreset] = useState<Preset>("mes");
-  const [custom, setCustom] = useState<Intervalo>();
+  // Links do painel ("Ver lançamentos") trazem categoria e período no endereço. A página só aparece depois do login, no navegador.
+  const [daUrl] = useState(() => (typeof window === "undefined" ? { categoria: "", custom: undefined } : lerFiltrosDaUrl(window.location.search)));
+  const [preset, setPreset] = useState<Preset>(daUrl.custom ? "custom" : "mes");
+  const [custom, setCustom] = useState<Intervalo | undefined>(daUrl.custom);
   const [busca, setBusca] = useState("");
   const [campoBusca, setCampoBusca] = useState("");
-  const [categoria, setCategoria] = useState("");
+  const [categoria, setCategoria] = useState(daUrl.categoria);
   const [pagina, setPagina] = useState(0);
   const [recarga, setRecarga] = useState(0);
   const [resultado, setResultado] = useState<Resultado>();

@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Maquetes: painel narrativo e Configurações (proposta 2026-11-07)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--papel:#f3f5f1;--sup:#fafbf9;--tinta:#10201a;--suave:#475a52;--linha:#d9e1db;--flor:#0e4a3a;--folha:#ddebe3;--noite:#0c3a2e;--lima:#c8f56a;--coral:#ff9a7a;
+--c1:#2a78d6;--c2:#eb6834;--c3:#1baf7a;--c5:#e87ba4;--cinza:#7b8c84;--trilho:#e6ece8;--t2:#2f9e74;--t3:#b4dc4a}
+*{box-sizing:border-box;margin:0}
+body{font-family:Jost,system-ui,sans-serif;background:#e9ece8;color:var(--tinta);padding:24px;display:flex;flex-direction:column;gap:40px;align-items:center}
+.app{display:flex;width:1280px;background:var(--papel);border:1px solid var(--linha)}
+.rail{width:72px;flex:none;border-right:1px solid var(--linha);padding:20px 0;display:flex;flex-direction:column;align-items:center;gap:10px}
+.marca{width:40px;height:40px;border-radius:12px;background:var(--flor);display:grid;place-items:center;color:#f3f5f1;margin-bottom:22px}
+.ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--suave)}
+.ic.on{background:var(--folha);color:var(--tinta)}
+.ic svg,.marca svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.main{flex:1;padding:32px 40px 40px;min-width:0}
+h1{font-size:26px;font-weight:600;letter-spacing:-.01em}
+.sub{color:var(--suave);font-size:17px;margin-top:4px}
+.topo{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.acoes{display:flex;gap:10px}
+.btn{border-radius:999px;padding:11px 22px;font-weight:600;font-size:15px;border:1px solid var(--linha);background:transparent;color:var(--tinta);white-space:nowrap}
+.btn.pri{background:var(--flor);border-color:var(--flor);color:#f3f5f1}
+.btn.lima{background:var(--lima);border-color:var(--lima);color:#04261d}
+.btn.peq{padding:8px 16px;font-size:14px}
+.ctl{display:flex;gap:14px;align-items:center;margin:18px 0 22px}
+.seg{display:inline-flex;background:var(--trilho);border-radius:999px;padding:4px}
+.seg span{padding:7px 16px;border-radius:999px;font-size:14px;font-weight:500;color:var(--suave)}
+.seg span.on{background:var(--sup);color:var(--tinta)}
+.mes{font-weight:500;font-size:16px;margin-left:8px;color:var(--tinta)}
+.card{background:var(--sup);border:1px solid var(--linha);border-radius:20px;padding:24px;display:flex;flex-direction:column}
+.card h2{font-size:18px;font-weight:600}
+.card h2:before{content:"";display:inline-block;width:8px;height:18px;border-radius:3px;background:var(--flor);margin-right:10px;vertical-align:-3px}
+.mancheteC{font-size:17px;margin-top:6px;line-height:1.4}
+.mancheteC b{font-weight:600}
+.corpo{margin-top:16px;flex:1}
+.ler{margin-top:18px;border-top:1px solid var(--linha);padding-top:12px;font-size:14px;color:var(--suave)}
+.ler b{color:var(--tinta);font-weight:500}
+.grid{display:grid;gap:16px;margin-bottom:16px}
+.g57{grid-template-columns:5fr 7fr}.g75{grid-template-columns:7fr 5fr}.g1{grid-template-columns:1fr}.g3{grid-template-columns:repeat(3,1fr)}
+/* hero */
+.hero{background:var(--noite);color:#e8f2ec;border-radius:24px;padding:30px 34px;display:grid;grid-template-columns:1.15fr 1fr;gap:34px;margin-bottom:16px}
+.hero .rot{font-size:14px;color:#a9c7b8}
+.hero .manch{font-size:28px;font-weight:600;line-height:1.22;margin-top:8px;letter-spacing:-.01em;color:#fff}
+.hero .manch em{font-style:normal;color:var(--lima)}
+.hero .saldo{font-size:40px;font-weight:600;margin-top:18px;letter-spacing:-.01em;color:#fff}
+.hero .saldo span{font-size:22px;color:#a9c7b8;font-weight:500}
+.chips{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.chip{border-radius:999px;padding:7px 14px;font-size:15px;font-weight:500}
+.chip.rec{background:rgba(200,245,106,.16);color:var(--lima)}
+.chip.desp{background:rgba(255,154,122,.16);color:var(--coral)}
+.meter{margin-top:4px}
+.meter .l{display:flex;justify-content:space-between;font-size:15px;color:#c8dccf}
+.meter .l b{color:#fff;font-weight:600}
+.trk{height:10px;border-radius:99px;background:rgba(255,255,255,.18);position:relative;margin-top:10px}
+.trk i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--lima)}
+.trk u{position:absolute;top:-5px;width:2px;height:20px;background:#fff;left:20%}
+.refl{position:relative;height:20px;font-size:13px;color:#a9c7b8;margin-top:6px}.refl span{position:absolute;left:20%;transform:translateX(-50%);white-space:nowrap}
+.tile{margin-top:18px;background:rgba(255,255,255,.08);border-radius:16px;padding:16px 18px}
+.tile p{font-size:14px;color:#a9c7b8}.tile strong{display:block;font-size:26px;color:#fff;font-weight:600;margin:2px 0}
+.tile small{font-size:13px;color:#a9c7b8}
+/* linhas de mudança */
+.mud{display:flex;flex-direction:column;gap:12px}
+.mud li{list-style:none;display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:center;padding:12px 14px;border-radius:14px;background:#f6f8f5;border:1px solid var(--linha)}
+.mud .n{font-weight:600;font-size:16px}.mud .n small{display:block;font-weight:400;color:var(--suave);font-size:13px}
+.mud .v{color:var(--suave);font-size:14px;grid-column:1/2}
+.tag{justify-self:end;grid-row:1/3;grid-column:2;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;white-space:nowrap}
+.tag.bom{background:#dcf5e6;color:#0b5a2c}.tag.ruim{background:#fde6dc;color:#8a3410}
+/* categorias */
+.cat{display:flex;flex-direction:column;gap:16px}
+.cat li{list-style:none}
+.cat .t{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:16px}
+.cat .t span:first-child{display:flex;align-items:center;gap:9px;font-weight:500}
+.cat .t i{width:12px;height:12px;border-radius:4px;display:inline-block}
+.cat .t em{font-style:normal;color:var(--suave);margin-left:12px;font-size:14px}
+.bar{height:10px;border-radius:99px;background:var(--trilho);margin-top:7px}.bar b{display:block;height:100%;border-radius:99px}
+.cat small{display:block;font-size:13px;color:var(--suave);margin-top:5px}
+/* tipos */
+.seg3{display:flex;gap:3px;height:14px;border-radius:99px;overflow:hidden;background:var(--trilho)}.seg3 b{height:100%;border-radius:3px}
+.leg{margin-top:18px;display:flex;flex-direction:column;gap:12px;font-size:16px}
+.leg li{list-style:none;display:flex;justify-content:space-between;align-items:center}
+.leg li span:first-child{display:flex;align-items:center;gap:9px}.leg i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.leg em{font-style:normal;color:var(--suave);font-size:13px;margin-left:12px}
+.leg .r{display:flex;gap:14px;align-items:baseline}
+.fx{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}.fx p{font-size:14px;color:var(--suave)}.fx strong{display:block;font-size:20px;color:var(--tinta);font-weight:600}
+.dia{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:12px;align-items:end;height:70px}.dia div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:12px;color:var(--suave);gap:4px}.dia b{width:100%;max-width:26px;border-radius:5px 5px 0 0;background:#c7dccf}.dia .max b{background:var(--flor)}
+/* ritmo */
+.rit{display:grid;grid-template-columns:1fr 290px;gap:28px}
+.stat{display:flex;gap:34px;margin-bottom:6px}.stat p{font-size:14px;color:var(--suave)}.stat strong{display:block;font-size:24px;font-weight:600}
+.lg{display:flex;gap:18px;font-size:13px;color:var(--suave);margin:4px 0 4px}
+.lg span:before{content:"";display:inline-block;width:18px;height:3px;border-radius:3px;margin-right:6px;vertical-align:3px;background:var(--flor)}
+.lg .a:before{background:var(--cinza)}.lg .d:before{background:#eb6834}.lg .p:before{background:transparent;border-top:3px dashed var(--flor);height:0}
+/* passos */
+.pas{display:flex;flex-direction:column;gap:12px;padding:18px;border-radius:16px;background:#f6f8f5;border:1px solid var(--linha);justify-content:space-between}
+.pas p{font-size:16px;line-height:1.4}
+.perg{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}.perg>span{font-size:14px;color:var(--suave)}
+.pill{border:1px solid var(--linha);border-radius:999px;padding:9px 16px;font-size:14px;background:#fff}
+.mg{display:flex;flex-direction:column}
+.mg li{list-style:none;display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--linha);font-size:16px}.mg li:last-child{border:0}.mg small{display:block;color:var(--suave);font-size:13px}
+/* configurações */
+.cfg{display:grid;grid-template-columns:230px 1fr;gap:34px;margin-top:22px}
+.sn{display:flex;flex-direction:column;gap:2px}.sn span{padding:10px 14px;border-radius:12px;font-size:16px;color:var(--suave)}.sn .on{background:var(--folha);color:var(--tinta);font-weight:600}
+.cfg h3{font-size:20px;font-weight:600}.cfg .d{color:var(--suave);font-size:16px;margin:4px 0 18px}
+.fld{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:500}
+.inp{border:1px solid var(--linha);border-radius:12px;padding:12px 14px;background:#fff;font-size:16px;font-weight:400;color:var(--tinta)}.inp.ro{background:#eef2ee;color:var(--suave)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.av{width:76px;height:76px;border-radius:50%;background:var(--flor);color:#c8f56a;display:grid;place-items:center;font-size:30px;font-weight:600}
+.lin{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.tema{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.tema div{border:1.5px solid var(--linha);border-radius:16px;padding:14px;background:#fff}.tema .on{border-color:var(--flor)}
+.pv{height:62px;border-radius:10px;margin-bottom:12px}.tema b{display:block;font-size:16px}.tema small{color:var(--suave);font-size:13px}
+.sw{width:44px;height:26px;border-radius:99px;background:#cdd8d1;position:relative}.sw:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff}.sw.on{background:var(--flor)}.sw.on:after{left:21px}
+.pl{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pl .p{border:1.5px solid var(--linha);border-radius:18px;padding:20px;background:#fff;display:flex;flex-direction:column;gap:10px}
+.pl .p.at{border-color:var(--flor);background:#f1f7f3}.pl h4{font-size:19px;font-weight:600}.pl .pr{font-size:30px;font-weight:600}.pl .pr small{font-size:15px;font-weight:400;color:var(--suave)}
+.pl ul{padding-left:0;display:flex;flex-direction:column;gap:7px;font-size:15px;color:var(--suave)}.pl li{list-style:none}.pl li:before{content:"✓ ";color:var(--flor);font-weight:700}
+.sel{display:inline-block;background:var(--flor);color:#f3f5f1;border-radius:99px;font-size:12px;padding:3px 10px;font-weight:600;align-self:flex-start}
+table{width:100%;border-collapse:collapse;font-size:15px}th{text-align:left;font-weight:500;color:var(--suave);font-size:13px;padding:0 0 10px}td{padding:13px 0;border-top:1px solid var(--linha)}td:last-child,th:last-child{text-align:right}
+.ok{background:#dcf5e6;color:#0b5a2c;border-radius:99px;padding:3px 10px;font-size:13px;font-weight:600}
+.pg{height:10px;background:var(--trilho);border-radius:99px;margin-top:10px}.pg b{display:block;height:100%;width:40%;border-radius:99px;background:var(--flor)}
+.membro{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--linha)}
+.mav{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:16px}
+.pend{border:1.5px dashed var(--linha);border-radius:14px;padding:14px 16px;background:#fff;margin-top:6px}
+.nota{background:#fff8e6;border:1px solid #fde68a;color:#92400e;border-radius:12px;padding:12px 14px;font-size:14px;margin-top:16px}
+.rot-tela{font-size:14px;font-weight:600;color:#4c6157;margin-bottom:8px;align-self:flex-start;width:1280px}
+.tela{display:flex;flex-direction:column}
+/* celular */
+.cel{width:390px;background:var(--papel);border:1px solid var(--linha);padding:16px;display:flex;flex-direction:column;gap:12px}
+.cel .hero{grid-template-columns:1fr;padding:22px;gap:6px}.cel .hero .manch{font-size:23px}
+</style>
+</head>
+<body>
+
+<!-- ===== 1. VISÃO GERAL ===== -->
+<div class="tela" id="visao">
+<div class="rot-tela">1. Visão geral: a história do período, de cima para baixo</div>
+<div class="app">
+ <div class="rail"><div class="marca"><svg viewBox="0 0 24 24"><path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/></svg></div>
+  <div class="ic on"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></div>
+  <div class="ic"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></div>
+  <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></div></div>
+ <div class="main">
+  <div class="topo"><div><h1>Visão geral</h1><p class="sub">Você está no azul neste período.</p></div>
+   <div class="acoes"><span class="btn pri">+ Lançar</span><span class="btn">Esconder valores</span><span class="btn">Conversar no WhatsApp</span></div></div>
+  <div class="ctl"><div class="seg"><span class="on">Mês</span><span>30 dias</span><span>Ano</span><span>Personalizado</span></div><span class="mes">‹ &nbsp; Outubro de 2026 &nbsp; ›</span></div>
+
+  <section class="hero">
+   <div>
+    <p class="rot">Como você está · outubro de 2026</p>
+    <p class="manch">Sobraram <em>R$ 1.600,00</em>: você poupou <em>45,7%</em> da renda.</p>
+    <p class="saldo">R$ 1.600<span>,00</span></p>
+    <div class="chips"><span class="chip rec">Receitas +R$ 3.500,00</span><span class="chip desp">Despesas R$ 1.900,00</span></div>
+   </div>
+   <div>
+    <div class="meter"><div class="l"><span>Taxa de poupança</span><b>45,7%</b></div><div class="trk"><i style="width:45.7%"></i><u></u></div><div class="refl"><span>Referência 20%</span></div></div>
+    <div class="tile"><p>Pode gastar por dia até o fim do mês</p><strong>R$ 533,33</strong><small>Sobram R$ 1.600,00 da renda registrada, em 3 dias.</small></div>
+    <p style="font-size:13px;color:#a9c7b8;margin-top:14px">Taxa de poupança é a parte da renda que sobrou. 20% é uma referência comum, não uma obrigação.</p>
+   </div>
+  </section>
+
+  <div class="grid g57">
+   <section class="card"><h2>O que mudou</h2><p class="mancheteC">Você gastou <b>26,7% a mais</b> que no período anterior, até o mesmo ponto. O maior aumento foi em Alimentação (+R$ 200,00).</p>
+    <div class="corpo"><ul class="mud" style="padding:0">
+     <li><div class="n">Despesas</div><span class="tag ruim">+R$ 400,00 · +26,7%</span><div class="v">R$ 1.500,00 → R$ 1.900,00</div></li>
+     <li><div class="n">Receitas</div><span class="tag bom">+R$ 500,00 · +16,7%</span><div class="v">R$ 3.000,00 → R$ 3.500,00</div></li>
+     <li><div class="n">Alimentação<small>Categoria que mais subiu</small></div><span class="tag ruim">+R$ 200,00 · +66,7%</span><div class="v">R$ 300,00 → R$ 500,00</div></li>
+     <li><div class="n">Lazer<small>Categoria que mais caiu</small></div><span class="tag bom">-R$ 120,00 · -44,4%</span><div class="v">R$ 270,00 → R$ 150,00</div></li>
+    </ul></div>
+    <p class="ler"><b>Como ler:</b> comparamos com o período anterior do mesmo tamanho. Verde é bom para o seu bolso; laranja pede atenção.</p></section>
+   <section class="card"><h2>Para onde foi o dinheiro</h2><p class="mancheteC"><b>Moradia</b> levou mais da metade do que você gastou.</p>
+    <div class="corpo"><ul class="cat" style="padding:0">
+     <li><div class="t"><span><i style="background:var(--c1)"></i>Moradia</span><span>R$ 1.000,00<em>52,6%</em></span></div><div class="bar"><b style="width:100%;background:var(--c1)"></b></div><small>igual ao período anterior</small></li>
+     <li><div class="t"><span><i style="background:var(--c2)"></i>Alimentação</span><span>R$ 500,00<em>26,3%</em></span></div><div class="bar"><b style="width:50%;background:var(--c2)"></b></div><small>+R$ 200,00 contra o período anterior</small></li>
+     <li><div class="t"><span><i style="background:var(--c5)"></i>Lazer</span><span>R$ 150,00<em>7,9%</em></span></div><div class="bar"><b style="width:15%;background:var(--c5)"></b></div><small>-R$ 120,00 contra o período anterior</small></li>
+     <li><div class="t"><span><i style="background:var(--cinza)"></i>Outras</span><span>R$ 250,00<em>13,2%</em></span></div><div class="bar"><b style="width:25%;background:var(--cinza)"></b></div></li>
+    </ul></div>
+    <p class="ler"><b>Como ler:</b> cada barra é uma categoria, e a cor é sempre a mesma para ela. As 3 maiores somam 86,8% do gasto.</p></section>
+  </div>
+
+  <div class="grid g75">
+   <section class="card"><h2>Essencial, supérfluo e investimento</h2><p class="mancheteC">Do que você gastou, <b>68,4% foi essencial</b>, 21,1% supérfluo e 5,3% investimento. O restante não foi classificado.</p>
+    <div class="corpo"><div class="seg3"><b style="width:37.1%;background:var(--flor)"></b><b style="width:11.4%;background:var(--t2)"></b><b style="width:2.9%;background:var(--t3)"></b><b style="width:2.9%;background:var(--cinza)"></b></div>
+     <ul class="leg" style="padding:0">
+      <li><span><i style="background:var(--flor)"></i>Essencial</span><span class="r">R$ 1.300,00 <b>37,1%</b><em>referência 50%</em></span></li>
+      <li><span><i style="background:var(--t2)"></i>Supérfluo</span><span class="r">R$ 400,00 <b>11,4%</b><em>referência 30%</em></span></li>
+      <li><span><i style="background:var(--t3)"></i>Investimento</span><span class="r">R$ 100,00 <b>2,9%</b><em>referência 20%</em></span></li>
+      <li><span><i style="background:var(--cinza)"></i>Sem classificação</span><span class="r">R$ 100,00 <b>2,9%</b></span></li></ul></div>
+    <p class="ler"><b>Como ler:</b> essencial é o que não dá para evitar, supérfluo é o que você escolhe, investimento é o que vira reserva. As referências (50, 30 e 20% da renda) são um guia, não uma regra.</p></section>
+   <section class="card"><h2>Fixos e variáveis</h2><p class="mancheteC"><b>55,3%</b> do gasto já está comprometido com contas fixas.</p>
+    <div class="corpo"><div class="seg3"><b style="width:55.3%;background:var(--flor)"></b><b style="width:44.7%;background:#bccfc3"></b></div>
+     <div class="fx"><div><p>Fixos</p><strong>R$ 1.050,00</strong></div><div><p>Variáveis</p><strong>R$ 850,00</strong></div></div>
+     <ul class="mg" style="padding:0;margin-top:14px"><li><span>Aluguel</span><span>R$ 1.000,00</span></li><li><span>Netflix</span><span>R$ 50,00</span></li></ul></div>
+    <p class="ler"><b>Como ler:</b> fixos são contas que se repetem. Variáveis mudam de mês a mês e são onde dá para ajustar.</p></section>
+  </div>
+
+  <div class="grid g1">
+   <section class="card"><h2>O ritmo do período</h2><p class="mancheteC">No ritmo atual, o mês fecha com <b>R$ 2.100,00</b> em despesas, dentro da renda registrada.</p>
+    <div class="corpo rit">
+     <div><div class="lg"><span>Este período</span><span class="a">Período anterior</span><span class="p">Previsão</span></div>
+      <svg viewBox="0 0 740 220" width="100%"><g stroke="#d9e1db"><path d="M46 20H730M46 70H730M46 120H730M46 170H730"/><path d="M46 190H730" stroke-width="1.5"/></g><g fill="#475a52" font-size="12" font-family="Jost"><text x="38" y="24" text-anchor="end">4 mil</text><text x="38" y="74" text-anchor="end">3 mil</text><text x="38" y="124" text-anchor="end">2 mil</text><text x="38" y="174" text-anchor="end">1 mil</text><text x="46" y="210">01/10</text><text x="220" y="210">08/10</text><text x="395" y="210">15/10</text><text x="560" y="210">22/10</text><text x="700" y="210">29/10</text></g>
+      <path d="M46 190L730 112" stroke="#7b8c84" stroke-width="2.5" fill="none"/><path d="M46 190L640 108" stroke="#0e4a3a" stroke-width="3" fill="none"/><path d="M640 108L730 98" stroke="#0e4a3a" stroke-width="3" stroke-dasharray="6 6" fill="none"/><circle cx="640" cy="108" r="5" fill="#0e4a3a" stroke="#fafbf9" stroke-width="2"/></svg></div>
+     <div><div class="stat"><div><p>Média por dia</p><strong>R$ 67,86</strong></div><div><p>Previsão</p><strong>R$ 2.100,00</strong></div></div>
+      <p style="font-size:15px;margin-top:14px">Você mais gasta às <b>sextas</b>, em média R$ 175,00 por dia.</p>
+      <div class="dia"><div><b style="height:14px"></b>dom</div><div><b style="height:14px"></b>seg</div><div><b style="height:14px"></b>ter</div><div><b style="height:14px"></b>qua</div><div><b style="height:14px"></b>qui</div><div class="max"><b style="height:60px"></b>sex</div><div><b style="height:14px"></b>sáb</div></div></div>
+    </div>
+    <p class="ler"><b>Como ler:</b> a linha escura é quanto você já gastou, somando dia a dia. A cinza é o período anterior. O tracejado é a previsão se o ritmo continuar.</p></section>
+  </div>
+
+  <div class="grid g75">
+   <section class="card"><h2>Nos últimos meses</h2><p class="mancheteC">Suas despesas <b>subiram nos últimos 3 meses</b>.</p>
+    <div class="corpo"><svg viewBox="0 0 640 190" width="100%"><g stroke="#d9e1db"><path d="M40 20H630M40 65H630M40 110H630"/><path d="M40 150H630" stroke-width="1.5"/></g><g fill="#475a52" font-size="12" font-family="Jost" text-anchor="middle"><text x="95" y="172">mai</text><text x="190" y="172">jun</text><text x="285" y="172">jul</text><text x="380" y="172">ago</text><text x="475" y="172">set</text><text x="570" y="172">out</text></g>
+     <g><rect x="352" y="45" width="24" height="105" rx="4" fill="#0e4a3a"/><rect x="380" y="115" width="24" height="35" rx="4" fill="#eb6834"/><rect x="447" y="45" width="24" height="105" rx="4" fill="#0e4a3a"/><rect x="475" y="95" width="24" height="55" rx="4" fill="#eb6834"/><rect x="542" y="28" width="24" height="122" rx="4" fill="#0e4a3a"/><rect x="570" y="82" width="24" height="68" rx="4" fill="#eb6834"/></g></svg>
+     <div class="lg" style="margin-top:6px"><span>Receitas</span><span class="d">Despesas</span></div></div>
+    <p class="ler"><b>Como ler:</b> cada par de colunas é um mês. Verde é o que entrou; laranja, o que saiu.</p></section>
+   <section class="card"><h2>Maiores gastos</h2>
+    <div class="corpo"><ul class="mg" style="padding:0"><li><span>Aluguel<small>02/10 · Moradia</small></span><span>R$ 1.000,00</span></li><li><span>Mercado<small>03/10 · Alimentação</small></span><span>R$ 300,00</span></li><li><span>Restaurante<small>10/10 · Alimentação</small></span><span>R$ 200,00</span></li></ul></div></section>
+  </div>
+
+  <section class="card"><h2>O que fazer agora</h2><p class="mancheteC">Três passos, escolhidos pelos seus números deste período.</p>
+   <div class="corpo"><div class="grid g3" style="margin:0">
+    <div class="pas"><p>Alimentação subiu R$ 200,00. Veja os lançamentos dessa categoria.</p><span class="btn pri peq" style="align-self:flex-start">Ver lançamentos</span></div>
+    <div class="pas"><p>Pergunte ao assistente onde dá para economizar.</p><span class="btn peq" style="align-self:flex-start">Perguntar no WhatsApp</span></div>
+    <div class="pas"><p>Você tem R$ 100,00 sem classificação. Classificar deixa a leitura mais precisa.</p><span class="btn peq" style="align-self:flex-start">Ver lançamentos</span></div></div>
+    <div class="perg"><span>Ou pergunte direto:</span><span class="pill">Onde posso economizar?</span><span class="pill">Estou gastando muito com alimentação?</span><span class="pill">Quanto gastei esta semana?</span></div></div></section>
+ </div></div></div>
+
+<!-- ===== 2. CONFIGURAÇÕES: CONTA ===== -->
+<div class="tela" id="conta">
+<div class="rot-tela">2. Configurações · Conta</div>
+<div class="app"><div class="rail"><div class="marca"><svg viewBox="0 0 24 24"><path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/></svg></div><div class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></div><div class="ic"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></div><div class="ic on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg></div></div>
+<div class="main"><h1>Configurações</h1>
+ <div class="cfg"><div class="sn"><span class="on">Conta</span><span>Aparência e segurança</span><span>Plano e pagamentos</span><span>Acesso compartilhado</span><span>WhatsApp</span><span>Notificações</span><span>Privacidade e dados</span></div>
+ <div><h3>Sua conta</h3><p class="d">Seus dados e o que deixa a leitura do painel mais precisa.</p>
+  <div class="card"><div class="lin" style="justify-content:flex-start;gap:20px"><div class="av">M</div><div><div style="font-size:20px;font-weight:600">Maria Silva</div><div style="color:var(--suave);font-size:15px">cliente desde out de 2026 · Plano Essencial</div></div></div>
+   <div class="f2" style="margin-top:22px"><label class="fld">Nome<span class="inp">Maria Silva</span></label><label class="fld">E-mail<span class="inp ro">maria@exemplo.com</span></label>
+    <label class="fld">WhatsApp<span class="inp ro">+55 11 *****-8888</span></label><span></span>
+    <label class="fld">Renda mensal<span class="inp">R$ 3.500,00</span></label><label class="fld">Custo de vida mensal<span class="inp">R$ 1.900,00</span></label></div>
+   <p style="color:var(--suave);font-size:14px;margin-top:14px">A renda e o custo de vida ajudam o painel a ler o seu mês com mais precisão. Nada disso é compartilhado.</p>
+   <div style="margin-top:16px"><span class="btn pri">Salvar</span></div></div>
+  <div class="card" style="margin-top:14px"><div class="lin"><div><b style="font-size:17px">Sessão neste navegador</b><div style="color:var(--suave);font-size:14px;margin-top:2px">Chrome, no Windows · agora</div></div><span class="btn peq">Sair desta sessão</span></div></div>
+  <div style="margin-top:18px"><span class="btn" style="color:#b3261e">Sair da conta</span></div></div></div></div></div></div>
+
+<!-- ===== 3. APARÊNCIA ===== -->
+<div class="tela" id="aparencia">
+<div class="rot-tela">3. Configurações · Aparência e segurança</div>
+<div class="app"><div class="rail"><div class="marca"><svg viewBox="0 0 24 24"><path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/></svg></div><div class="ic"></div><div class="ic"></div><div class="ic on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></div></div>
+<div class="main"><h1>Configurações</h1>
+ <div class="cfg"><div class="sn"><span>Conta</span><span class="on">Aparência e segurança</span><span>Plano e pagamentos</span><span>Acesso compartilhado</span><span>WhatsApp</span><span>Notificações</span><span>Privacidade e dados</span></div>
+ <div><h3>Aparência e segurança</h3><p class="d">O tema do painel e como os seus números aparecem.</p>
+  <div class="tema"><div class="on"><div class="pv" style="background:#f3f5f1;border:1px solid #d9e1db"></div><b>Claro</b><small>sempre com fundo claro</small></div><div><div class="pv" style="background:#0b1411"></div><b>Escuro</b><small>sempre com fundo escuro</small></div><div><div class="pv" style="background:linear-gradient(90deg,#f3f5f1 50%,#0b1411 50%);border:1px solid #d9e1db"></div><b>Automático</b><small>segue o tema do aparelho</small></div></div>
+  <div class="card" style="margin-top:16px"><b style="font-size:17px">Segurança</b>
+   <div class="lin" style="margin-top:14px"><div><div style="font-weight:500">Ocultar valores ao abrir</div><div style="color:var(--suave);font-size:14px">Os valores em reais começam desfocados até você tocar no olho.</div></div><span class="sw"></span></div></div></div></div></div></div></div>
+
+<!-- ===== 4. PLANO E PAGAMENTOS ===== -->
+<div class="tela" id="plano">
+<div class="rot-tela">4. Configurações · Plano e pagamentos</div>
+<div class="app"><div class="rail"><div class="marca"><svg viewBox="0 0 24 24"><path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/></svg></div><div class="ic"></div><div class="ic"></div><div class="ic on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></div></div>
+<div class="main"><h1>Configurações</h1>
+ <div class="cfg"><div class="sn"><span>Conta</span><span>Aparência e segurança</span><span class="on">Plano e pagamentos</span><span>Acesso compartilhado</span><span>WhatsApp</span><span>Notificações</span><span>Privacidade e dados</span></div>
+ <div><h3>Plano e pagamentos</h3><p class="d">O que você tem hoje, como mudar e o histórico das cobranças.</p>
+  <div class="card"><div class="lin"><div><span class="sel">Plano atual</span><div style="font-size:24px;font-weight:600;margin-top:8px">Essencial <span style="font-size:16px;font-weight:400;color:var(--suave)">R$ 19 por mês</span></div><div style="color:var(--suave);font-size:15px;margin-top:2px">Ativo · próxima cobrança em 07/12/2026</div></div><div style="text-align:right"><div style="font-size:15px;color:var(--suave)">Mensagens neste período</div><div style="font-size:22px;font-weight:600">120 de 300</div></div></div><div class="pg"><b></b></div></div>
+  <h3 style="margin-top:24px;font-size:18px">Mudar de plano</h3>
+  <div class="pl" style="margin-top:12px">
+   <div class="p"><h4>Teste grátis</h4><div class="pr">Grátis<small> 7 dias</small></div><ul><li>Texto, áudio e foto</li><li>Painel completo</li><li>50 mensagens</li></ul><span class="btn peq" style="opacity:.5;align-self:flex-start">Já usado</span></div>
+   <div class="p at"><h4>Essencial</h4><div class="pr">R$ 19<small> por mês</small></div><ul><li>Tudo do Teste grátis</li><li>300 mensagens por mês</li><li>Comparação com o período anterior</li><li>Exportação em CSV</li></ul><span class="sel" style="align-self:flex-start">Seu plano</span></div>
+   <div class="p"><h4>Family</h4><div class="pr">R$ 39<small> por mês</small></div><ul><li>Tudo do Essencial</li><li>Até 4 pessoas no grupo</li><li>800 mensagens por mês</li></ul><span class="btn pri peq" style="align-self:flex-start">Pedir upgrade</span></div></div>
+  <p class="nota">O pagamento online ainda está sendo liberado. Ao pedir o upgrade, registramos o seu pedido e avisamos assim que puder concluir. O seu plano atual não muda até lá.</p>
+  <div class="card" style="margin-top:20px"><b style="font-size:18px">Histórico de pagamentos</b>
+   <table style="margin-top:14px"><tr><th>Data</th><th>Descrição</th><th>Valor</th><th>Situação</th></tr>
+    <tr><td>07/11/2026</td><td>Essencial · mensalidade</td><td>R$ 19,00</td><td><span class="ok">Pago</span></td></tr>
+    <tr><td>07/10/2026</td><td>Essencial · mensalidade</td><td>R$ 19,00</td><td><span class="ok">Pago</span></td></tr></table>
+   <p style="font-size:13px;color:var(--suave);margin-top:12px">Exemplo de como ficará. Hoje, sem cobranças, a tela mostra: "Nenhuma cobrança ainda. O teste grátis não cobra."</p></div></div></div></div></div></div>
+
+<!-- ===== 5. ACESSO COMPARTILHADO ===== -->
+<div class="tela" id="familia">
+<div class="rot-tela">5. Configurações · Acesso compartilhado (plano Family)</div>
+<div class="app"><div class="rail"><div class="marca"><svg viewBox="0 0 24 24"><path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/></svg></div><div class="ic"></div><div class="ic"></div><div class="ic on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></div></div>
+<div class="main"><h1>Configurações</h1>
+ <div class="cfg"><div class="sn"><span>Conta</span><span>Aparência e segurança</span><span>Plano e pagamentos</span><span class="on">Acesso compartilhado</span><span>WhatsApp</span><span>Notificações</span><span>Privacidade e dados</span></div>
+ <div><h3>Acesso compartilhado</h3><p class="d">Quem divide a vida, divide o Gastômetro. Cada pessoa entra com o próprio login e o próprio WhatsApp.</p>
+  <div class="card"><div class="lin"><b style="font-size:19px">Pessoas do grupo · 2 de 4</b><span class="btn pri peq">+ Convidar alguém</span></div>
+   <div style="margin-top:10px">
+    <div class="membro"><div class="mav" style="background:var(--flor);color:#c8f56a">M</div><div style="flex:1"><div style="font-weight:600">Maria Silva <span style="color:var(--suave);font-weight:400">(você)</span></div><div style="color:var(--suave);font-size:14px">WhatsApp conectado</div></div><span class="sel" style="background:var(--folha);color:var(--tinta)">Titular</span></div>
+    <div class="membro"><div class="mav" style="background:#fde6dc;color:#8a3410">J</div><div style="flex:1"><div style="font-weight:600">João Silva</div><div style="color:var(--suave);font-size:14px">WhatsApp conectado · entrou em 03/11/2026</div></div><span class="btn peq">Remover</span></div></div>
+   <div class="pend"><div class="lin"><div><div style="font-weight:500">Convite pendente</div><div style="color:var(--suave);font-size:14px">Vale por 7 dias · gastometro.exemplo/convite/K7M2Q9</div></div><div class="acoes"><span class="btn peq">Copiar link</span><span class="btn peq">Cancelar</span></div></div></div>
+   <p style="color:var(--suave);font-size:14px;margin-top:16px">Só você convida e remove pessoas. Quem recebe o link cria o próprio cadastro e conta no limite do plano (4 pessoas).</p>
+   <p class="nota" style="margin-top:12px">Por enquanto cada pessoa vê só os próprios lançamentos. A visão compartilhada do grupo, com todos os valores, chega em uma próxima etapa.</p></div>
+  <div class="card" style="margin-top:14px;background:transparent;border-style:dashed"><div class="lin"><div><b style="font-size:17px">E quem não tem o Family?</b><div style="color:var(--suave);font-size:14px;margin-top:2px">A página mostra o que o plano oferece e leva para "Plano e pagamentos", sem abrir o convite.</div></div><span class="btn peq">Ver o plano Family</span></div></div></div></div></div></div></div>
+
+<!-- ===== 6. CELULAR ===== -->
+<div class="tela" id="celular">
+<div class="rot-tela">6. No celular: a abertura da Visão geral</div>
+<div class="cel">
+  <div style="display:flex;align-items:center;gap:10px"><div class="marca" style="width:36px;height:36px;margin:0"><svg viewBox="0 0 24 24" style="width:20px"><path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/></svg></div><b style="font-size:19px">Gastômetro</b></div>
+  <div><h1 style="font-size:24px">Visão geral</h1><p class="sub" style="font-size:16px">Você está no azul neste período.</p></div>
+  <section class="hero"><p class="rot">Como você está · outubro de 2026</p><p class="manch">Sobraram <em>R$ 1.600,00</em>: você poupou <em>45,7%</em> da renda.</p><p class="saldo">R$ 1.600<span>,00</span></p>
+   <div class="chips"><span class="chip rec">Receitas +R$ 3.500,00</span><span class="chip desp">Despesas R$ 1.900,00</span></div>
+   <div class="meter" style="margin-top:14px"><div class="l"><span>Taxa de poupança</span><b>45,7%</b></div><div class="trk"><i style="width:45.7%"></i><u></u></div><div class="refl"><span>Referência 20%</span></div></div>
+   <div class="tile"><p>Pode gastar por dia até o fim do mês</p><strong>R$ 533,33</strong><small>Sobram R$ 1.600,00 em 3 dias.</small></div></section>
+  <section class="card"><h2>O que mudou</h2><p class="mancheteC">Você gastou <b>26,7% a mais</b> que no período anterior, até o mesmo ponto.</p>
+   <div class="corpo"><ul class="mud" style="padding:0"><li><div class="n">Despesas</div><span class="tag ruim">+R$ 400,00</span><div class="v">R$ 1.500,00 → R$ 1.900,00</div></li><li><div class="n">Alimentação<small>Categoria que mais subiu</small></div><span class="tag ruim">+R$ 200,00</span><div class="v">R$ 300,00 → R$ 500,00</div></li></ul></div></section>
+</div></div>
+
+</body>
+</html>

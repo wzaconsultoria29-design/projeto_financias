@@ -4,6 +4,8 @@ import { useState, type PointerEvent } from "react";
 import type { Painel } from "@/lib/api";
 import { brl, dataCurta } from "@/lib/format";
 import { eixo, mediaPorDiaSemana, NOME_DIA, NOME_DIA_CURTO, somarDias, valorCurto } from "@/lib/painel";
+import { manchetes } from "@/lib/narrativa";
+import { Capitulo } from "./Capitulo";
 import { useLargura } from "./useLargura";
 
 const ALTURA = 210;
@@ -162,31 +164,48 @@ function DiaSemana({ p }: { p: Painel }) {
 }
 
 export function Ritmo({ p }: { p: Painel }) {
-  return (
-    <section className="cartao p-5 md:p-6" aria-labelledby="t-ritmo">
-      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
-        <h2 id="t-ritmo" className="font-display text-lg font-semibold text-tinta">
-          Ritmo do período
-        </h2>
-        {p.acumulado && <Legenda previsao={p.projecao !== null} />}
-      </div>
-
-      <dl className="mt-3 flex flex-wrap gap-x-10 gap-y-3">
+  const { ritmo } = manchetes(p);
+  const lateral = (
+    <div>
+      <dl className="flex flex-wrap gap-x-10 gap-y-3">
         <div>
           <dt className="text-sm text-suave">Média por dia</dt>
-          <dd className="dado mt-0.5 text-xl font-semibold text-tinta tabular-nums">{brl(p.resumo.media_diaria)}</dd>
+          <dd className="dado mt-0.5 text-2xl font-semibold text-tinta tabular-nums">{brl(p.resumo.media_diaria)}</dd>
         </div>
         {p.projecao && (
           <div>
             <dt className="text-sm text-suave">Previsão de fechamento</dt>
-            <dd className="dado mt-0.5 text-xl font-semibold text-tinta tabular-nums">{brl(p.projecao.previsto)}</dd>
+            <dd className="dado mt-0.5 text-2xl font-semibold text-tinta tabular-nums">{brl(p.projecao.previsto)}</dd>
             <dd className="text-xs text-suave">{`no ritmo de ${p.projecao.dias_decorridos} de ${p.projecao.dias_no_mes} dias`}</dd>
           </div>
         )}
       </dl>
-
-      {p.acumulado && p.acumulado.length > 0 && <GraficoAcumulado p={p} />}
       <DiaSemana p={p} />
-    </section>
+    </div>
+  );
+
+  return (
+    <Capitulo
+      id="ritmo"
+      titulo="O ritmo do período"
+      manchete={ritmo}
+      comoLer={
+        p.acumulado
+          ? "A linha escura é quanto você já gastou, somando dia a dia. A cinza é o período anterior. O tracejado é a previsão se o ritmo continuar."
+          : "A média por dia é o total gasto dividido pelos dias do período. As colunas mostram em que dia da semana você costuma gastar mais."
+      }
+    >
+      {p.acumulado && p.acumulado.length > 0 ? (
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-8">
+          <div>
+            <Legenda previsao={p.projecao !== null} />
+            <GraficoAcumulado p={p} />
+          </div>
+          {lateral}
+        </div>
+      ) : (
+        lateral
+      )}
+    </Capitulo>
   );
 }

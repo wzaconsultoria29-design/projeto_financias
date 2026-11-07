@@ -82,3 +82,23 @@ export function rotuloDoMes(ym: string): string {
 export function mesCurto(ym: string): string {
   return MESES[Number(ym.split("-")[1]) - 1].slice(0, 3);
 }
+
+const ISO = /^\d{4}-\d{2}-\d{2}$/;
+
+function dataValida(iso: string): boolean {
+  if (!ISO.test(iso)) return false;
+  const d = new Date(`${iso}T00:00:00Z`);
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === iso;
+}
+
+/** Filtros que vêm no endereço da página de Lançamentos (links do painel): categoria e período. O que for inválido é ignorado. */
+export function lerFiltrosDaUrl(busca: string): { categoria: string; custom: Intervalo | undefined } {
+  const q = new URLSearchParams(busca);
+  const categoria = (q.get("categoria") ?? "").trim();
+  const de = q.get("de") ?? "";
+  const ate = q.get("ate") ?? "";
+  return {
+    categoria: categoria.length <= 60 ? categoria : "",
+    custom: dataValida(de) && dataValida(ate) && de <= ate ? { de, ate } : undefined,
+  };
+}
