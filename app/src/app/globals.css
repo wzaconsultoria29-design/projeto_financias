@@ -18,6 +18,12 @@
   --bloco: #0c3a2e;
   --sobre-bloco: #e8f2ec;
   --raio-cartao: 20px;
+  /* Dados do painel: receitas = floresta, despesas = laranja; tipos de gasto = azul, laranja, verde-água (paleta validada). */
+  --d-azul: #2a78d6;
+  --d-laranja: #d9541a;
+  --d-agua: #159a69;
+  --d-cinza: #7b8c84;
+  --d-trilho: #e6ece8;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -33,6 +39,11 @@
     --botao-fg: #062119;
     --bloco: #123d31;
     --sobre-bloco: #e8f2ec;
+    --d-azul: #3987e5;
+    --d-laranja: #e8703a;
+    --d-agua: #199e70;
+    --d-cinza: #8aa096;
+    --d-trilho: #1a2b24;
   }
 }
 
@@ -48,6 +59,11 @@
   --color-sobre-bloco: var(--sobre-bloco);
   --font-sans: var(--font-jost);
   --font-display: var(--font-jost);
+  --color-d-azul: var(--d-azul);
+  --color-d-laranja: var(--d-laranja);
+  --color-d-agua: var(--d-agua);
+  --color-d-cinza: var(--d-cinza);
+  --color-d-trilho: var(--d-trilho);
 }
 
 html {

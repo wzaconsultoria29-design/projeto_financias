@@ -25,8 +25,8 @@ test.describe("entrar pelo WhatsApp", () => {
     await entrar(page);
     expect(chamadasStatus.length).toBe(3);
     expect(chamadasStatus[1] - chamadasStatus[0]).toBeGreaterThanOrEqual(1500);
-    // no celular o cabeçalho não tem espaço para o nome
-    if (test.info().project.name === "desktop") await expect(page.getByText("Maria Silva")).toBeVisible();
+    // no computador o trilho mostra a inicial da pessoa, com o nome na dica; no celular não há espaço para ela
+    if (test.info().project.name === "desktop") await expect(page.getByTitle("Maria Silva")).toBeVisible();
     const sobra = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(sobra).toBeLessThanOrEqual(0);
     await page.screenshot({ path: `../docs/screens/painel-cabecalho-${test.info().project.name}.png` });

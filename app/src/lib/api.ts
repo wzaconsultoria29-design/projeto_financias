@@ -121,3 +121,28 @@ export async function listarCategorias(): Promise<string[]> {
   if (error) throw erro(error.message);
   return Array.isArray(data) ? (data as unknown[]).filter((c): c is string => typeof c === "string") : [];
 }
+
+/** Tudo que a Visão geral nova mostra, calculado no banco (função app_painel, migração 015). */
+export type Painel = {
+  periodo: { de: string; ate: string; dias: number; dias_decorridos: number };
+  resumo: { receitas: number; despesas: number; saldo: number; taxa_poupanca: number | null; media_diaria: number; quantidade: number };
+  anterior: { de: string; ate: string; receitas: number; despesas: number; despesas_mesmo_ponto: number };
+  variacao_despesas_pct: number | null;
+  categorias: { categoria: string; total: number; qtd: number; pct: number; anterior: number }[];
+  pareto: { top3_pct: number | null };
+  tipos: { essencial: number; superfluo: number; investimento: number; sem_tipo: number };
+  fixos: { fixos_total: number; variaveis_total: number; maiores: { descricao: string; categoria: string | null; valor: number }[] };
+  acumulado: { dia: number; atual: number | null; anterior: number }[] | null;
+  dia_semana: { dow: number; total: number; ocorrencias: number }[];
+  tendencia: { mes: string; receitas: number; despesas: number }[];
+  maiores: { id: string; data: string; categoria: string | null; descricao: string | null; valor: number }[];
+  projecao: { previsto: number; dias_decorridos: number; dias_no_mes: number } | null;
+  sem_receita: boolean;
+  historico_total: number;
+};
+
+export async function painel(r: Intervalo): Promise<Painel> {
+  const { data, error } = await supabase.rpc("app_painel", { p_de: r.de, p_ate: r.ate });
+  if (error) throw erro(error.message);
+  return data as Painel;
+}

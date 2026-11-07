@@ -50,3 +50,35 @@ export function anterior(r: Intervalo): Intervalo {
   const ate = somarDias(r.de, -1);
   return { de: somarDias(ate, -(dias - 1)), ate };
 }
+
+const MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+
+/** "2026-10" do dia de referência, em São Paulo. */
+export function mesDe(ref: Date): string {
+  return hojeIso(ref).slice(0, 7);
+}
+
+/** Do primeiro ao último dia do mês "AAAA-MM". */
+export function intervaloDoMes(ym: string): Intervalo {
+  const [a, m] = ym.split("-").map(Number);
+  const ultimo = new Date(Date.UTC(a, m, 0)).getUTCDate();
+  return { de: `${ym}-01`, ate: `${ym}-${String(ultimo).padStart(2, "0")}` };
+}
+
+/** Anda `n` meses (negativo volta), virando o ano quando precisa. */
+export function deslocarMes(ym: string, n: number): string {
+  const [a, m] = ym.split("-").map(Number);
+  const total = a * 12 + (m - 1) + n;
+  return `${Math.floor(total / 12)}-${String((total % 12) + 1).padStart(2, "0")}`;
+}
+
+/** "outubro de 2026". */
+export function rotuloDoMes(ym: string): string {
+  const [a, m] = ym.split("-").map(Number);
+  return `${MESES[m - 1]} de ${a}`;
+}
+
+/** Nome curto para eixos: "out". */
+export function mesCurto(ym: string): string {
+  return MESES[Number(ym.split("-")[1]) - 1].slice(0, 3);
+}

@@ -3,17 +3,27 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { Gauge, ListBullets, SignOut, SquaresFour, UserCircle, type Icon } from "@phosphor-icons/react";
 import { brand } from "@/config/brand";
 import { supabase } from "@/lib/supabase";
 import { minhaConta } from "@/lib/api";
 
-const LINKS = [
-  { href: "/painel", rotulo: "Visão geral" },
-  { href: "/painel/lancamentos", rotulo: "Lançamentos" },
-  { href: "/painel/conta", rotulo: "Conta" },
+const LINKS: { href: string; rotulo: string; icone: Icon }[] = [
+  { href: "/painel", rotulo: "Visão geral", icone: SquaresFour },
+  { href: "/painel/lancamentos", rotulo: "Lançamentos", icone: ListBullets },
+  { href: "/painel/conta", rotulo: "Conta", icone: UserCircle },
 ];
 
 type Estado = "verificando" | "autenticado";
+
+/** O símbolo do produto: um medidor, da ideia de "gastômetro". */
+function Marca({ className = "" }: { className?: string }) {
+  return (
+    <span className={`flex h-10 w-10 flex-none items-center justify-center rounded-[12px] bg-floresta text-papel ${className}`} aria-hidden="true">
+      <Gauge size={22} weight="bold" />
+    </span>
+  );
+}
 
 export function PainelShell({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -66,37 +76,75 @@ export function PainelShell({ children }: { children: ReactNode }) {
     );
   }
 
+  const ativoEm = (href: string) => (href === "/painel" ? caminho === "/painel" : caminho.startsWith(href));
+  const inicial = (nome ?? "").trim().charAt(0).toUpperCase();
+
   return (
-    <div className="flex min-h-[100dvh] flex-col">
-      <header className="sticky top-0 z-40 border-b border-linha bg-papel/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-2 md:h-16 md:flex-nowrap md:py-0 md:px-8">
-          <Link href="/painel" className="font-display text-xl font-semibold tracking-tight text-tinta">
-            {brand.name}
-          </Link>
-          <nav aria-label="Painel" className="order-3 flex w-full items-center gap-1 overflow-x-auto text-sm md:order-none md:w-auto">
-            {LINKS.map((l) => {
-              const ativo = l.href === "/painel" ? caminho === "/painel" : caminho.startsWith(l.href);
-              return (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  aria-current={ativo ? "page" : undefined}
-                  className={`rounded-full px-3 py-2 transition-colors ${ativo ? "bg-folha font-medium text-tinta" : "text-suave hover:text-tinta"}`}
-                >
-                  {l.rotulo}
-                </Link>
-              );
-            })}
-          </nav>
-          <div className="flex items-center gap-3 text-sm md:order-none">
-            {nome && <span className="hidden max-w-[16ch] truncate text-suave sm:inline">{nome}</span>}
-            <button type="button" onClick={sair} className="botao-contorno">
-              Sair
-            </button>
-          </div>
+    <div className="min-h-[100dvh] md:pl-[72px]">
+      {/* Computador: trilho de ícones, com a marca no topo e a conta embaixo. */}
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[72px] flex-col items-center border-r border-linha bg-papel py-5 md:flex">
+        <Link href="/painel" aria-label={brand.name} title={brand.name}>
+          <Marca />
+        </Link>
+        <nav aria-label="Painel" className="mt-8 flex flex-col gap-1.5">
+          {LINKS.map((l) => {
+            const ativo = ativoEm(l.href);
+            const Icone = l.icone;
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                title={l.rotulo}
+                aria-label={l.rotulo}
+                aria-current={ativo ? "page" : undefined}
+                className={`flex h-11 w-11 items-center justify-center rounded-[12px] transition-colors ${ativo ? "bg-folha text-tinta" : "text-suave hover:bg-folha/60 hover:text-tinta"}`}
+              >
+                <Icone size={22} weight={ativo ? "fill" : "regular"} aria-hidden="true" />
+              </Link>
+            );
+          })}
+        </nav>
+        <div className="mt-auto flex flex-col items-center gap-3">
+          {inicial && (
+            <span title={nome ?? undefined} className="flex h-9 w-9 items-center justify-center rounded-full bg-folha text-sm font-semibold text-floresta" aria-hidden="true">
+              {inicial}
+            </span>
+          )}
+          <button type="button" onClick={sair} aria-label="Sair" title="Sair" className="flex h-11 w-11 items-center justify-center rounded-[12px] text-suave transition-colors hover:bg-folha/60 hover:text-tinta">
+            <SignOut size={22} aria-hidden="true" />
+          </button>
         </div>
+      </aside>
+
+      {/* Celular: o produto no topo e as quatro destinos embaixo, ao alcance do polegar. */}
+      <header className="flex items-center gap-3 px-4 pt-4 md:hidden">
+        <Marca className="!h-9 !w-9" />
+        <span className="font-display text-lg font-semibold tracking-tight text-tinta">{brand.name}</span>
       </header>
-      <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 md:px-8">{children}</div>
+
+      <main className="mx-auto w-full max-w-[1320px] px-4 pb-28 pt-5 md:px-8 md:pb-10 md:pt-8">{children}</main>
+
+      <nav aria-label="Painel (celular)" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-linha bg-papel pb-[env(safe-area-inset-bottom)] md:hidden">
+        {LINKS.map((l) => {
+          const ativo = ativoEm(l.href);
+          const Icone = l.icone;
+          return (
+            <Link
+              key={l.href}
+              href={l.href}
+              aria-current={ativo ? "page" : undefined}
+              className={`flex min-h-[56px] flex-col items-center justify-center gap-0.5 text-[0.6875rem] font-medium ${ativo ? "text-floresta" : "text-suave"}`}
+            >
+              <Icone size={22} weight={ativo ? "fill" : "regular"} aria-hidden="true" />
+              {l.rotulo}
+            </Link>
+          );
+        })}
+        <button type="button" onClick={sair} className="flex min-h-[56px] flex-col items-center justify-center gap-0.5 text-[0.6875rem] font-medium text-suave">
+          <SignOut size={22} aria-hidden="true" />
+          Sair
+        </button>
+      </nav>
     </div>
   );
 }
