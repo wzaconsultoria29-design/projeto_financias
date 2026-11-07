@@ -4,6 +4,13 @@ test.describe("landing", () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");
+    // Espera o React assumir a página: digitar antes disso faz o texto se misturar com o valor inicial.
+    await page.waitForFunction(() =>
+      ["#demo-gasto", "#mensagens"].every((seletor) => {
+        const el = document.querySelector(seletor);
+        return !!el && Object.keys(el).some((k) => k.startsWith("__reactProps"));
+      }),
+    );
   });
 
   test("topo: promessa em até 2 linhas e botão visível sem rolar", async ({ page }) => {
@@ -91,6 +98,41 @@ test.describe("landing", () => {
     await expect(page.getByRole("heading", { name: "Seus dados são seus" })).toBeVisible();
     await expect(page.getByText("Não acessamos sua conta bancária")).toBeVisible();
     await expect(page.getByText("sem vínculo com a Meta nem com o WhatsApp")).toBeVisible();
+  });
+
+  test("conversa de demonstração: escolher uma mensagem mostra a resposta do assistente", async ({ page }) => {
+    const secao = page.locator("#conversa");
+    await secao.scrollIntoViewIfNeeded();
+    await secao.getByRole("button", { name: "Foto da notinha" }).click();
+    await expect(secao.getByRole("button", { name: "Mandar um áudio" })).toBeDisabled();
+    await expect(secao.getByText(/Li o cupom: R\$ 87,50/)).toBeVisible({ timeout: 6000 });
+    await expect(secao.getByRole("button", { name: "Mandar um áudio" })).toBeEnabled({ timeout: 6000 });
+  });
+
+  test("contador do topo sobe quando um gasto é escrito", async ({ page }) => {
+    test.skip(test.info().project.name !== "desktop");
+    const contador = page.locator('p[aria-live="polite"]').filter({ hasText: "lançamentos organizados" });
+    await expect(contador).toContainText("7 lançamentos organizados");
+    await page.getByLabel("Escreva um gasto").fill("gastei 32 no almoço");
+    await page.getByRole("button", { name: "Enviar" }).click();
+    await expect(contador).toContainText("8 lançamentos organizados");
+  });
+
+  test("barra fixa: some no topo e nos planos, aparece entre as seções e leva ao cadastro", async ({ page }) => {
+    const barra = page.locator("[data-barra-cta]");
+    await expect(barra).toHaveAttribute("data-visivel", "false");
+    await page.locator("#conversa").scrollIntoViewIfNeeded();
+    await expect(barra).toHaveAttribute("data-visivel", "true");
+    await expect(barra.getByRole("link", { name: "Começar grátis" })).toHaveAttribute("href", "/cadastro");
+    await page.locator("#planos").scrollIntoViewIfNeeded();
+    await expect(barra).toHaveAttribute("data-visivel", "false");
+  });
+
+  test("planos: custo por dia calculado e garantias à vista", async ({ page }) => {
+    const secao = page.locator("#planos");
+    await expect(secao.locator('[data-plano="essencial"]')).toContainText("Cerca de R$ 0,63 por dia");
+    await expect(secao).toContainText("Sem fidelidade: cancele quando quiser");
+    await expect(page.getByRole("heading", { name: /por que .* é pago/i })).toBeVisible();
   });
 
   test("sem rolagem horizontal", async ({ page }) => {

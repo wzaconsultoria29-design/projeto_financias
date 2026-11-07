@@ -3,7 +3,7 @@ import { HeroCelulares } from "./HeroCelulares";
 
 export function Hero() {
   return (
-    <section className="hero-fundo grao -mt-16 overflow-hidden pb-0 pt-24 md:pt-32">
+    <section data-barra-oculta="topo" className="hero-fundo grao -mt-16 overflow-hidden pb-0 pt-24 md:pt-32">
       <div className="mx-auto max-w-7xl px-4 text-center md:px-8">
         <p className="arrive mx-auto w-fit rounded-full bg-white/10 px-4 py-1.5 text-[15px] font-medium text-white ring-1 ring-white/25">
           7 dias grátis, sem cartão
@@ -13,7 +13,9 @@ export function Hero() {
             <span data-line style={{ "--i": 0 } as React.CSSProperties}>Seu mês inteiro,</span>
           </span>
           <span className="line">
-            <span data-line style={{ "--i": 1 } as React.CSSProperties}>sem planilha.</span>
+            <span data-line style={{ "--i": 1 } as React.CSSProperties}>
+              <span className="sublinhado">sem planilha.</span>
+            </span>
           </span>
         </h1>
         <div className="arrive">

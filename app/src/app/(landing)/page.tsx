@@ -1,6 +1,9 @@
 import { Hero } from "@/components/landing/Hero";
 import { Faixa } from "@/components/landing/Faixa";
 import { ComoFunciona } from "@/components/landing/ComoFunciona";
+import { Conversa } from "@/components/landing/Conversa";
+import { BarraCta } from "@/components/landing/BarraCta";
+import { PorQuePago } from "@/components/landing/PorQuePago";
 import { Showcase } from "@/components/landing/Showcase";
 import { Recursos } from "@/components/landing/Recursos";
 import { Privacidade } from "@/components/landing/Privacidade";
@@ -14,12 +17,15 @@ export default function Home() {
       <Hero />
       <Faixa />
       <ComoFunciona />
+      <Conversa />
       <Showcase />
       <Recursos />
       <Privacidade />
       <Planos />
+      <PorQuePago />
       <Faq />
       <CtaFinal />
+      <BarraCta />
     </main>
   );
 }

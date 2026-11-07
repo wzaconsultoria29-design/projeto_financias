@@ -340,3 +340,60 @@ details.pergunta[open] {
     radial-gradient(40% 50% at 5% 90%, rgba(200, 245, 106, 0.12), transparent 70%),
     linear-gradient(180deg, #04261d, #0a3a2c);
 }
+
+/* Sublinhado desenhado à mão sob a palavra de destaque do título: nasce da esquerda para a direita. */
+.sublinhado {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 14' preserveAspectRatio='none'%3E%3Cpath d='M3 9 C60 3 110 11 165 6 S270 4 317 8' fill='none' stroke='%23c8f56a' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left 90% / 100% 0.26em;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js .sublinhado {
+    background-size: 0% 0.26em;
+    animation: desenha 900ms var(--ease) 1100ms forwards;
+  }
+  .pulso {
+    animation: pulso 600ms var(--ease);
+  }
+  .chip-entra {
+    opacity: 0;
+    animation: fade-up 700ms var(--ease) forwards;
+  }
+  /* A linha tracejada entre os passos se preenche quando o passo entra na tela. */
+  .js .rise:not(.in) .preenche {
+    transform: scaleX(0);
+  }
+  .preenche {
+    transition: transform 1100ms var(--ease);
+  }
+}
+@keyframes desenha {
+  to {
+    background-size: 100% 0.26em;
+  }
+}
+@keyframes pulso {
+  0% {
+    transform: scale(1.35);
+    color: var(--lima);
+  }
+  100% {
+    transform: none;
+  }
+}
+.trilha {
+  position: relative;
+  flex: 1;
+  height: 0;
+  border-top: 2px dashed var(--linha);
+}
+@media (min-width: 1024px) {
+  .trilha {
+    margin-right: -1.25rem;
+  }
+}
+.preenche {
+  position: absolute;
+  inset: -2px 0 auto 0;
+  height: 0;
+  border-top: 2px dashed var(--floresta);
+  transform-origin: left;
+}

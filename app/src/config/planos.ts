@@ -47,3 +47,10 @@ export const planos: PlanoVitrine[] = [
     cta: { texto: "Quero ser avisado", href: "/cadastro?plano=family" },
   },
 ];
+
+/** Custo por dia de um preço mensal ("R$ 19" vira "R$ 0,63"), ou null quando o preço não é um número. */
+export function porDia(preco: string): string | null {
+  const n = Number(preco.replace(/[^\d,]/g, "").replace(",", "."));
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return `R$ ${(Math.round((n / 30) * 100) / 100).toFixed(2).replace(".", ",")}`;
+}

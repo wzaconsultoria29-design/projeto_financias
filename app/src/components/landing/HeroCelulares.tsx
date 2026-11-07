@@ -1,45 +1,35 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { PaperPlaneRight } from "@phosphor-icons/react";
+import { Check, PaperPlaneRight } from "@phosphor-icons/react";
 import { interpretar, type Gasto } from "@/lib/demo";
 import { MES, MES_ANTERIOR, PERGUNTAS, responder } from "@/lib/demo-dados";
 import { brl } from "@/lib/format";
-import { brand } from "@/config/brand";
 import { Celular } from "./Celular";
+import { Balao, CabecalhoConversa, Digitando, type Mensagem } from "./ConversaPartes";
 import { Objeto3d } from "./Objeto3d";
 import { PainelFragmento } from "./PainelFragmento";
-
-type Mensagem = { de: "voce" | "bot"; texto: string };
 
 const EXEMPLOS = ["gastei 32 no almoço", "uber 18,50", "mercado 120"];
 const MAXIMO_ITENS = 30;
 
-function CabecalhoConversa({ sub }: { sub: string }) {
+
+/** Cartão de lançamento que flutua ao lado dos celulares: mostra o que o assistente fez com a mensagem. */
+function ChipLancamento({ titulo, detalhe, valor, className = "", atraso = 0 }: { titulo: string; detalhe: string; valor: string; className?: string; atraso?: number }) {
   return (
-    <div className="flex items-center gap-3 px-4 pb-3 pt-12 text-white" style={{ background: "var(--esmeralda)" }}>
-      <span aria-hidden className="grid size-9 place-items-center rounded-full text-[15px] font-bold" style={{ background: "var(--lima)", color: "var(--noite)" }}>
-        {brand.name.charAt(0)}
-      </span>
-      <span className="leading-tight">
-        <span className="block text-[16px] font-semibold">{brand.name}</span>
-        <span className="block text-[13px] text-white/75">{sub}</span>
-      </span>
+    <div aria-hidden className={`chip-entra absolute z-30 hidden lg:block ${className}`} style={{ animationDelay: `${1400 + atraso}ms` }}>
+      <div className="flutua flex items-center gap-4 rounded-2xl bg-white px-4 py-2.5 shadow-[0_18px_40px_-18px_rgba(2,20,14,0.7)]" style={{ animationDelay: `${atraso}ms` }}>
+        <span className="flex flex-col leading-tight">
+          <span className="text-[15px] font-semibold text-[#10201a]">{titulo}</span>
+          <span className="text-[13px] text-[#4a5c54]">{detalhe}</span>
+        </span>
+        <span className="text-[16px] font-semibold tabular-nums text-[#10201a]">{valor}</span>
+      </div>
     </div>
   );
 }
 
-function Balao({ m }: { m: Mensagem }) {
-  return (
-    <li
-      className={`entra-msg max-w-[88%] rounded-2xl px-3.5 py-2 text-[15px] leading-snug ${
-        m.de === "voce" ? "self-end rounded-br-md bg-[var(--botao)] text-[var(--botao-fg)]" : "self-start rounded-bl-md bg-superficie text-tinta shadow-[0_1px_0_rgba(0,0,0,0.06)]"
-      }`}
-    >
-      {m.texto}
-    </li>
-  );
-}
+const lancamento = (descricao: string) => MES.find((i) => i.descricao === descricao);
 
 /** Três celulares: o painel, a conversa (interativa) e a análise do assistente. Escrever na conversa muda o painel. */
 export function HeroCelulares() {
@@ -71,6 +61,24 @@ export function HeroCelulares() {
       <Objeto3d nome="moeda" className="absolute -left-2 top-10 z-30 hidden size-40 md:block lg:left-6 lg:size-52" />
       <Objeto3d nome="folha" lento atraso={1.2} className="absolute -right-2 top-4 z-30 hidden size-40 md:block lg:right-6 lg:size-56" />
       <Objeto3d nome="recibo" atraso={0.6} className="absolute bottom-24 right-[14%] z-30 hidden size-28 lg:block" />
+
+      <p
+        aria-live="polite"
+        className="arrive absolute -top-9 left-1/2 z-30 hidden -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-white/10 px-4 py-1.5 text-[15px] text-white ring-1 ring-white/25 md:flex"
+      >
+        <span key={itens.length} className="pulso font-semibold tabular-nums">{itens.length}</span>{" "}
+        lançamentos organizados
+      </p>
+      {lancamento("Uber") && (
+        <ChipLancamento className="left-[2%] top-[46%]" titulo="Uber" detalhe="Transporte" valor={`-${brl(lancamento("Uber")!.valor)}`} />
+      )}
+      {lancamento("Netflix") && (
+        <ChipLancamento className="right-[3%] top-[56%]" atraso={600} titulo="Netflix" detalhe="Assinaturas" valor={`-${brl(lancamento("Netflix")!.valor)}`} />
+      )}
+      <div aria-hidden className="chip-entra absolute right-[20%] top-[8%] z-30 hidden items-center gap-2 rounded-full bg-[var(--lima)] px-3.5 py-1.5 text-[14px] font-semibold text-[#04261d] lg:flex" style={{ animationDelay: "2000ms" }}>
+        <Check size={16} weight="bold" aria-hidden />
+        Categorizado sozinho
+      </div>
 
       <div className="relative flex items-end justify-center">
         <div className="relative z-0 -mr-14 hidden translate-y-24 -rotate-[7deg] md:block">
@@ -130,11 +138,7 @@ export function HeroCelulares() {
               <ol className="flex flex-1 flex-col justify-end gap-2 px-3 py-3" aria-label="Exemplo de análise">
                 <Balao m={{ de: "voce", texto: PERGUNTAS[0] }} />
                 <Balao m={{ de: "bot", texto: responder(PERGUNTAS[0]) }} />
-                <li aria-hidden className="flex w-fit items-center gap-1 self-start rounded-2xl bg-superficie px-3.5 py-3">
-                  <span className="ponto size-2 rounded-full bg-suave" />
-                  <span className="ponto size-2 rounded-full bg-suave" />
-                  <span className="ponto size-2 rounded-full bg-suave" />
-                </li>
+                <Digitando />
               </ol>
             </div>
           </Celular>
