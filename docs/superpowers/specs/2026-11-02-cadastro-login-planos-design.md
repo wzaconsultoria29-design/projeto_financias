@@ -1,6 +1,6 @@
 # Cadastro, login e plano: desenho
 
-Data: 2026-11-02. Estado: **para aprovação**. Substitui a parte de login do desenho de 2026-10-31 (`2026-10-31-app-e-familia-design.md`). Nada deste documento foi construído.
+Data: 2026-11-02. Estado: **aprovado em 2026-11-04 e parcialmente substituído em 2026-11-06**: o cadastro agora é em 3 passos (celular verificado primeiro, senha, e-mail confirmado), o login é por e-mail e senha, e o cartão é pedido no fim do teste. Veja `docs/MAPA-DE-PROCESSOS.md`. O que continua valendo: regras do bot, estados da conta, troca de plano e regras de segurança. Substitui a parte de login do desenho de 2026-10-31 (`2026-10-31-app-e-familia-design.md`). Nada deste documento foi construído.
 
 ## Por quê
 
