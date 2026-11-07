@@ -36,14 +36,14 @@ export function ParaOndeFoi({ p }: { p: Painel }) {
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="min-w-0 truncate font-medium text-tinta">{c.categoria}</span>
                   <span className="flex flex-none items-baseline gap-3 tabular-nums">
-                    <span className="text-tinta">{brl(c.total)}</span>
+                    <span className="dado text-tinta">{brl(c.total)}</span>
                     <span className="w-14 text-right text-sm text-suave">{pctTexto(c.pct)}</span>
                   </span>
                 </div>
                 <div className="mt-1.5 h-2 rounded-full bg-d-trilho" aria-hidden="true">
                   <div className="h-full rounded-full bg-floresta" style={{ width: `${maior > 0 ? (c.total / maior) * 100 : 0}%` }} />
                 </div>
-                <p className="mt-1 text-xs text-suave tabular-nums">{mudanca(c.total, c.anterior)}</p>
+                <p className="dado mt-1 text-xs text-suave tabular-nums">{mudanca(c.total, c.anterior)}</p>
               </li>
             ))}
           </ul>

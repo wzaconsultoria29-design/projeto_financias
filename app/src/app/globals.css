@@ -192,3 +192,14 @@ body {
     }
   }
 }
+
+/* Modo "esconder valores" do painel: o desfoque vale para tudo que tem a classe .dado dentro do contêiner marcado. */
+[data-privado="true"] .dado {
+  filter: blur(8px);
+  user-select: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dado {
+    transition: filter 200ms ease;
+  }
+}

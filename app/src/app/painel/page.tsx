@@ -5,13 +5,16 @@ import { brand } from "@/config/brand";
 import { painel, type Painel } from "@/lib/api";
 import { dataCurta } from "@/lib/format";
 import { veredito } from "@/lib/painel";
+import { useEscondido } from "@/lib/privacidade";
 import { deslocarMes, hojeIso, intervalo, intervaloDoMes, mesDe, type Intervalo } from "@/lib/periodo";
 import { MaioresGastos } from "@/components/painel/MaioresGastos";
 import { CabecalhoPainel, type Modo } from "@/components/painel/visao/CabecalhoPainel";
+import { EsqueletoPainel } from "@/components/painel/visao/EsqueletoPainel";
 import { FixosVariaveis } from "@/components/painel/visao/FixosVariaveis";
 import { LancarRapido } from "@/components/painel/visao/LancarRapido";
 import { Notou } from "@/components/painel/visao/Notou";
 import { ParaOndeFoi } from "@/components/painel/visao/ParaOndeFoi";
+import { PerguntasRapidas } from "@/components/painel/visao/PerguntasRapidas";
 import { PrimeirosPassos } from "@/components/painel/visao/PrimeirosPassos";
 import { Resumo } from "@/components/painel/visao/Resumo";
 import { Ritmo } from "@/components/painel/visao/Ritmo";
@@ -20,19 +23,6 @@ import { TiposGasto } from "@/components/painel/visao/TiposGasto";
 
 type Resultado = { chave: string } & ({ estado: "erro"; mensagem: string } | { estado: "ok"; dados: Painel });
 
-/** O mesmo desenho da tela pronta, com cada valor trocado por uma barra do seu tamanho: nada pula quando os dados chegam. */
-function Esqueleto() {
-  const bloco = "cartao bg-folha/40";
-  return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-12" aria-busy="true" aria-label="Carregando">
-      <div className={`${bloco} h-[360px] lg:col-span-5`} />
-      <div className={`${bloco} h-[360px] lg:col-span-7`} />
-      <div className={`${bloco} h-[300px] lg:col-span-7`} />
-      <div className={`${bloco} h-[300px] lg:col-span-5`} />
-    </div>
-  );
-}
-
 export default function PainelPage() {
   const [modo, setModo] = useState<Modo>("mes");
   const [mes, setMes] = useState(() => mesDe(new Date()));
@@ -40,6 +30,7 @@ export default function PainelPage() {
   const [resultado, setResultado] = useState<Resultado>();
   const [tentativa, setTentativa] = useState(0);
   const [lancando, setLancando] = useState(false);
+  const [privado, alternarPrivado] = useEscondido();
 
   const mesAtual = mesDe(new Date());
   const periodo = useMemo(() => (modo === "mes" ? intervaloDoMes(mes) : intervalo(modo, new Date(), custom)), [modo, mes, custom]);
@@ -65,7 +56,7 @@ export default function PainelPage() {
   const subtitulo = dados ? veredito(dados) : `De ${dataCurta(periodo.de)} a ${dataCurta(periodo.ate)}`;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6" data-privado={privado}>
       <CabecalhoPainel
         titulo="Visão geral"
         subtitulo={subtitulo}
@@ -81,9 +72,11 @@ export default function PainelPage() {
           setModo("custom");
         }}
         onLancar={() => setLancando(true)}
+        privado={privado}
+        onPrivado={alternarPrivado}
       />
 
-      {carga.estado === "carregando" && <Esqueleto />}
+      {carga.estado === "carregando" && <EsqueletoPainel />}
 
       {carga.estado === "erro" && (
         <div role="alert" className="cartao flex flex-col items-start gap-4 p-6">
@@ -105,14 +98,15 @@ export default function PainelPage() {
             <div className="contents lg:col-span-5 lg:flex lg:flex-col lg:gap-4">
               <div className="order-1 lg:order-none"><Resumo p={dados} /></div>
               <div className="order-4 lg:order-none"><Notou p={dados} /></div>
-              <div className="order-5 lg:order-none"><TiposGasto p={dados} /></div>
-              <div className="order-6 lg:order-none"><FixosVariaveis p={dados} /></div>
-              <div className="order-8 lg:order-none"><MaioresGastos itens={dados.maiores} /></div>
+              <div className="order-6 lg:order-none"><TiposGasto p={dados} /></div>
+              <div className="order-7 lg:order-none"><FixosVariaveis p={dados} /></div>
+              <div className="order-9 lg:order-none"><MaioresGastos itens={dados.maiores} /></div>
             </div>
             <div className="contents lg:col-span-7 lg:flex lg:flex-col lg:gap-4">
               <div className="order-2 lg:order-none"><Ritmo p={dados} /></div>
               <div className="order-3 lg:order-none"><ParaOndeFoi p={dados} /></div>
-              <div className="order-7 lg:order-none"><Tendencia p={dados} /></div>
+              <div className="order-8 lg:order-none"><Tendencia p={dados} /></div>
+              <div className="order-5 lg:order-none"><PerguntasRapidas /></div>
             </div>
           </div>
         </>

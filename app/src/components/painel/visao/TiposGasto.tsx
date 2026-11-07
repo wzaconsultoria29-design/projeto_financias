@@ -52,7 +52,7 @@ export function TiposGasto({ p }: { p: Painel }) {
                   <span className="text-tinta">{x.rotulo}</span>
                 </span>
                 <span className="flex flex-none items-baseline gap-3 whitespace-nowrap tabular-nums">
-                  <span className="text-tinta">{brl(tipos[x.chave])}</span>
+                  <span className="dado text-tinta">{brl(tipos[x.chave])}</span>
                   <span className="w-12 text-right text-sm font-medium text-tinta">{pctTexto(participacao(tipos[x.chave], base))}</span>
                   {comRenda && <span className="hidden w-14 text-right text-xs text-suave sm:block">{`ref. ${x.ref}%`}</span>}
                 </span>
@@ -65,7 +65,7 @@ export function TiposGasto({ p }: { p: Painel }) {
                   <span className="text-suave">Sem classificação</span>
                 </span>
                 <span className="flex flex-none items-baseline gap-3 whitespace-nowrap tabular-nums">
-                  <span className="text-suave">{brl(tipos.sem_tipo)}</span>
+                  <span className="dado text-suave">{brl(tipos.sem_tipo)}</span>
                   <span className="w-12 text-right text-sm text-suave">{pctTexto(participacao(tipos.sem_tipo, base))}</span>
                   {comRenda && <span className="hidden w-14 sm:block" />}
                 </span>

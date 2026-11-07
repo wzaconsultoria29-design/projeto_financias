@@ -61,7 +61,7 @@ function GraficoAcumulado({ p }: { p: Painel }) {
   const resumo = `Gasto acumulado dia a dia: este período ${brl(ultimoAtual)}, período anterior ${brl(serie[ultimo >= 0 ? ultimo : n - 1]?.anterior ?? 0)} no mesmo ponto`;
 
   return (
-    <div ref={ref} className="relative mt-4">
+    <div ref={ref} className="dado relative mt-4">
       <svg
         role="img"
         aria-label={resumo}
@@ -142,7 +142,7 @@ function DiaSemana({ p }: { p: Painel }) {
 
   return (
     <div className="mt-6 border-t border-linha pt-5">
-      <p className="text-sm text-tinta">{`Você mais gasta ${artigo} ${NOME_DIA[maior.dow]}s, em média ${brl(maior.media)} por dia.`}</p>
+      <p className="dado text-sm text-tinta">{`Você mais gasta ${artigo} ${NOME_DIA[maior.dow]}s, em média ${brl(maior.media)} por dia.`}</p>
       <ol aria-label="Gasto médio por dia da semana" className="mt-3 grid grid-cols-7 gap-2">
         {medias.map((d) => (
           <li key={d.dow} className="flex flex-col items-center gap-1.5">
@@ -174,12 +174,12 @@ export function Ritmo({ p }: { p: Painel }) {
       <dl className="mt-3 flex flex-wrap gap-x-10 gap-y-3">
         <div>
           <dt className="text-sm text-suave">Média por dia</dt>
-          <dd className="mt-0.5 text-xl font-semibold text-tinta tabular-nums">{brl(p.resumo.media_diaria)}</dd>
+          <dd className="dado mt-0.5 text-xl font-semibold text-tinta tabular-nums">{brl(p.resumo.media_diaria)}</dd>
         </div>
         {p.projecao && (
           <div>
             <dt className="text-sm text-suave">Previsão de fechamento</dt>
-            <dd className="mt-0.5 text-xl font-semibold text-tinta tabular-nums">{brl(p.projecao.previsto)}</dd>
+            <dd className="dado mt-0.5 text-xl font-semibold text-tinta tabular-nums">{brl(p.projecao.previsto)}</dd>
             <dd className="text-xs text-suave">{`no ritmo de ${p.projecao.dias_decorridos} de ${p.projecao.dias_no_mes} dias`}</dd>
           </div>
         )}

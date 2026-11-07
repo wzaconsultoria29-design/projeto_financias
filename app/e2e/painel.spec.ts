@@ -150,6 +150,57 @@ test.describe("painel: visão geral", () => {
     await expect(page.getByRole("dialog")).toHaveCount(0);
   });
 
+  test("mês em andamento mostra quanto ainda pode gastar por dia", async ({ page }) => {
+    await abrirPainel(page);
+    // renda 3.500 menos gasto 1.900 = 1.600, divididos pelos 3 dias que faltam (28 de 31 já passaram)
+    await expect(page.getByText("Pode gastar por dia até o fim do mês")).toBeVisible();
+    await expect(page.getByText("R$ 533,33")).toBeVisible();
+    await expect(page.getByText(/Sobram R\$ 1\.600,00 da renda registrada, em 3 dias/)).toBeVisible();
+  });
+
+  test("olho esconde os valores com desfoque, lembra a escolha e mostra de novo", async ({ page }) => {
+    await abrirPainel(page);
+    const valor = page.getByText("R$ 533,33");
+    const filtro = () => valor.evaluate((el) => getComputedStyle(el).filter);
+    expect(await filtro()).toBe("none");
+    const botao = page.getByRole("button", { name: "Esconder valores" });
+    await expect(botao).toHaveAttribute("aria-pressed", "false");
+    await botao.click();
+    await expect(botao).toHaveAttribute("aria-pressed", "true");
+    await expect.poll(filtro).toContain("blur");
+    await page.screenshot({ path: `../docs/screens/painel-visao-escondido-${test.info().project.name}.png`, fullPage: true });
+    expect(await page.evaluate(() => localStorage.getItem("painel-valores-escondidos"))).toBe("1");
+    // o que não é valor continua legível
+    await expect(page.getByRole("heading", { name: "Para onde foi o dinheiro" })).toBeVisible();
+    await botao.click();
+    await expect.poll(filtro).toBe("none");
+    expect(await page.evaluate(() => localStorage.getItem("painel-valores-escondidos"))).toBe("0");
+  });
+
+  test("enquanto carrega, mostra o esqueleto com o desenho da tela pronta", async ({ page }) => {
+    await page.clock.setFixedTime(AGORA);
+    await simular(page, { login: ["ok"] }, { app_painel: () => PAINEL });
+    // a resposta do banco demora; esta rota vem depois da simulação e, por isso, passa na frente dela
+    await page.route("**/rest/v1/rpc/app_painel", async (route) => {
+      await new Promise((r) => setTimeout(r, 4000));
+      await route.fallback();
+    });
+    await entrar(page);
+    const esqueleto = page.getByLabel("Carregando");
+    await expect(esqueleto).toBeVisible();
+    await expect(esqueleto.locator("[data-esqueleto-cartao]")).toHaveCount(9);
+    await page.screenshot({ path: `../docs/screens/painel-carregando-${test.info().project.name}.png`, fullPage: true });
+    await expect(page.getByText("+R$ 3.500,00")).toBeVisible({ timeout: 10000 });
+    await expect(esqueleto).toHaveCount(0);
+  });
+
+  test("perguntas sugeridas abrem o WhatsApp do assistente já escritas", async ({ page }) => {
+    await abrirPainel(page);
+    const link = page.getByRole("link", { name: "Onde posso economizar?" });
+    await expect(link).toHaveAttribute("href", "https://wa.me/5582991130317?text=Onde%20posso%20economizar%3F");
+    await expect(link).toHaveAttribute("target", "_blank");
+  });
+
   test("atalho para conversar no WhatsApp e sem rolagem horizontal", async ({ page }) => {
     await abrirPainel(page);
     await expect(page.getByRole("link", { name: /Conversar no WhatsApp/ }).first()).toHaveAttribute("href", "https://wa.me/5582991130317");

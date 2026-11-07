@@ -27,7 +27,7 @@ export function FixosVariaveis({ p }: { p: Painel }) {
             <span className="h-2 w-2 rounded-full bg-floresta" aria-hidden="true" />
             Fixos
           </dt>
-          <dd className="mt-1 tabular-nums text-tinta">
+          <dd className="dado mt-1 tabular-nums text-tinta">
             {brl(fixos)} <span className="text-sm text-suave">{pctTexto(participacao(fixos, total))}</span>
           </dd>
         </div>
@@ -36,7 +36,7 @@ export function FixosVariaveis({ p }: { p: Painel }) {
             <span className="h-2 w-2 rounded-full bg-d-cinza" aria-hidden="true" />
             Variáveis
           </dt>
-          <dd className="mt-1 tabular-nums text-tinta">
+          <dd className="dado mt-1 tabular-nums text-tinta">
             {brl(variaveis)} <span className="text-sm text-suave">{pctTexto(participacao(variaveis, total))}</span>
           </dd>
         </div>
@@ -46,7 +46,7 @@ export function FixosVariaveis({ p }: { p: Painel }) {
           {maiores.slice(0, 3).map((m, i) => (
             <li key={`${m.descricao}-${i}`} className="flex items-baseline justify-between gap-3">
               <span className="min-w-0 truncate text-suave">{m.descricao}</span>
-              <span className="flex-none tabular-nums text-tinta">{brl(m.valor)}</span>
+              <span className="dado flex-none tabular-nums text-tinta">{brl(m.valor)}</span>
             </li>
           ))}
         </ul>

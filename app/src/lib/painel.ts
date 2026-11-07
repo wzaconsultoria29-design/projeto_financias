@@ -115,3 +115,17 @@ export function veredito(p: Painel): string {
   if (resumo.saldo < 0) return "Você gastou mais do que recebeu neste período.";
   return "Você fechou o período no zero a zero.";
 }
+
+export type Folga = { tipo: "ok"; porDia: number; restante: number; dias: number } | { tipo: "estourou"; excesso: number };
+
+/**
+ * Quanto ainda dá para gastar por dia até o fim do mês: o que sobra da renda registrada dividido pelos dias que faltam.
+ * Só existe no mês em andamento e com renda registrada; no último dia, divide por um (nunca por zero).
+ */
+export function podeGastarPorDia(p: Painel): Folga | null {
+  if (!p.projecao || p.sem_receita || p.resumo.receitas <= 0) return null;
+  const restante = Math.round((p.resumo.receitas - p.resumo.despesas) * 100) / 100;
+  if (restante <= 0) return { tipo: "estourou", excesso: 0 - restante };
+  const dias = Math.max(1, p.projecao.dias_no_mes - p.projecao.dias_decorridos);
+  return { tipo: "ok", porDia: Math.round((restante / dias) * 100) / 100, restante, dias };
+}

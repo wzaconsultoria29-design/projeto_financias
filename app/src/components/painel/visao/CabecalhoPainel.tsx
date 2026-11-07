@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CaretLeft, CaretRight, Plus, WhatsappLogo } from "@phosphor-icons/react";
+import { CaretLeft, CaretRight, Eye, EyeSlash, Plus, WhatsappLogo } from "@phosphor-icons/react";
 import { brand } from "@/config/brand";
 import { rotuloDoMes, type Intervalo } from "@/lib/periodo";
 
@@ -26,12 +26,14 @@ type Props = {
   onMes: (delta: -1 | 1) => void;
   onCustom: (r: Intervalo) => void;
   onLancar: () => void;
+  privado: boolean;
+  onPrivado: () => void;
 };
 
 const campo = "rounded-[10px] border border-linha bg-superficie px-3 py-2 text-tinta";
 
 /** Título que responde à pergunta da tela, a escolha do período e as duas ações do dia a dia: lançar e conversar. */
-export function CabecalhoPainel({ titulo, subtitulo, modo, mes, mesAtual, custom, maximo, onModo, onMes, onCustom, onLancar }: Props) {
+export function CabecalhoPainel({ titulo, subtitulo, modo, mes, mesAtual, custom, maximo, onModo, onMes, onCustom, onLancar, privado, onPrivado }: Props) {
   const [de, setDe] = useState(custom?.de ?? "");
   const [ate, setAte] = useState(custom?.ate ?? "");
 
@@ -46,6 +48,16 @@ export function CabecalhoPainel({ titulo, subtitulo, modo, mes, mesAtual, custom
           <button type="button" onClick={onLancar} className="botao">
             <Plus size={18} weight="bold" aria-hidden="true" />
             Lançar
+          </button>
+          <button
+            type="button"
+            aria-label="Esconder valores"
+            aria-pressed={privado}
+            title="Esconder valores"
+            onClick={onPrivado}
+            className={`flex h-[46px] w-[46px] flex-none items-center justify-center rounded-full border transition-colors ${privado ? "border-floresta bg-folha text-tinta" : "border-linha text-suave hover:border-floresta hover:text-tinta"}`}
+          >
+            {privado ? <EyeSlash size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
           </button>
           <a href={brand.botWaUrl("")} target="_blank" rel="noopener noreferrer" className="botao-contorno">
             <WhatsappLogo size={18} aria-hidden="true" />

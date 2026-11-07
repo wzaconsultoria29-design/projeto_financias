@@ -21,7 +21,7 @@ export function MaioresGastos({ itens }: { itens: VisaoGeral["maiores"] }) {
                     {m.categoria ? ` · ${m.categoria}` : ""}
                   </p>
                 </div>
-                <p className="shrink-0 font-medium tabular-nums text-tinta">{brl(m.valor)}</p>
+                <p className="dado shrink-0 font-medium tabular-nums text-tinta">{brl(m.valor)}</p>
               </li>
             );
           })}

@@ -11,7 +11,7 @@ export function Notou({ p }: { p: Painel }) {
       <h2 id="t-notou" className="font-display text-lg font-semibold text-tinta">
         O que o painel notou
       </h2>
-      <ul className="mt-4 flex flex-col gap-3">
+      <ul className="dado mt-4 flex flex-col gap-3">
         {frases.map((f) => (
           <li key={f} className="flex gap-3 text-tinta">
             <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-floresta" aria-hidden="true" />

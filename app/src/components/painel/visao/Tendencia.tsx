@@ -21,7 +21,7 @@ function Colunas({ p }: { p: Painel }) {
   const h = (v: number) => Math.max(v > 0 ? 2 : 0, y(0) - y(v));
 
   return (
-    <div ref={ref} className="mt-4">
+    <div ref={ref} className="dado mt-4">
       <svg role="img" aria-label="Receitas e despesas por mês, nos últimos seis meses" width={w} height={ALTURA} viewBox={`0 0 ${w} ${ALTURA}`} className="block">
         {passos.map((v) => (
           <g key={v}>

@@ -1,6 +1,6 @@
 import type { Painel } from "@/lib/api";
 import { brl, pct } from "@/lib/format";
-import { partesBrl, pctTexto } from "@/lib/painel";
+import { partesBrl, pctTexto, podeGastarPorDia } from "@/lib/painel";
 
 const REFERENCIA = 20;
 
@@ -8,7 +8,7 @@ const REFERENCIA = 20;
 export function ValorGrande({ valor }: { valor: number }) {
   const { sinal, inteiro, centavos } = partesBrl(valor);
   return (
-    <p className="font-display text-[2.25rem] font-semibold leading-none tracking-tight text-tinta tabular-nums">
+    <p className="dado font-display text-[2.25rem] font-semibold leading-none tracking-tight text-tinta tabular-nums">
       <span className="sr-only">{`${sinal}${inteiro}${centavos}`}</span>
       <span aria-hidden="true">
         {sinal}
@@ -25,6 +25,7 @@ export function Resumo({ p }: { p: Painel }) {
   const semRenda = p.sem_receita;
   const taxa = resumo.taxa_poupanca;
   const preenchido = taxa === null ? 0 : Math.min(100, Math.max(0, taxa));
+  const folga = podeGastarPorDia(p);
 
   return (
     <section className="cartao p-5 md:p-6" aria-labelledby="t-resumo">
@@ -43,13 +44,29 @@ export function Resumo({ p }: { p: Painel }) {
         <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-linha pt-4">
           <div>
             <dt className="text-sm text-suave">Receitas</dt>
-            <dd className="mt-1 text-lg font-medium text-floresta tabular-nums">{`+${brl(resumo.receitas)}`}</dd>
+            <dd className="dado mt-1 text-lg font-medium text-floresta tabular-nums">{`+${brl(resumo.receitas)}`}</dd>
           </div>
           <div>
             <dt className="text-sm text-suave">Despesas</dt>
-            <dd className="mt-1 text-lg font-medium text-tinta tabular-nums">{brl(resumo.despesas)}</dd>
+            <dd className="dado mt-1 text-lg font-medium text-tinta tabular-nums">{brl(resumo.despesas)}</dd>
           </div>
         </dl>
+      )}
+
+      {folga && (
+        <div className="mt-5 rounded-[12px] bg-folha px-4 py-3">
+          {folga.tipo === "ok" ? (
+            <>
+              <p className="text-sm text-suave">Pode gastar por dia até o fim do mês</p>
+              <p className="dado mt-0.5 text-xl font-semibold text-tinta tabular-nums">{brl(folga.porDia)}</p>
+              <p className="dado mt-0.5 text-xs text-suave">{`Sobram ${brl(folga.restante)} da renda registrada, em ${folga.dias} ${folga.dias === 1 ? "dia" : "dias"}.`}</p>
+            </>
+          ) : (
+            <p className="dado text-sm text-tinta">
+              {folga.excesso > 0 ? `Você já passou ${brl(folga.excesso)} da renda registrada neste mês.` : "Você já usou toda a renda registrada neste mês."}
+            </p>
+          )}
+        </div>
       )}
 
       {taxa !== null && (
