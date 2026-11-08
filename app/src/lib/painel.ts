@@ -129,3 +129,26 @@ export function podeGastarPorDia(p: Painel): Folga | null {
   const dias = Math.max(1, p.projecao.dias_no_mes - p.projecao.dias_decorridos);
   return { tipo: "ok", porDia: Math.round((restante / dias) * 100) / 100, restante, dias };
 }
+
+const DIAS_POR_MES = 30.4375;
+const arred2 = (n: number) => Math.round(n * 100) / 100;
+
+/**
+ * Quando o período tem gasto mas nenhuma receita lançada, usa a renda mensal que a pessoa informou nas Configurações
+ * (proporcional ao tamanho do período: um mês inteiro vale uma renda, o ano vale doze). Receita lançada de verdade
+ * sempre vale mais. Devolve o mesmo objeto quando não há o que aplicar.
+ */
+export function aplicarRendaDoPerfil(p: Painel, rendaMensal: number | null): Painel {
+  if (!p.sem_receita || rendaMensal === null || !(rendaMensal > 0)) return p;
+  const meses = p.periodo.dias / DIAS_POR_MES;
+  const inteiros = Math.round(meses);
+  const fator = inteiros >= 1 && Math.abs(meses - inteiros) < 0.15 ? inteiros : meses; // 28, 30 e 31 dias contam um mês
+  const receitas = arred2(rendaMensal * fator);
+  const saldo = arred2(receitas - p.resumo.despesas);
+  return {
+    ...p,
+    sem_receita: false,
+    renda_do_perfil: true,
+    resumo: { ...p.resumo, receitas, saldo, taxa_poupanca: Math.round((saldo / receitas) * 1000) / 10 },
+  };
+}

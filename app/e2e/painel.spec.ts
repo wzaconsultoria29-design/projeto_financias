@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { simular, entrar } from "./apoio";
+import { simular, entrar, CONTA } from "./apoio";
 
 // Quarta-feira, 28/10/2026, 10h em São Paulo.
 const AGORA = new Date("2026-10-28T13:00:00Z");
@@ -154,6 +154,22 @@ test.describe("painel: visão geral", () => {
     }));
     await expect(page.getByText("Registre a sua renda deste período").first()).toBeVisible();
     await expect(page.getByRole("meter")).toHaveCount(0);
+  });
+
+  test("sem receita lançada, a renda mensal do perfil entra e o pedido para registrar some", async ({ page }) => {
+    await page.clock.setFixedTime(AGORA);
+    await simular(page, { login: ["ok"] }, {
+      app_painel: () => ({
+        ...PAINEL,
+        sem_receita: true,
+        resumo: { receitas: 0, despesas: 2500, saldo: -2500, taxa_poupanca: null, media_diaria: 80, quantidade: 4 },
+      }),
+      app_minha_conta: () => ({ ...CONTA, renda_mensal: 10000, custo_vida_mensal: 20000 }),
+    });
+    await entrar(page);
+    await expect(page.getByText("Renda mensal informada no seu perfil")).toBeVisible();
+    await expect(page.getByText("Registre a sua renda deste período")).toHaveCount(0);
+    await expect(page.getByRole("meter", { name: "Taxa de poupança" })).toHaveAttribute("aria-valuenow", "75");
   });
 
   test("erro do servidor mostra mensagem amigável e Tentar de novo recarrega", async ({ page }) => {

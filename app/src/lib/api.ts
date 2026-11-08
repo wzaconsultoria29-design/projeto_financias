@@ -153,6 +153,8 @@ export type Painel = {
   projecao: { previsto: number; dias_decorridos: number; dias_no_mes: number } | null;
   sem_receita: boolean;
   historico_total: number;
+  /** Marcado no navegador (não vem do banco): a renda do período veio da renda mensal do perfil, não de lançamentos. */
+  renda_do_perfil?: boolean;
 };
 
 export async function painel(r: Intervalo): Promise<Painel> {

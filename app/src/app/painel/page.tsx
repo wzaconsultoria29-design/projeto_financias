@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { brand } from "@/config/brand";
-import { painel, type Painel } from "@/lib/api";
+import { minhaConta, painel, type Painel } from "@/lib/api";
 import { dataCurta } from "@/lib/format";
-import { veredito } from "@/lib/painel";
+import { aplicarRendaDoPerfil, veredito } from "@/lib/painel";
 import { useEscondido } from "@/lib/privacidade";
 import { deslocarMes, hojeIso, intervalo, intervaloDoMes, mesDe, type Intervalo } from "@/lib/periodo";
 import { MaioresGastos } from "@/components/painel/MaioresGastos";
@@ -45,8 +45,10 @@ export default function PainelPage() {
 
   useEffect(() => {
     let ativo = true;
-    painel(periodo)
-      .then((dados) => ativo && setResultado({ chave, estado: "ok", dados }))
+    // A renda mensal do perfil só entra quando falta receita lançada; se a leitura dela falhar, o painel segue sem ela.
+    const renda = minhaConta().then((c) => c.renda_mensal, () => null);
+    Promise.all([painel(periodo), renda])
+      .then(([dados, rendaMensal]) => ativo && setResultado({ chave, estado: "ok", dados: aplicarRendaDoPerfil(dados, rendaMensal) }))
       .catch((e: unknown) => {
         if (!ativo) return;
         setResultado({ chave, estado: "erro", mensagem: e instanceof Error ? e.message : "Algo deu errado. Tente de novo em instantes." });

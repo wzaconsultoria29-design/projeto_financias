@@ -102,6 +102,12 @@ export function Resumo({ p }: { p: Painel }) {
           </div>
         )}
 
+        {p.renda_do_perfil && (
+          <p className="mt-4 rounded-[12px] bg-white/10 px-3.5 py-2.5 text-[13px] leading-relaxed text-white">
+            Renda mensal informada no seu perfil. Se lançar uma receita neste período, ela passa a valer no lugar.
+          </p>
+        )}
+
         <p className="mt-4 text-[13px] leading-relaxed text-[#a9c7b8]">A taxa de poupança é a parte da renda que sobrou. {REFERENCIA}% é uma referência comum, não uma obrigação.</p>
       </div>
     </section>

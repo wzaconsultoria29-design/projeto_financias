@@ -16,7 +16,7 @@ function jwtFalso(): string {
 
 const USUARIO = { id: "u1", aud: "authenticated", role: "authenticated", email: "maria@exemplo.com", app_metadata: {}, user_metadata: {}, created_at: "2026-10-01T00:00:00Z" };
 export const CONTA = {
-  nome: "Maria Silva", email: "maria@exemplo.com", telefone_mascarado: "+55 11 *****-8888",
+  nome: "Maria Silva", email: "maria@exemplo.com", telefone_mascarado: "+55 11 *****-8888", renda_mensal: null, custo_vida_mensal: null,
   plano: null, assinatura: null, uso: { mensagens: 0, limite: null, restantes: null },
   consentimento: { em: null, versao: null },
 };
