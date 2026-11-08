@@ -105,17 +105,17 @@
 
 | Área | Estado |
 |---|---|
-| Banco (Supabase) | Migrações **001 a 007 e 009 a 015 aplicadas**. A 015 (painel novo) foi aplicada em 2026-11-07 depois de ensaio que achou e corrigiu um bug de acento. |
+| Banco (Supabase) | Migrações **001 a 007 e 009 a 018 aplicadas** (016, 017 e 018 em 2026-11-08, com OK do dono, depois de ensaio). A 015 (painel novo) foi aplicada em 2026-11-07 depois de ensaio que achou e corrigiu um bug de acento. |
 | Bot (n8n + Evolution) | **Ativo**. Bot **fechado**: só atende quem tem cadastro e conectou o WhatsApp. |
 | Site e painel | **Publicados na Vercel** (último deploy READY: commit `a401844`). Abre sem login da Vercel em 2026-11-07. |
 | Landing | Nova versão no ar (seção 9). |
-| Painel Visão geral | **Refeito como narrativa em 2026-11-07** (seção 8.4): abertura em cor cheia e sete capítulos com manchete e "Como ler". Construído e verificado localmente; **ainda não commitado nem publicado**. Lançamentos e Conta seguem como na Fase 1. |
+| Painel Visão geral | **Refeito como narrativa em 2026-11-07** (seção 8.4): abertura em cor cheia e sete capítulos com manchete e "Como ler". Commitado e enviado em 2026-11-07 (commit `4a83975`); deploy de produção iniciado na Vercel. Lançamentos e Conta seguem como na Fase 1. |
 | Cadastro | **Fluxo antigo ainda em uso:** nome, e-mail, WhatsApp e aceite; devolve link `wa.me` com `ATIVAR <código>`. O fluxo novo em 3 passos **não foi construído**. |
 | Login | **Ainda por código pelo WhatsApp** (`/entrar`, `PAINEL <código>`). O login por e-mail e senha **não foi construído**. |
-| Pagamento | **Nada na v3.** Mercado Pago pendente (depende da conta do dono). |
-| Plano Family | Existe no banco; no site aparece "em breve". Compartilhamento entre membros **não existe**. |
-| Testes | 221 unitários (Vitest) e 104 de ponta a ponta (Playwright, 2 pulados), tudo verde em 2026-11-07. |
-| Configurações | **Desenho aprovado em 2026-11-07, falta construir** (seção 8.5). Hoje só existe a página Conta (leitura). Exige as migrações 016, 017 e 018 (propostas, não aplicadas). |
+| Pagamento | **Nada na v3.** Mercado Pago pendente (depende da conta do dono). "Assinar" só **registra um pedido** (migração 017); ninguém é cobrado e o plano não muda. |
+| Plano Family | **À venda no site** (landing, cadastro e Configurações têm "Assinar o Family"; sem "em breve"). Convite de pessoas existe no código e no banco (migração 018 aplicada); o site com as telas ainda não foi enviado. A **visão compartilhada dos valores e a cota compartilhada de mensagens NÃO existem**: cada pessoa do grupo vê só os próprios lançamentos e usa o próprio plano. |
+| Testes | 266 unitários (Vitest) e 128 de ponta a ponta (Playwright, 2 pulados), tudo verde em 2026-11-07. |
+| Configurações | **Blocos A, B e C construídos localmente em 2026-11-07** (menu, Conta com renda e custo de vida, Aparência com tema, Plano e pagamentos com assinar/pedido/histórico, Acesso compartilhado com convites, WhatsApp, Notificações, Privacidade, página `/convite/<código>`). **Migrações 016, 017 e 018 APLICADAS no banco em 2026-11-08** (ensaiadas antes, "FALHAS: 0" cada). O código do site que as usa **ainda não foi commitado nem enviado**: até o push, o site publicado não mostra as telas novas. |
 | Conta do dono | Colocada **manualmente no plano Family** em 2026-11-07 (seção 5.6). |
 
 ---
@@ -127,7 +127,7 @@
 |---|---|---|---|---|---|---|
 | `trial` | Teste grátis | R$ 0 | 50 | 1 | 7 dias (ciclo único) | +3 dias para quem registrar 5 gastos (regra anunciada; conferir implementação ao mexer) |
 | `essencial` | Essencial | R$ 19 (1900 centavos) | 300 | 1 | mensal | "Mais popular" na landing |
-| `family` | Family | R$ 39 (3900 centavos) | 800 compartilhadas | até 4 (`membros_max`) | mensal | Site mostra "Em breve" |
+| `family` | Family | R$ 39 (3900 centavos) | 800 compartilhadas | até 4 (`membros_max`) | mensal | À venda no site ("Assinar o Family"); sem pagamento online ainda |
 
 - **(superado em 2026-10-31)** Planos antigos da memória: Trial 30 msgs, Solo R$ 19,90/150, Família R$ 44,90/500.
 - Mensagens recebidas contam na cota (texto, áudio, imagem); `DEL#` e `ATIVAR` **não contam**. Uso por período em `uso_periodo` (chave: `assinatura_id` + `periodo_inicio`).
@@ -212,7 +212,7 @@ Mercado Pago, cartão recorrente (depende da conta do dono). Falta: ativar assin
 - `verificar_acesso` com `p_criar=false` **nunca cria conta** (bot fechado).
 
 ### 6.4 Migrações (em `supabase/migrations`, todas aplicadas)
-001 schema base · 002 funções do bot · 003 RLS e permissões · 004 dedup de conversa · 005 respostas em objeto para o n8n · 006 períodos calculados no banco · 007 LGPD (consentimento, exportar, excluir) · **(008 não existe)** · 009 planos e app (Essencial, Family, trial 7 dias) · 010 login pelo WhatsApp · 011 painel · 012 categorias · **013 cadastro completo e bot fechado** · **014 descartar mensagem de desconhecido** · **015 métricas do painel (`app_painel`)**.
+001 schema base · 002 funções do bot · 003 RLS e permissões · 004 dedup de conversa · 005 respostas em objeto para o n8n · 006 períodos calculados no banco · 007 LGPD (consentimento, exportar, excluir) · **(008 não existe)** · 009 planos e app (Essencial, Family, trial 7 dias) · 010 login pelo WhatsApp · 011 painel · 012 categorias · **013 cadastro completo e bot fechado** · **014 descartar mensagem de desconhecido** · **015 métricas do painel (`app_painel`)** · **016 perfil: renda e custo de vida mensais em `usuarios`, `app_minha_conta` com os dois campos e `app_salvar_perfil` (ESCRITA e com teste SQL, NÃO APLICADA em 2026-11-07)**.
 - Na época da 013 o banco **estava diferente do repositório** nas funções `cadastrar_usuario`, `ativar_por_codigo` e `verificar_acesso`; a 013 as redefiniu. Lição: conferir o banco real antes de assumir o repositório.
 
 ### 6.5 Como mudar o banco com segurança
@@ -282,17 +282,20 @@ Desenho: `docs/superpowers/specs/2026-11-06-painel-novo-design.md`. Estilo: **pa
 - **Limitação conhecida:** `parcelas` guarda só a quantidade; o painel **não projeta parcelas futuras**.
 - **Lançamentos** (busca, filtros, criar, editar, excluir, exportar CSV) e **Conta** (plano, uso, dados, baixar/apagar) seguem da Fase 1. A página Conta ainda é de leitura.
 
-### 8.5 Configurações (desenho aprovado em 2026-11-07; **a construir**)
+### 8.5 Configurações (desenho aprovado em 2026-11-07; **blocos A, B e C construídos localmente**)
 Rota `/painel/configuracoes` com menu lateral (lista no celular); `/painel/conta` redireciona; o ícone "Conta" do trilho vira "Configurações". Maquetes em `docs/mockups/2026-11-07/`; desenho completo em `docs/superpowers/specs/2026-11-07-painel-narrativo-e-configuracoes-design.md`.
 - **Conta:** nome editável; e-mail e WhatsApp somente leitura (mascarados); **renda mensal** e **custo de vida mensal** (alimentam a leitura do painel; "nada disso é compartilhado"); sessão atual e "Sair da conta". Criar senha só quando existir o login por e-mail e senha. **Migração 016 (proposta):** colunas novas em `usuarios`.
 - **Aparência e segurança:** tema **claro, escuro ou automático** (hoje o tema só segue o aparelho; o manual exige `data-theme` no CSS, no padrão da paleta de dataviz) e "**Ocultar valores ao abrir**" (liga o modo do olho já na entrada). Só no navegador.
-- **Plano e pagamentos:** plano atual, situação, período e uso das mensagens; comparação dos 3 planos; "**Pedir upgrade**" registra o pedido e **não troca o plano** (decisão de 2026-11-07); **histórico de pagamentos** (hoje "Nenhuma cobrança ainda"; as linhas da maquete são exemplo). **Migração 017 (proposta):** pedidos de plano e leitura de pagamentos.
+- **Plano e pagamentos:** plano atual, situação, período e uso das mensagens; comparação dos 3 planos; "**Assinar o Family / Essencial**" registra o pedido e **não troca o plano** (decisão de 2026-11-07); **histórico de pagamentos** (hoje "Nenhuma cobrança ainda"; as linhas da maquete são exemplo). **Migração 017 (proposta):** pedidos de plano e leitura de pagamentos.
 - **Acesso compartilhado (Family):** "Pessoas do grupo · n de 4", convite por **link com código** (vale 7 dias), copiar, cancelar, remover; só o titular gerencia; quem não tem Family vê o que o plano oferece e vai para "Plano e pagamentos". **Migração 018 (proposta):** grupos, membros e convites. **Visão compartilhada dos valores NÃO entra nesta etapa** (muda a RLS de `lancamentos` e das funções `app_*`); a tela avisa isso.
 - **WhatsApp, Notificações, Privacidade e dados:** páginas simples; Privacidade com exportar CSV, documentos e "Zona de risco" recolhida (excluir dados, com confirmação). O bot nunca escreve primeiro.
+- **Já construído (bloco A, local):** rotas `/painel/configuracoes/{conta,aparencia,plano,acesso,whatsapp,notificacoes,privacidade}` com layout e menu (`MenuConfiguracoes`); `/painel/conta` e `/painel/configuracoes` redirecionam para `/painel/configuracoes/conta`; o trilho e a barra do celular têm o item **Configurações** (ícone de engrenagem). **Conta:** `salvarPerfil` (RPC `app_salvar_perfil`, migração 016) com valores lidos por `lerReais` (campo vazio limpa, zero vale, texto inválido não é enviado), "Sair deste navegador" (`signOut local`) e "Sair de todos os aparelhos" (`signOut global`). **Aparência:** tema manual em `src/lib/tema.ts` (`data-tema="claro|escuro"` na página; automático solta o atributo; escolha em `localStorage` `painel-tema`; `useTema`) e "Ocultar valores ao abrir" (`painel-ocultar-ao-abrir`; `aplicarPreferenciasAoAbrir` roda uma vez por aba, no `PainelShell`). O CSS escuro vale por `:root[data-tema="escuro"]` e por `prefers-color-scheme` quando o tema não está fixado em claro. **Privacidade:** mostra versão e data do aceite, baixar dados, documentos e "Zona de risco" recolhida. **Notificações:** só informativa.
+- **Bloco B (Plano e pagamentos, migração 017):** `plano/page.tsx` lê `minhaConta` + `planoEPagamentos` (RPC `app_plano_e_pagamentos` → atual, planos, solicitacao, pagamentos). Cartões vêm de `config/planos.ts`; o atual leva a marca "Seu plano"; os outros pagos têm o botão **"Assinar o <plano>"** (`solicitarPlano` → `app_solicitar_plano`, que só grava o pedido em `solicitacoes_plano`, um pendente por pessoa; recusa trial e o plano que a pessoa já tem). Com pedido: "Pedido registrado… O seu plano atual não muda até lá" e **Cancelar pedido** (`cancelarPedidoPlano`). **Histórico de pagamentos** = tabela `pagamentos` (hoje vazia: "Nenhuma cobrança ainda"). Sem gateway, nada cobra.
+- **Bloco C (Acesso compartilhado, migração 018):** `acesso/page.tsx` usa `grupoAtual` (`app_grupo` → elegivel, limite, papel, titular_nome, membros, convites). Sem Family: texto "disponível no plano Family" e link para Plano. Titular: "Pessoas do grupo · n de 4", **Convidar alguém** (`criarConvite`; link `/convite/<código de 10 caracteres>` mostrado **uma única vez**, o banco guarda só o hash; vale 7 dias, uso único), Copiar link, Cancelar convite, Remover (com confirmação). O limite conta membros + convites pendentes. Membro: "Você está no grupo de X" e **Sair do grupo**. O link abre `app/(site)/convite/[codigo]/page.tsx`, que guarda o código em `localStorage` (`convite-pendente`) e leva a entrar ou criar conta; **`ConviteAoEntrar`** (montado no `PainelShell`) aceita o convite guardado uma vez (`aceitarConvite` → `app_aceitar_convite`) e avisa o resultado. A tela avisa que **a visão compartilhada e a cota compartilhada ainda não existem**.
 - **Ritmo de entrega:** cada migração é escrita, **ensaiada** (teste SQL em transação desfeita), e só aplicada com o **OK do dono**.
 
 ### 8.6 Rotas
-`/` landing · `/cadastro` · `/entrar` · `/termos` · `/privacidade` (textos são **rascunho em revisão jurídica**, `src/config/legal.ts`) · `/painel` · `/painel/lancamentos` · `/painel/conta`.
+`/` landing · `/cadastro` · `/entrar` · `/termos` · `/privacidade` (textos são **rascunho em revisão jurídica**, `src/config/legal.ts`) · `/painel` · `/painel/lancamentos` · `/painel/configuracoes/*` (conta, aparencia, plano, acesso, whatsapp, notificacoes, privacidade; `/painel/conta` redireciona).
 
 ### 8.7 Skills e ferramentas de design usadas
 Instaladas globalmente em `~/.claude/skills` (o dono pediu `npx skills add Leonxlnx/taste-skill`; já estava instalada): **`design-taste-frontend`** (v2; para telas de app segue `references/app-screens.md`; comandos `draw.mjs`, `lint.mjs`, `inspect.mjs`; arquivos de trabalho em `.taste-skill/`, ignorado pelo git), **`dataviz`**, **`impeccable`**, **`emil-design-eng`**, e as skills `superpowers` (TDD, planos, revisão). Figma (MCP) para objetos 3D; Playwright para capturas.
@@ -385,7 +388,8 @@ Levantamento técnico, **não é parecer jurídico**.
 | 2026-11-07 | **Nova direção do painel:** o dono achou o painel pouco didático, sem leitura clara e fraco de cor. Passa a ser uma **narrativa** (abertura, capítulos com manchete e "Como ler", "O que fazer agora"), com **cor forte e com significado** | Aprovado pelas maquetes ("Sim, construir") |
 | 2026-11-07 | Essencial/supérfluo/investimento mantêm esses nomes também nas frases (não "necessário/desejo/futuro") | Mesma palavra em toda a tela |
 | 2026-11-07 | **Configurações** completas como as do Dinzo: Conta (renda e custo de vida), Aparência e segurança (tema, ocultar ao abrir), Plano e pagamentos, Acesso compartilhado (Família), WhatsApp, Notificações, Privacidade e dados | Aprovado pelas maquetes |
-| 2026-11-07 | **Upgrade sem pagamento:** "Pedir upgrade" só **registra o pedido** e avisa; **não troca o plano** até o Mercado Pago existir | Ninguém ganha plano pago de graça *(minha escolha)* |
+| 2026-11-07 | **Upgrade sem pagamento:** "Assinar" só **registra o pedido** e avisa; **não troca o plano** até o Mercado Pago existir | Ninguém ganha plano pago de graça *(minha escolha)* |
+| 2026-11-07 | **Family à venda, sem "em breve":** o dono mandou colocar a opção de comprar. Os itens do cartão listam só o que existe (sem prometer visão compartilhada) | Pedido do dono; honestidade sobre o que já funciona |
 | 2026-11-07 | **Convite da Família por link com código** (sem depender de e-mail); **visão compartilhada dos valores fica para etapa própria** | Mexe em quem enxerga o quê no banco *(minha escolha)* |
 | 2026-11-07 | Ordem: painel (feito localmente) → Configurações → migrações 016 (renda e custo de vida), 017 (pedidos de plano e pagamentos), 018 (grupos e convites), cada uma **ensaiada e só aplicada com OK** | Segurança do banco |
 
@@ -397,7 +401,11 @@ Levantamento técnico, **não é parecer jurídico**.
 - **Entre 2026-10-31 e 2026-11-02 (datas exatas não registradas):** repositório no GitHub e projeto na Vercel; landing v3 (painel vivo, planos por nome); depois atmosfera de cor, celulares com profundidade, objetos 3D (commits `3b1ed27`, `b261e3d`). O primeiro deploy de produção da landing v3 aparece na Vercel por volta de 2026-11-01.
 - **2026-11-04/05:** migrações **013** e **014** aplicadas; bot fechado no n8n; documentos `MAPA-DE-PROCESSOS` e desenhos de cadastro/login.
 - **2026-11-06/07:** painel novo (commit `b10bc45`) com a migração **015** aplicada; landing com conversa clicável, topo vivo, planos, "por que é pago", barra fixa e trilha (`b17c513`); 4 ajustes do painel (`a401844`); conta do dono no Family; este arquivo.
-- **2026-11-07 (local, ainda sem commit):** painel narrativo (abertura, `Capitulo`, `OQueMudou`, `ProximosPassos`, `narrativa.ts`, cores por categoria, esqueleto novo), filtro de Lançamentos por endereço; maquetes e desenho em `docs/`. 221 unitários e 104 E2E verdes.
+- **2026-11-07 (commit `4a83975`):** painel narrativo (abertura, `Capitulo`, `OQueMudou`, `ProximosPassos`, `narrativa.ts`, cores por categoria, esqueleto novo), filtro de Lançamentos por endereço; maquetes e desenho em `docs/`. 221 unitários e 104 E2E verdes.
+- **2026-11-07 (local, ainda sem commit):** Configurações bloco A (rotas, menu, Conta, Aparência com tema claro/escuro/automático, WhatsApp, Notificações, Privacidade, Plano básico); migração 016 e teste SQL escritos; `lerReais`, `tema.ts`, `salvarPerfil`. 245 unitários e 118 E2E verdes.
+- **2026-11-07 (local, ainda sem commit):** Configurações completas: Plano e pagamentos (assinar, pedido, histórico), Acesso compartilhado (convites por link), página `/convite/<código>`, `ConviteAoEntrar`; Family sem "em breve" na landing, cadastro e Configurações; migrações 017 e 018 escritas com teste SQL. 266 unitários e 128 E2E verdes.
+- **2026-11-08:** ensaio das migrações 016, 017 e 018 (teste SQL de cada uma, tudo desfeito): zero falhas. O teste da 018 tinha um defeito (escolhia o convite "primeiro da lista", ambíguo porque as horas são iguais dentro de uma transação) e foi corrigido para achar o convite pelo hash; a migração não mudou.
+- **2026-11-08:** migrações 016, 017 e 018 aplicadas no Supabase (conferido: colunas, 5 tabelas com RLS, 10 funções, nenhuma aberta ao `anon`, tabelas vazias). Os avisos do advisor sobre `SECURITY DEFINER` e "RLS sem política" são o padrão intencional (acesso só pelas funções `app_*`).
 - Deploys de produção da Vercel acompanham cada push na `feat/fase-1-app` (último verificado: `a401844`, READY).
 
 ---
@@ -415,7 +423,7 @@ Levantamento técnico, **não é parecer jurídico**.
 **Depende do dono (fora do código):** nome definitivo e **domínio**; provedor de **e-mail** transacional (Resend ou Brevo); **conta Mercado Pago**; **Cloudflare Turnstile**; remover a proteção da Vercel / tornar o link público no domínio final; **revisão jurídica** dos textos; razão social, CNPJ, DPO, e-mail de contato (`NEXT_PUBLIC_SUPPORT_EMAIL`, `NEXT_PUBLIC_LEGAL_ENTITY`); **trocar as chaves antigas** da OpenAI e da Evolution; 2FA nas contas; decidir API oficial do WhatsApp.
 
 **Ordem sugerida pelo mapa:**
-1. ~~Painel novo (Visão geral)~~ **refeito como narrativa em 2026-11-07 (falta publicar)**; faltam orçamentos e metas, lançar rápido avançado, tela de primeiros passos mais rica.
+1. ~~Painel novo (Visão geral)~~ **refeito como narrativa em 2026-11-07 (enviado; deploy iniciado)**; faltam orçamentos e metas, lançar rápido avançado, tela de primeiros passos mais rica.
 2. **Cadastro em 3 passos e login por e-mail e senha** (precisa de provedor de e-mail e Turnstile).
 3. **Pagamento** (Mercado Pago), regras de plano, boas-vindas completas no WhatsApp, avisos por e-mail.
 4. **Configurações da conta** (trocar senha, ajustar dados, mudar de plano, excluir conta).

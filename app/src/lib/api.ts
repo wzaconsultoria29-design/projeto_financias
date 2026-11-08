@@ -48,6 +48,8 @@ export type Conta = {
   nome: string | null;
   email: string | null;
   telefone_mascarado: string;
+  renda_mensal: number | null;
+  custo_vida_mensal: number | null;
   plano: { codigo: string; nome: string; preco_centavos: number; mensagens_limite: number | null; membros_max: number } | null;
   assinatura: { status: string; periodo_inicio: string; periodo_fim: string | null } | null;
   uso: { mensagens: number; limite: number | null; restantes: number | null };
@@ -69,6 +71,18 @@ const MENSAGENS: Record<string, string> = {
   data_futura: "A data não pode ser no futuro.",
   data_muito_antiga: "Confira o ano da data.",
   nao_encontrado: "Lançamento não encontrado.",
+  nome_invalido: "Confira o nome: use de 2 a 80 caracteres.",
+  renda_invalida: "Confira a renda mensal.",
+  custo_invalido: "Confira o custo de vida mensal.",
+  sem_plano_family: "O convite é do plano Family. Veja o plano em Plano e pagamentos.",
+  limite_atingido: "O grupo já está completo: o titular e os convites pendentes contam no limite.",
+  ja_no_grupo: "Esta conta já está em um grupo.",
+  convite_invalido: "Convite inválido, vencido ou já usado. Peça um novo link.",
+  proprio_grupo: "Este convite é do seu próprio grupo.",
+  grupo_cheio: "O grupo já está completo.",
+  nao_permitido: "Esta ação não é permitida.",
+  plano_invalido: "Este plano não está disponível.",
+  ja_no_plano: "Você já está neste plano.",
 };
 
 function erro(motivo: string): ApiError {
@@ -145,4 +159,77 @@ export async function painel(r: Intervalo): Promise<Painel> {
   const { data, error } = await supabase.rpc("app_painel", { p_de: r.de, p_ate: r.ate });
   if (error) throw erro(error.message);
   return data as Painel;
+}
+
+/** Salva nome, renda mensal e custo de vida mensal da própria pessoa (migração 016). Valor nulo limpa o campo. */
+export async function salvarPerfil(d: { nome: string; renda: number | null; custo: number | null }): Promise<void> {
+  const { data, error } = await supabase.rpc("app_salvar_perfil", { p_nome: d.nome, p_renda: d.renda, p_custo: d.custo });
+  if (error) throw erro(error.message);
+  if (!data?.ok) throw erro(String(data?.motivo ?? "desconhecido"));
+}
+
+/** Chama uma função de escrita (devolve { ok, motivo }): o que não for ok vira um erro com mensagem amigável. */
+async function executar<T extends Record<string, unknown> = Record<string, unknown>>(rpc: string, args?: Record<string, unknown>): Promise<T> {
+  const { data, error } = await supabase.rpc(rpc, args);
+  if (error) throw erro(error.message);
+  if (!data?.ok) throw erro(String(data?.motivo ?? "desconhecido"));
+  return data as T;
+}
+
+/** O grupo do plano Family de quem está logado (migração 018). */
+export type Grupo = {
+  elegivel: boolean;
+  limite: number | null;
+  papel: "titular" | "membro" | null;
+  titular_nome: string | null;
+  membros: { usuario_id: string; nome: string | null; papel: "titular" | "membro"; entrou_em: string; eu: boolean }[];
+  convites: { id: string; criado_em: string; expira_em: string }[];
+};
+
+export async function grupoAtual(): Promise<Grupo> {
+  const { data, error } = await supabase.rpc("app_grupo");
+  if (error) throw erro(error.message);
+  return data as Grupo;
+}
+
+/** Gera um convite. O código só vem agora; depois o banco guarda apenas o hash. */
+export async function criarConvite(): Promise<{ codigo: string; expira_em: string }> {
+  const d = await executar<{ codigo: string; expira_em: string }>("app_criar_convite");
+  return { codigo: d.codigo, expira_em: d.expira_em };
+}
+export async function cancelarConvite(id: string): Promise<void> {
+  await executar("app_cancelar_convite", { p_id: id });
+}
+export async function removerMembro(usuarioId: string): Promise<void> {
+  await executar("app_remover_membro", { p_usuario_id: usuarioId });
+}
+export async function sairDoGrupo(): Promise<void> {
+  await executar("app_sair_do_grupo");
+}
+export async function aceitarConvite(codigo: string): Promise<{ titular_nome: string | null }> {
+  const d = await executar<{ titular_nome: string | null }>("app_aceitar_convite", { p_codigo: codigo });
+  return { titular_nome: d.titular_nome };
+}
+
+/** Plano, pedido de assinatura e histórico de pagamentos (migração 017). */
+export type PlanoEPagamentos = {
+  atual: string | null;
+  planos: { codigo: string; nome: string; preco_centavos: number; mensagens_limite: number | null; membros_max: number }[];
+  solicitacao: { codigo: string; nome: string; criado_em: string } | null;
+  pagamentos: { id: string; data: string; descricao: string; valor_centavos: number; status: "pago" | "pendente" | "falhou" | "reembolsado" }[];
+};
+
+export async function planoEPagamentos(): Promise<PlanoEPagamentos> {
+  const { data, error } = await supabase.rpc("app_plano_e_pagamentos");
+  if (error) throw erro(error.message);
+  return data as PlanoEPagamentos;
+}
+
+/** Registra o pedido de assinar um plano. Não troca o plano: isso vem com o pagamento online. */
+export async function solicitarPlano(codigo: string): Promise<{ nome: string }> {
+  const d = await executar<{ nome: string }>("app_solicitar_plano", { p_codigo: codigo });
+  return { nome: d.nome };
+}
+export async function cancelarPedidoPlano(): Promise<void> {
+  await executar("app_cancelar_pedido_plano");
 }

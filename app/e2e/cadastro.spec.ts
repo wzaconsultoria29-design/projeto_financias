@@ -82,10 +82,10 @@ test.describe("cadastro", () => {
     await expect(isca).not.toBeInViewport();
   });
 
-  test("plano family vem selecionado com o aviso de que chega em breve", async ({ page }) => {
+  test("plano family vem selecionado, com o aviso de que o pagamento online está sendo liberado", async ({ page }) => {
     await page.goto("/cadastro?plano=family");
     await expect(page.getByLabel("Plano")).toHaveValue("family");
-    await expect(page.getByText("a família chega em breve")).toBeVisible();
+    await expect(page.getByText(/pagamento online do Family está sendo liberado/)).toBeVisible();
   });
 });
 

@@ -68,7 +68,7 @@ test.describe("landing", () => {
     await expect(secao).toContainText("podemos definir um teto");
   });
 
-  test("planos: três cartões, o do meio em destaque e Family em breve", async ({ page }) => {
+  test("planos: três cartões, o do meio em destaque e Family com opção de assinar", async ({ page }) => {
     const secao = page.locator("#planos");
     await secao.scrollIntoViewIfNeeded();
     await expect(secao.locator("[data-plano]")).toHaveCount(3);
@@ -81,9 +81,9 @@ test.describe("landing", () => {
     await expect(essencial).toContainText("Mais popular");
     const family = secao.locator('[data-plano="family"]');
     await expect(family).toContainText("R$ 39");
-    await expect(family).toContainText("Em breve");
-    await expect(family).toContainText("4 números");
-    await expect(family.getByRole("link", { name: "Quero ser avisado" })).toHaveAttribute("href", /plano=family/);
+    await expect(family).not.toContainText("Em breve");
+    await expect(family).toContainText("Até 4 pessoas");
+    await expect(family.getByRole("link", { name: "Assinar o Family" })).toHaveAttribute("href", /plano=family/);
   });
 
   test("todo botão de começar leva ao cadastro", async ({ page }) => {

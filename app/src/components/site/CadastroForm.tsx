@@ -6,7 +6,7 @@ import { enviarCadastro, mascararTelefone, normalizarTelefone } from "@/lib/cada
 const PLANOS = [
   { codigo: "trial", rotulo: "Trial (grátis por 7 dias)" },
   { codigo: "essencial", rotulo: "Essencial (R$ 19 por mês)" },
-  { codigo: "family", rotulo: "Family (R$ 39 por mês, em breve)" },
+  { codigo: "family", rotulo: "Family (R$ 39 por mês)" },
 ];
 
 type Erros = { nome?: string; email?: string; telefone?: string };
@@ -104,7 +104,7 @@ export function CadastroForm({ planoInicial, emailInicial = "" }: { planoInicial
         </select>
         {plano === "family" && (
           <p className="mt-2 text-sm text-suave">
-            O plano Family ainda não abriu: a família chega em breve. Você começa no teste grátis e avisamos quando abrir.
+            Você começa com 7 dias grátis. O pagamento online do Family está sendo liberado, e avisamos quando você puder assinar. O convite para o seu grupo fica em Configurações.
           </p>
         )}
       </div>

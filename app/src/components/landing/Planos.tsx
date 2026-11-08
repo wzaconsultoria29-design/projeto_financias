@@ -30,7 +30,6 @@ export function Planos() {
                     Mais popular
                   </span>
                 )}
-                {p.emBreve && <span className="rounded-full bg-folha px-3 py-1 text-[14px] font-medium text-tinta">Em breve</span>}
               </div>
               <p className={`mt-2 text-[16px] ${destaque ? "text-white/80" : "text-suave"}`}>{p.resumo}</p>
               <p className="mt-8 flex items-baseline gap-2">

@@ -201,7 +201,7 @@ export default function LancamentosPage() {
       <section className="cartao py-4" aria-label="Lista de lançamentos">
         {!carga && (
           <div className="flex flex-col gap-3 px-4" aria-busy="true" aria-label="Carregando">
-            {[0, 1, 2, 3].map((i) => <div key={i} className="h-12 animate-pulse rounded-[12px] bg-folha/50" />)}
+            {[0, 1, 2, 3].map((i) => <div key={i} className="h-12 rounded-[12px] bg-folha/50" />)}
           </div>
         )}
         {carga?.estado === "erro" && (

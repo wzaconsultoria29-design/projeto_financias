@@ -37,3 +37,21 @@ export function lerValor(texto: string): number | null {
   const n = Number(normal);
   return Number.isFinite(n) && n > 0 ? n : null;
 }
+
+/**
+ * Lê um valor em reais digitado em um campo: "3.500,50", "R$ 1.900", "1900,5". Campo vazio devolve null (limpa o valor),
+ * zero é um valor válido, e o que não for número devolve "invalido".
+ */
+export function lerReais(texto: string): number | null | "invalido" {
+  const limpo = texto.replace(/R\$/gi, "").replace(/\s/g, "");
+  if (limpo === "") return null;
+  if (!/^\d[\d.,]*$/.test(limpo)) return "invalido";
+  let normal: string;
+  if (limpo.includes(",")) {
+    if ((limpo.match(/,/g) ?? []).length > 1) return "invalido";
+    normal = limpo.replace(/\./g, "").replace(",", ".");
+  } else if (/^\d{1,3}(\.\d{3})+$/.test(limpo)) normal = limpo.replace(/\./g, "");
+  else normal = limpo;
+  const n = Number(normal);
+  return Number.isFinite(n) && n >= 0 ? n : "invalido";
+}

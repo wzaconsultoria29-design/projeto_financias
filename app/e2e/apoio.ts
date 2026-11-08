@@ -21,6 +21,16 @@ export const CONTA = {
   consentimento: { em: null, versao: null },
 };
 
+export const PLANOS = {
+  atual: null as string | null, solicitacao: null as null | { codigo: string; nome: string; criado_em: string }, pagamentos: [] as unknown[],
+  planos: [
+    { codigo: "trial", nome: "Trial", preco_centavos: 0, mensagens_limite: 50, membros_max: 1 },
+    { codigo: "essencial", nome: "Essencial", preco_centavos: 1900, mensagens_limite: 300, membros_max: 1 },
+    { codigo: "family", nome: "Family", preco_centavos: 3900, mensagens_limite: 800, membros_max: 4 },
+  ],
+};
+export const GRUPO_SEM_FAMILY = { elegivel: false, limite: null, papel: null, titular_nome: null, membros: [], convites: [] };
+
 export type Estados = { login?: string[]; usuarioStatus?: number };
 export type Rpcs = Record<string, (corpo: Record<string, unknown>, req: Request) => unknown>;
 
@@ -61,6 +71,12 @@ export async function simular(page: Page, estados: Estados = {}, rpcs: Rpcs = {}
     if (url.includes("/auth/v1/logout")) return route.fulfill({ status: 204, headers: CORS });
     if (url.includes("/rest/v1/rpc/app_minha_conta") && !rpcs.app_minha_conta) {
       return route.fulfill({ status: 200, headers: JSON_CORS, body: JSON.stringify(CONTA) });
+    }
+    if (url.includes("/rest/v1/rpc/app_plano_e_pagamentos") && !rpcs.app_plano_e_pagamentos) {
+      return route.fulfill({ status: 200, headers: JSON_CORS, body: JSON.stringify(PLANOS) });
+    }
+    if (url.includes("/rest/v1/rpc/app_grupo") && !rpcs.app_grupo) {
+      return route.fulfill({ status: 200, headers: JSON_CORS, body: JSON.stringify(GRUPO_SEM_FAMILY) });
     }
     const rpc = /\/rest\/v1\/rpc\/([a-z_]+)/.exec(url)?.[1];
     if (rpc && rpcs[rpc]) {

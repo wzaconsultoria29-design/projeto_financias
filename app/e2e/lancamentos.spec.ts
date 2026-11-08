@@ -54,11 +54,4 @@ test.describe("painel: lançamentos e conta", () => {
     await expect.poll(() => salvos.length).toBe(1);
     expect(salvos[0]).toMatchObject({ p_id: null, p_dados: { valor: 15.9, descricao: "Café", tipo: "despesa" } });
   });
-
-  test("página Conta mostra o uso e os atalhos de privacidade", async ({ page }) => {
-    await abrir(page, "Conta");
-    await expect(page.getByText("12 de 50 mensagens")).toBeVisible();
-    await expect(page.getByRole("link", { name: "Baixar meus dados" })).toBeVisible();
-    await page.screenshot({ path: `../docs/screens/painel-conta-${test.info().project.name}.png`, fullPage: true });
-  });
 });

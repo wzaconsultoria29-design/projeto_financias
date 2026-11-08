@@ -47,8 +47,50 @@
   --ruim-ink: #8a3410;
 }
 
+/* Tema: o aparelho decide, a menos que a pessoa fixe claro ou escuro em Configurações (atributo data-tema). */
+:root[data-tema="claro"] {
+  color-scheme: light;
+}
+
+:root[data-tema="escuro"] {
+  color-scheme: dark;
+  --papel: #0b1411;
+  --superficie: #111d18;
+  --tinta: #e7efea;
+  --suave: #9fb3a9;
+  --linha: #21332b;
+  --floresta: #7fd6ae;
+  --folha: #16302a;
+  --botao: #8fe0bc;
+  --botao-fg: #062119;
+  --bloco: #123d31;
+  --sobre-bloco: #e8f2ec;
+  --d-azul: #3987e5;
+  --d-laranja: #e8703a;
+  --d-agua: #199e70;
+  --d-cinza: #8aa096;
+  --d-trilho: #1a2b24;
+  --c1: #3987e5;
+  --c2: #d95926;
+  --c3: #199e70;
+  --c4: #c98500;
+  --c5: #d55181;
+  --c6: #008300;
+  --c7: #9085e9;
+  --c8: #e66767;
+  --t1: #2f9e74;
+  --t2: #7fd6ae;
+  --t3: #c8f56a;
+  --hero: #0f3a2d;
+  --bom-bg: #12301f;
+  --bom-ink: #7fe0a8;
+  --ruim-bg: #3a1d12;
+  --ruim-ink: #ffa985;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-tema="claro"]) {
+    color-scheme: dark;
     --papel: #0b1411;
     --superficie: #111d18;
     --tinta: #e7efea;

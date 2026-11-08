@@ -34,7 +34,7 @@ Recuperação de acesso: link de uso único enviado pelo WhatsApp, só para núm
 
 ## Capabilities and Constraints
 
-- Planos: Teste grátis (7 dias, 50 mensagens); Essencial R$ 19 por mês (300 mensagens); Family R$ 39 por mês (800 mensagens, até 4 pessoas, "em breve").
+- Planos: Teste grátis (7 dias, 50 mensagens); Essencial R$ 19 por mês (300 mensagens); Family R$ 39 por mês (800 mensagens, até 4 pessoas, com convite por link; a visão compartilhada dos valores ainda não existe).
 - Não acessa conta bancária nem movimenta dinheiro.
 - LGPD: o cliente baixa os dados (`MEUS DADOS`) ou apaga tudo (`EXCLUIR MEUS DADOS`) pelo WhatsApp. Exclusão apaga lançamentos e conversas e anonimiza o cadastro.
 - WhatsApp pela Evolution API (não oficial) por enquanto; migração para a API oficial é uma decisão futura.

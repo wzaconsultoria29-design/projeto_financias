@@ -23,7 +23,7 @@ Atualizado em 2026-11-06 (decisões de pagamento, login e cadastro confirmadas p
 | 5 | Login e acesso | Entra com código pelo WhatsApp | **E-mail e senha**, esqueci a senha por e-mail, link de recuperação pelo WhatsApp, sessões, sair de todos os aparelhos, registro de entradas |
 | 6 | **Painel (centro do produto)** | Visão geral simples, lançamentos (criar, editar, apagar, CSV), conta | **Refazer com métricas eficazes** (ver abaixo), orçamentos, metas, lançar rápido, tela de primeiros passos |
 | 7 | Configurações da conta | Página Conta só de leitura | Trocar senha, ajustar nome, e-mail e número (com reconfirmação), mudar de plano, excluir conta |
-| 8 | Plano Família | Plano existe no banco (até 4), marcado "em breve" | Grupo, convites, limite do plano, visão compartilhada, permissões |
+| 8 | Plano Família | À venda no site (pedido registrado, sem pagamento online). Convite por link construído (migração 018 aplicada) | Visão compartilhada dos valores, cota compartilhada de mensagens, pagamento (Mercado Pago) |
 | 9 | Bot do WhatsApp (complemento) | Pronto: registra, consulta, apaga, analisa sob pedido, baixa e apaga dados, só atende cadastrados | Comando "painel" com link, alertas de orçamento (só em resposta), ajustes de texto |
 | 10 | Operação e confiança | Segurança e LGPD documentadas, isolamento por cliente testado | Monitoramento do n8n e do chip, backups, suporte, agendar limpeza, trocar chaves antigas, decidir a API oficial do WhatsApp |
 | 11 | Lançamento | Preview privado | Domínio, e-mail, revisão jurídica, beta fechado com poucos clientes, checklist final |

@@ -10,11 +10,13 @@ vi.mock("@/lib/api", async (original) => ({
   excluirLancamento: vi.fn(),
   minhaConta: vi.fn(),
   listarCategorias: vi.fn(),
+  planoEPagamentos: vi.fn(),
 }));
 
-import { listarLancamentos, salvarLancamento, excluirLancamento, minhaConta, listarCategorias } from "@/lib/api";
+import { listarLancamentos, salvarLancamento, excluirLancamento, minhaConta, listarCategorias, planoEPagamentos } from "@/lib/api";
 import LancamentosPage from "@/app/painel/lancamentos/page";
-import ContaPage from "@/app/painel/conta/page";
+import PlanoPage from "@/app/painel/configuracoes/plano/page";
+import PrivacidadePage from "@/app/painel/configuracoes/privacidade/page";
 import { coletarTodos } from "@/lib/exportar";
 
 const listar = vi.mocked(listarLancamentos);
@@ -177,24 +179,28 @@ describe("exportar CSV", () => {
 });
 
 const CONTA_BASE: Conta = {
-  nome: "Maria", email: "maria@exemplo.com", telefone_mascarado: "+55 11 *****-8888",
+  nome: "Maria", email: "maria@exemplo.com", telefone_mascarado: "+55 11 *****-8888", renda_mensal: null, custo_vida_mensal: null,
   plano: { codigo: "trial", nome: "Teste grátis", preco_centavos: 0, mensagens_limite: 50, membros_max: 1 },
   assinatura: { status: "trial", periodo_inicio: "2026-10-24", periodo_fim: "2026-10-31" },
   uso: { mensagens: 12, limite: 50, restantes: 38 },
   consentimento: { em: "2026-10-24T12:00:00Z", versao: "v1-2026-10" },
 };
 
-describe("conta", () => {
+describe("plano e privacidade (antiga página Conta)", () => {
+  beforeEach(() => {
+    vi.mocked(planoEPagamentos).mockResolvedValue({ atual: null, solicitacao: null, pagamentos: [], planos: [] });
+  });
+
   it("mostra o uso com barra de progresso", async () => {
     conta.mockResolvedValue(CONTA_BASE);
-    render(<ContaPage />);
+    render(<PlanoPage />);
     expect(await screen.findByText(/12 de 50 mensagens/)).toBeInTheDocument();
     expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "24");
   });
 
   it("limite nulo não divide por zero nem mostra NaN", async () => {
     conta.mockResolvedValue({ ...CONTA_BASE, plano: null, assinatura: null, uso: { mensagens: 7, limite: null, restantes: null } });
-    const { container } = render(<ContaPage />);
+    const { container } = render(<PlanoPage />);
     expect(await screen.findByText(/7 mensagens usadas/)).toBeInTheDocument();
     expect(screen.queryByRole("progressbar")).toBeNull();
     expect(container.textContent).not.toMatch(/NaN|Infinity/);
@@ -202,8 +208,8 @@ describe("conta", () => {
 
   it("privacidade: botões abrem o WhatsApp com os comandos prontos", async () => {
     conta.mockResolvedValue(CONTA_BASE);
-    render(<ContaPage />);
-    await screen.findByText(/12 de 50 mensagens/);
+    render(<PrivacidadePage />);
+    await screen.findByText(/v1-2026-10/);
     expect(screen.getByRole("link", { name: "Baixar meus dados" })).toHaveAttribute("href", "https://wa.me/5582991130317?text=MEUS%20DADOS");
     expect(screen.getByRole("link", { name: "Apagar meus dados" })).toHaveAttribute("href", "https://wa.me/5582991130317?text=EXCLUIR%20MEUS%20DADOS");
     expect(screen.getByText(/v1-2026-10/)).toBeInTheDocument();

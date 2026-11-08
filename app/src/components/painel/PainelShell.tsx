@@ -3,15 +3,17 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Gauge, ListBullets, SignOut, SquaresFour, UserCircle, type Icon } from "@phosphor-icons/react";
+import { Gauge, GearSix, ListBullets, SignOut, SquaresFour, type Icon } from "@phosphor-icons/react";
 import { brand } from "@/config/brand";
 import { supabase } from "@/lib/supabase";
 import { minhaConta } from "@/lib/api";
+import { aplicarPreferenciasAoAbrir } from "@/lib/tema";
+import { ConviteAoEntrar } from "@/components/painel/ConviteAoEntrar";
 
 const LINKS: { href: string; rotulo: string; icone: Icon }[] = [
   { href: "/painel", rotulo: "Visão geral", icone: SquaresFour },
   { href: "/painel/lancamentos", rotulo: "Lançamentos", icone: ListBullets },
-  { href: "/painel/conta", rotulo: "Conta", icone: UserCircle },
+  { href: "/painel/configuracoes", rotulo: "Configurações", icone: GearSix },
 ];
 
 type Estado = "verificando" | "autenticado";
@@ -30,6 +32,11 @@ export function PainelShell({ children }: { children: ReactNode }) {
   const caminho = usePathname();
   const [estado, setEstado] = useState<Estado>("verificando");
   const [nome, setNome] = useState<string | null>(null);
+
+  // Tema escolhido e "ocultar valores ao abrir": valem assim que o painel abre.
+  useEffect(() => {
+    aplicarPreferenciasAoAbrir();
+  }, []);
 
   useEffect(() => {
     let ativo = true;
@@ -122,7 +129,10 @@ export function PainelShell({ children }: { children: ReactNode }) {
         <span className="font-display text-lg font-semibold tracking-tight text-tinta">{brand.name}</span>
       </header>
 
-      <main className="mx-auto w-full max-w-[1320px] px-4 pb-28 pt-5 md:px-8 md:pb-10 md:pt-8">{children}</main>
+      <main className="mx-auto w-full max-w-[1320px] px-4 pb-28 pt-5 md:px-8 md:pb-10 md:pt-8">
+        <ConviteAoEntrar />
+        {children}
+      </main>
 
       <nav aria-label="Painel (celular)" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-linha bg-papel pb-[env(safe-area-inset-bottom)] md:hidden">
         {LINKS.map((l) => {

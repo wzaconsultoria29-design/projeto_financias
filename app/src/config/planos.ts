@@ -5,7 +5,6 @@ export type PlanoVitrine = {
   periodo: string;
   resumo: string;
   destaque?: boolean;
-  emBreve?: boolean;
   itens: string[];
   cta: { texto: string; href: string };
 };
@@ -37,14 +36,8 @@ export const planos: PlanoVitrine[] = [
     preco: "R$ 39",
     periodo: "por mês",
     resumo: "Para casais e famílias organizadas.",
-    emBreve: true,
-    itens: [
-      "Tudo do Essencial",
-      "Até 4 números no mesmo grupo",
-      "Todos veem os gastos do grupo",
-      "800 mensagens por mês, compartilhadas",
-    ],
-    cta: { texto: "Quero ser avisado", href: "/cadastro?plano=family" },
+    itens: ["Tudo do Essencial", "Até 4 pessoas no mesmo grupo, cada uma com o próprio login", "800 mensagens por mês", "Convites do grupo em Configurações"],
+    cta: { texto: "Assinar o Family", href: "/cadastro?plano=family" },
   },
 ];
 
