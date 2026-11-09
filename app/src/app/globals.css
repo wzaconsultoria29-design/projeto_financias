@@ -136,8 +136,8 @@
   --color-folha: var(--folha);
   --color-bloco: var(--bloco);
   --color-sobre-bloco: var(--sobre-bloco);
-  --font-sans: var(--font-jost);
-  --font-display: var(--font-jost);
+  --font-sans: var(--fonte-ui, var(--font-jost));
+  --font-display: var(--fonte-titulo, var(--font-jost));
   --color-d-azul: var(--d-azul);
   --color-d-laranja: var(--d-laranja);
   --color-d-agua: var(--d-agua);
@@ -150,6 +150,12 @@
   --color-bom-ink: var(--bom-ink);
   --color-ruim-bg: var(--ruim-bg);
   --color-ruim-ink: var(--ruim-ink);
+  --color-lima: var(--lima);
+  --color-lima-suave: var(--lima-suave);
+  --color-verde-escuro: var(--verde-escuro);
+  --color-linha-forte: var(--linha-forte);
+  --color-ativo-bg: var(--ativo-bg);
+  --color-ativo-fg: var(--ativo-fg);
 }
 
 html {
@@ -288,4 +294,163 @@ body {
   .dado {
     transition: filter 200ms ease;
   }
+}
+
+/*
+  Verde-lima: o visual do app logado (painel e Configurações), de acordo com docs/design-system.
+  Vale só dentro de .app-vl, para não mexer na landing e no cadastro. Mesmos nomes de variável, valores novos:
+  fundo cinza-esverdeado, cartões brancos bem arredondados, verde-escuro de ação e UMA cor de destaque (lima).
+*/
+.app-vl {
+  --papel: #eef1ed;
+  --superficie: #ffffff;
+  --tinta: #0f1a14;
+  --suave: #68746d;
+  --linha: #e5e9e4;
+  --linha-forte: #cfd6cf;
+  --floresta: #0b3a22;
+  --folha: #e6efe1;
+  --botao: #0b3a22;
+  --botao-fg: #ffffff;
+  --bloco: #0b3a22;
+  --sobre-bloco: #e8f2ec;
+  --d-trilho: #e8ece7;
+  --d-cinza: #8c9890;
+  --hero: #0b3a22;
+  --realce: #bff25f;
+  --coral: #ff9a7a;
+  --lima: #bff25f;
+  --lima-suave: #edfad0;
+  --verde-escuro: #0b3a22;
+  --ativo-bg: #0b3a22;
+  --ativo-fg: #bff25f;
+  --bom-bg: #e4f6ea;
+  --bom-ink: #0d6b36;
+  --ruim-bg: #fde8e8;
+  --ruim-ink: #b3262d;
+  --t1: #0b3a22;
+  --t2: #2f9e74;
+  --t3: #bff25f;
+  --raio-cartao: 28px;
+  --sombra: 0 1px 2px rgba(15, 26, 20, 0.04), 0 6px 20px rgba(15, 26, 20, 0.04);
+  --borda-cartao: 0 solid transparent;
+  --fonte-ui: var(--font-inter);
+  --fonte-titulo: var(--font-urbanist);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  background: var(--papel);
+  color: var(--tinta);
+  min-height: 100dvh;
+}
+
+:root[data-tema="escuro"] .app-vl {
+  --papel: #0a120e;
+  --superficie: #121c17;
+  --tinta: #eaf2ec;
+  --suave: #9db0a5;
+  --linha: #1f2e26;
+  --linha-forte: #2c3f35;
+  --floresta: #bff25f;
+  --folha: #1b2b22;
+  --botao: #bff25f;
+  --botao-fg: #0b3a22;
+  --bloco: #0f2a1d;
+  --d-trilho: #1c2a22;
+  --d-cinza: #7f948a;
+  --hero: #0f3a26;
+  --verde-escuro: #bff25f;
+  --ativo-bg: #bff25f;
+  --ativo-fg: #0b3a22;
+  --lima-suave: #1d2f14;
+  --bom-bg: #12301f;
+  --bom-ink: #7fe0a8;
+  --ruim-bg: #3a1d12;
+  --ruim-ink: #ffa985;
+  --t1: #2f9e74;
+  --t2: #7fd6ae;
+  --t3: #bff25f;
+  --sombra: none;
+  --borda-cartao: 1px solid var(--linha);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) .app-vl {
+    --papel: #0a120e;
+    --superficie: #121c17;
+    --tinta: #eaf2ec;
+    --suave: #9db0a5;
+    --linha: #1f2e26;
+    --linha-forte: #2c3f35;
+    --floresta: #bff25f;
+    --folha: #1b2b22;
+    --botao: #bff25f;
+    --botao-fg: #0b3a22;
+    --bloco: #0f2a1d;
+    --d-trilho: #1c2a22;
+    --d-cinza: #7f948a;
+    --hero: #0f3a26;
+    --verde-escuro: #bff25f;
+    --ativo-bg: #bff25f;
+    --ativo-fg: #0b3a22;
+    --lima-suave: #1d2f14;
+    --bom-bg: #12301f;
+    --bom-ink: #7fe0a8;
+    --ruim-bg: #3a1d12;
+    --ruim-ink: #ffa985;
+    --t1: #2f9e74;
+    --t2: #7fd6ae;
+    --t3: #bff25f;
+    --sombra: none;
+    --borda-cartao: 1px solid var(--linha);
+  }
+}
+
+.app-vl .cartao {
+  border: var(--borda-cartao);
+  border-radius: var(--raio-cartao);
+  box-shadow: var(--sombra);
+  background: var(--superficie);
+}
+.app-vl .botao,
+.app-vl .botao-contorno {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 0.875rem;
+}
+.app-vl .botao-contorno {
+  background: var(--superficie);
+  border-color: var(--linha-forte);
+}
+.app-vl .botao-contorno:hover {
+  border-color: var(--tinta);
+}
+.app-vl .botao-lima {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  border-radius: 999px;
+  background: var(--lima);
+  color: #0b3a22;
+  padding: 0.7rem 1.35rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s;
+}
+.app-vl .botao-lima:hover {
+  filter: brightness(0.96);
+}
+.app-vl .botao-lima:active {
+  transform: translateY(1px) scale(0.99);
+}
+/* Cartão de abertura do celular: degradê verde (a única superfície com degradê). */
+.app-vl .hero-degrade {
+  background: linear-gradient(135deg, #12613a 0%, #0b3a22 100%);
+  color: #fff;
+}
+/* Número grande e leve, como nas referências. */
+.app-vl .numero-grande {
+  font-family: var(--font-urbanist), system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
 }

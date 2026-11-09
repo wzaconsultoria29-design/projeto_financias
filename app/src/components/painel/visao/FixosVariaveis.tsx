@@ -1,3 +1,4 @@
+import { CalendarCheck } from "@phosphor-icons/react/dist/ssr";
 import type { Painel } from "@/lib/api";
 import { brl } from "@/lib/format";
 import { participacao, pctTexto } from "@/lib/painel";
@@ -13,6 +14,7 @@ export function FixosVariaveis({ p }: { p: Painel }) {
     <Capitulo
       id="fixos"
       titulo="Fixos e variáveis"
+      icone={CalendarCheck}
       manchete={`${pctTexto(participacao(fixos, total))} do gasto já está comprometido com contas fixas.`}
       comoLer="Fixos são contas que se repetem, como moradia, assinaturas e lançamentos recorrentes. Variáveis mudam de mês a mês e são onde dá para ajustar."
     >

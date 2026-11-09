@@ -1,3 +1,4 @@
+import { Scales } from "@phosphor-icons/react/dist/ssr";
 import type { Painel } from "@/lib/api";
 import { brl } from "@/lib/format";
 import { manchetes } from "@/lib/narrativa";
@@ -17,9 +18,6 @@ export function TiposGasto({ p }: { p: Painel }) {
   const gasto = resumo.despesas;
   const comRenda = resumo.receitas > 0;
   const base = comRenda ? resumo.receitas : gasto;
-  // Quando se gasta mais do que se recebe, a barra inteira representa o gasto, para os segmentos caberem.
-  const escala = Math.max(base, gasto);
-  const larg = (v: number) => `${participacao(v, escala)}%`;
   const { divisao } = manchetes(p);
 
   const resumoTexto = PARTES.map((x) => `${x.rotulo.toLowerCase()} ${pctTexto(participacao(tipos[x.chave], base))}`).join(", ");
@@ -28,6 +26,7 @@ export function TiposGasto({ p }: { p: Painel }) {
     <Capitulo
       id="tipos"
       titulo="Essencial, supérfluo e investimento"
+      icone={Scales}
       manchete={gasto > 0 ? divisao : null}
       comoLer={
         comRenda
@@ -39,37 +38,36 @@ export function TiposGasto({ p }: { p: Painel }) {
         <QuadroVazio>Nenhuma despesa neste período.</QuadroVazio>
       ) : (
         <>
-          <div role="img" aria-label={`${resumoTexto} ${comRenda ? "da renda" : "do gasto"}`} className="flex h-3.5 gap-0.5 overflow-hidden rounded-full bg-d-trilho">
-            {PARTES.map((x) => (
-              <div key={x.chave} className="h-full rounded-[3px]" style={{ width: larg(tipos[x.chave]), background: x.cor }} />
-            ))}
-            {tipos.sem_tipo > 0 && <div className="h-full rounded-[3px] bg-d-cinza" style={{ width: larg(tipos.sem_tipo) }} />}
-          </div>
-
-          <ul className="mt-5 flex flex-col gap-3">
-            {PARTES.map((x) => (
-              <li key={x.chave} className="flex items-baseline justify-between gap-3">
-                <span className="flex min-w-0 items-center gap-2">
-                  <span className="h-3 w-3 flex-none rounded-full" style={{ background: x.cor }} aria-hidden="true" />
-                  <span className="text-tinta">{x.rotulo}</span>
-                </span>
-                <span className="flex flex-none items-baseline gap-3 whitespace-nowrap tabular-nums">
-                  <span className="dado text-tinta">{brl(tipos[x.chave])}</span>
-                  <span className="w-12 text-right text-sm font-semibold text-tinta">{pctTexto(participacao(tipos[x.chave], base))}</span>
-                  {comRenda && <span className="hidden w-[5.5rem] text-right text-xs text-suave sm:block">{`referência ${x.ref}%`}</span>}
-                </span>
-              </li>
-            ))}
+          <span role="img" aria-label={`${resumoTexto} ${comRenda ? "da renda" : "do gasto"}`} className="sr-only" />
+          <ul className="flex flex-col gap-5">
+            {PARTES.map((x) => {
+              const parte = participacao(tipos[x.chave], base);
+              return (
+                <li key={x.chave}>
+                  <div className="flex items-baseline justify-between gap-3 text-sm">
+                    <span className="font-medium text-tinta">{x.rotulo}</span>
+                    <span className="flex flex-none items-baseline gap-2.5 whitespace-nowrap tabular-nums">
+                      <span className="dado text-suave">{brl(tipos[x.chave])}</span>
+                      <span className="w-14 text-right font-bold text-tinta">{pctTexto(parte)}</span>
+                    </span>
+                  </div>
+                  <div className="relative mt-2 h-2.5 rounded-full bg-d-trilho" aria-hidden="true">
+                    <div className="h-full rounded-full" style={{ width: `${Math.min(100, parte)}%`, background: x.cor }} />
+                    {comRenda && <span className="absolute -top-[3px] h-4 w-0.5 rounded-full bg-tinta opacity-50" style={{ left: `${x.ref}%` }} />}
+                  </div>
+                  {comRenda && <p className="mt-1 text-xs text-suave" style={{ marginLeft: `max(0px, calc(${x.ref}% - 2.5rem))` }}>{`referência ${x.ref}%`}</p>}
+                </li>
+              );
+            })}
             {tipos.sem_tipo > 0 && (
-              <li className="flex items-baseline justify-between gap-3">
+              <li className="flex items-baseline justify-between gap-3 text-sm">
                 <span className="flex min-w-0 items-center gap-2">
-                  <span className="h-3 w-3 flex-none rounded-full bg-d-cinza" aria-hidden="true" />
+                  <span className="h-2.5 w-2.5 flex-none rounded-full bg-d-cinza" aria-hidden="true" />
                   <span className="text-suave">Sem classificação</span>
                 </span>
-                <span className="flex flex-none items-baseline gap-3 whitespace-nowrap tabular-nums">
+                <span className="flex flex-none items-baseline gap-2.5 whitespace-nowrap tabular-nums">
                   <span className="dado text-suave">{brl(tipos.sem_tipo)}</span>
-                  <span className="w-12 text-right text-sm text-suave">{pctTexto(participacao(tipos.sem_tipo, base))}</span>
-                  {comRenda && <span className="hidden w-[5.5rem] sm:block" />}
+                  <span className="w-14 text-right text-suave">{pctTexto(participacao(tipos.sem_tipo, base))}</span>
                 </span>
               </li>
             )}

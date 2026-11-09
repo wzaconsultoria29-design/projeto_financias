@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Maquetes · app no estilo Verde-lima (proposta 2026-11-08)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Urbanist:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="../../design-system/tokens.css">
+<style>
+body{padding:28px 24px 80px;display:flex;flex-direction:column;align-items:center;gap:44px}
+.rotulo{width:100%;max-width:1360px;font:700 20px var(--font-display)}
+.rotulo small{display:block;font:400 14px var(--font-ui);color:var(--muted);margin-top:2px}
+.frame{width:1360px;background:var(--bg);border-radius:36px;padding:26px;display:flex;gap:22px;border:1px solid #dfe4de}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;gap:18px}
+.rail{align-self:flex-start;position:sticky;top:20px}
+.rail .sp{flex:1;min-height:340px}
+.top{display:flex;align-items:center;gap:14px}
+.top .grow{flex:1}
+.top h1{font:700 30px var(--font-display);letter-spacing:-.02em}
+.top p{color:var(--muted);font-size:15px;margin-top:2px}
+.ctl{display:flex;align-items:center;gap:14px}
+.mes{font:600 15px var(--font-ui);display:flex;align-items:center;gap:10px}
+.mes i{color:var(--muted)}
+.g{display:grid;gap:18px;grid-template-columns:repeat(12,1fr)}
+.s3{grid-column:span 3}.s4{grid-column:span 4}.s5{grid-column:span 5}.s7{grid-column:span 7}.s8{grid-column:span 8}.s12{grid-column:span 12}.s6{grid-column:span 6}
+.big{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-top:20px}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.chip{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:999px;padding:7px 14px 7px 8px;font-size:13px;color:var(--muted)}
+.chip b{color:var(--ink);font-weight:700}
+.chip .sq{width:26px;height:26px;border-radius:50%;font-size:14px}
+.acoes{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.lime-card{position:relative;overflow:hidden}
+.lime-card .star{position:absolute;right:-30px;top:-10px;width:190px;height:190px;opacity:.5}
+.mini2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:auto;padding-top:18px}
+.mini{background:rgba(255,255,255,.5);border-radius:20px;padding:14px 16px}
+.mini .t-label{color:#2f4a1f;display:flex;justify-content:space-between;align-items:center}
+.mini b{font:700 22px var(--font-display);display:block;margin-top:6px;color:var(--green-900)}
+.donut{display:flex;align-items:center;gap:22px;margin-top:14px}
+.legend{flex:1;display:flex;flex-direction:column;gap:9px;font-size:13px}
+.legend div{display:flex;align-items:center;gap:8px}
+.legend i{width:10px;height:10px;border-radius:50%;flex:none}
+.legend span{flex:1;color:var(--muted)}
+.legend b{font-weight:600}
+.tipo{margin-top:16px}
+.tipo .l{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px}
+.tipo .l b{color:var(--ink);font-weight:600}
+svg text{font-family:var(--font-ui)}
+.passos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.passo{background:var(--bg);border-radius:20px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;font-size:14px}
+.menu-conf{display:flex;flex-direction:column;gap:4px}
+.menu-conf a{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:16px;font-weight:500;color:var(--muted)}
+.menu-conf a i{font-size:20px}
+.menu-conf a.on{background:var(--lime);color:var(--green-900);font-weight:700}
+.plano{border:2px solid transparent}
+.plano.atual{border-color:var(--green-900)}
+.plano ul{list-style:none;padding:0;margin:14px 0 18px;display:flex;flex-direction:column;gap:9px;font-size:13.5px;color:var(--muted);flex:1}
+.plano li{display:flex;gap:8px}
+.plano li i{color:var(--green-900);margin-top:2px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+.tbl th{font-weight:500;color:var(--muted);font-size:12.5px;text-align:left;padding:8px 0}
+.tbl td{padding:13px 0;border-top:1px solid var(--line)}
+.tbl .r{text-align:right}
+.filtros{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.campo{display:flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:0 16px;height:44px;color:var(--muted);font-size:14px;box-shadow:var(--sombra)}
+/* celulares */
+.celulares{display:flex;gap:28px;flex-wrap:wrap;justify-content:center}
+.cel{width:390px;height:800px;background:#fff;border-radius:44px;border:10px solid #101a14;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.cel .corpo{flex:1;overflow:hidden;background:var(--bg);padding:16px 18px 0;display:flex;flex-direction:column;gap:14px}
+.cel .stat{display:flex;justify-content:space-between;font:600 13px var(--font-ui);padding:12px 22px 0;background:var(--bg)}
+.cel .hello{display:flex;align-items:center;gap:12px}
+.cel .hello b{font:700 19px var(--font-display);display:block}
+.cel .hello span{font-size:13px;color:var(--muted)}
+.cel .tabbar{border-top:0;box-shadow:0 -6px 20px rgba(15,26,20,.05)}
+.hero-m{border-radius:26px;padding:20px;position:relative;overflow:hidden}
+.hero-m .t-hero{font-size:44px;margin-top:8px}
+.hero-m .cardglyph{position:absolute;right:-18px;top:14px;width:150px;height:96px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);transform:rotate(-8deg)}
+.acoes-m{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;font-size:12px;font-weight:500}
+.acoes-m div{display:flex;flex-direction:column;align-items:center;gap:7px}
+.acoes-m .sq{width:54px;height:54px;border-radius:50%;background:#fff;font-size:24px;box-shadow:var(--sombra)}
+.cel .card{border-radius:24px;padding:18px}
+.menu-list a{display:flex;align-items:center;gap:14px;padding:14px 0;font-weight:500;font-size:15px}
+.menu-list a + a{border-top:1px solid var(--line)}
+.menu-list a i:first-child{font-size:21px;color:var(--green-900)}
+.menu-list a i:last-child{margin-left:auto;color:var(--faint)}
+.kpi .badge{align-self:flex-start}
+</style>
+</head>
+<body>
+
+<!-- ============ 1. VISÃO GERAL · COMPUTADOR ============ -->
+<div class="rotulo">1 · Visão geral, no computador<small>Cartão de abertura branco com o saldo grande, cartão lima de “pode gastar por dia”, linha de cartões pequenos, rosca, tipos de gasto, maiores gastos, gráfico de barras com o mês em destaque. Cada cartão mantém a manchete e o “Como ler”.</small></div>
+<div class="frame">
+  <nav class="rail" aria-label="Painel">
+    <span class="logo"><i class="ph-fill ph-gauge"></i></span>
+    <a class="on"><i class="ph-fill ph-squares-four"></i></a>
+    <a><i class="ph ph-list-bullets"></i></a>
+    <a><i class="ph ph-gear-six"></i></a>
+    <span class="sp"></span>
+    <a><i class="ph ph-sign-out"></i></a>
+  </nav>
+  <div class="main">
+    <div class="top">
+      <span class="avatar">W</span>
+      <div class="grow"><h1>Bom dia, Wesley</h1><p>Você está no azul: sobraram <b style="color:var(--ink)">R$ 3.170</b> do que entrou neste mês.</p></div>
+      <span class="icon-btn"><i class="ph ph-eye"></i></span>
+      <button class="btn out"><i class="ph ph-whatsapp-logo"></i>Conversar no WhatsApp</button>
+      <button class="btn pri"><i class="ph ph-plus"></i>Lançar</button>
+    </div>
+    <div class="ctl">
+      <div class="seg"><span class="on">Mês</span><span>30 dias</span><span>Ano</span><span>Personalizado</span></div>
+      <div class="mes"><i class="ph ph-caret-left"></i>Outubro de 2026<i class="ph ph-caret-right"></i></div>
+    </div>
+
+    <div class="g">
+      <div class="card s7">
+        <div class="card-head"><span class="t-label" style="font-size:14px">Como você está</span><span class="badge pos"><i class="ph-bold ph-trend-up"></i>37,7% da renda poupada</span></div>
+        <div class="big"><div class="t-hero">R$ 3.170<small>,00</small></div><span class="go"><i class="ph ph-arrow-up-right"></i></span></div>
+        <div class="chips">
+          <span class="chip"><span class="sq c3"><i class="ph-bold ph-arrow-down-left"></i></span>Receitas <b>+R$ 8.400,00</b></span>
+          <span class="chip"><span class="sq c8"><i class="ph-bold ph-arrow-up-right"></i></span>Despesas <b>R$ 5.230,00</b></span>
+        </div>
+        <div style="margin-top:22px">
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:10px"><span>Taxa de poupança</span><b style="color:var(--ink)">37,7%</b></div>
+          <div class="bar"><i style="width:37.7%"></i><span class="ref" style="left:20%"></span></div>
+          <div class="t-note" style="margin-top:6px;margin-left:calc(20% - 40px)">Referência 20%</div>
+        </div>
+        <div class="acoes"><button class="btn pri"><i class="ph ph-plus"></i>Lançar gasto</button><button class="btn out"><i class="ph ph-chat-circle-dots"></i>Perguntar como economizar</button></div>
+      </div>
+
+      <div class="card lime lime-card s5">
+        <svg class="star" viewBox="0 0 100 100"><path d="M50 4c4 26 20 42 46 46-26 4-42 20-46 46-4-26-20-42-46-46C30 46 46 30 50 4z" fill="#d8f89b"/></svg>
+        <span class="pill-tag" style="align-self:flex-start;position:relative"><i class="ph-fill ph-star-four"></i>PODE GASTAR POR DIA</span>
+        <div class="t-hero" style="margin-top:22px;color:var(--green-900);position:relative">R$ 243<small>,85</small></div>
+        <div style="margin-top:12px;position:relative"><span class="badge" style="background:#fff">13 dias até o fim do mês</span></div>
+        <p style="margin-top:12px;font-size:13.5px;color:#2f4a1f;position:relative">Sobram R$ 3.170,00 da renda registrada. Gastando isso por dia, o mês fecha no azul.</p>
+        <div class="mini2">
+          <div class="mini"><div class="t-label"><span>Previsto no mês</span><i class="ph ph-chart-line-up"></i></div><b>R$ 5.940</b></div>
+          <div class="mini"><div class="t-label"><span>Renda usada</span><i class="ph ph-donut"></i></div><b>62%</b></div>
+        </div>
+      </div>
+
+      <div class="s12" style="font:700 17px var(--font-display);margin-top:6px">O que mudou desde setembro</div>
+      <div class="card kpi s3"><div class="top"><span class="sq sm c3"><i class="ph ph-arrow-down-left"></i></span><span class="t-label">Receitas</span><i class="ph ph-dots-three dots"></i></div><div class="t-num">R$ 8.400</div><span class="badge pos"><i class="ph-bold ph-arrow-up-right"></i>+2,4%</span></div>
+      <div class="card kpi s3"><div class="top"><span class="sq sm c8"><i class="ph ph-arrow-up-right"></i></span><span class="t-label">Despesas</span><i class="ph ph-dots-three dots"></i></div><div class="t-num">R$ 5.230</div><span class="badge neg"><i class="ph-bold ph-arrow-up-right"></i>+6,7% (atenção)</span></div>
+      <div class="card kpi s3"><div class="top"><span class="sq sm lime"><i class="ph ph-piggy-bank"></i></span><span class="t-label">Poupança</span><i class="ph ph-dots-three dots"></i></div><div class="t-num">R$ 3.170</div><span class="badge pos"><i class="ph-bold ph-arrow-down-right"></i>-1,9%</span></div>
+      <div class="card kpi s3"><div class="top"><span class="sq sm c1"><i class="ph ph-receipt"></i></span><span class="t-label">Lançamentos</span><i class="ph ph-dots-three dots"></i></div><div class="t-num">47</div><span class="badge">+5 que em setembro</span></div>
+
+      <div class="card s4">
+        <div class="card-head"><span class="sq sm"><i class="ph ph-chart-donut"></i></span><span class="t-h2">Para onde foi</span><span class="badge">Outubro</span></div>
+        <p class="manchete"><b>Moradia</b> leva 34% de tudo; <b>Alimentação</b> vem em seguida.</p>
+        <div class="donut"><svg id="rosca" width="150" height="150" viewBox="0 0 150 150"></svg><div class="legend" id="leg"></div></div>
+        <p class="ler"><i class="ph ph-info"></i>Cada fatia é uma categoria e a cor é sempre a mesma para ela. O centro mostra o total gasto.</p>
+      </div>
+      <div class="card s4">
+        <div class="card-head"><span class="sq sm"><i class="ph ph-scales"></i></span><span class="t-h2">Tipos de gasto</span><i class="ph ph-dots-three dots"></i></div>
+        <p class="manchete"><b>43%</b> da renda foi para o essencial; a referência é 50%.</p>
+        <div class="tipo"><div class="l"><span>Essencial</span><b>R$ 3.600 · 43%</b></div><div class="bar"><i class="dk" style="width:43%"></i><span class="mark" style="left:43%">43%</span></div></div>
+        <div class="tipo"><div class="l"><span>Supérfluo</span><b>R$ 1.100 · 13%</b></div><div class="bar"><i style="width:13%"></i></div></div>
+        <div class="tipo"><div class="l"><span>Investimento</span><b>R$ 530 · 6%</b></div><div class="bar"><i style="width:6%"></i></div></div>
+        <p class="ler"><i class="ph ph-info"></i>Referência 50/30/20: essencial é o que não dá para evitar, supérfluo é o que você escolhe e investimento vira reserva.</p>
+      </div>
+      <div class="card s4">
+        <div class="card-head"><span class="sq sm"><i class="ph ph-receipt"></i></span><span class="t-h2">Maiores gastos</span><i class="ph ph-dots-three dots"></i></div>
+        <div style="margin-top:6px">
+          <div class="row"><span class="sq c1"><i class="ph ph-house"></i></span><div class="tx"><b>Aluguel</b><span>Moradia · 05/10</span></div><span class="val neg">-R$ 1.800,00</span></div>
+          <div class="row"><span class="sq c2"><i class="ph ph-shopping-cart"></i></span><div class="tx"><b>Mercado Ricardo</b><span>Alimentação · 12/10</span></div><span class="val neg">-R$ 412,00</span></div>
+          <div class="row"><span class="sq c3"><i class="ph ph-gas-pump"></i></span><div class="tx"><b>Posto Shell</b><span>Transporte · 14/10</span></div><span class="val neg">-R$ 280,00</span></div>
+          <div class="row"><span class="sq c4"><i class="ph ph-popcorn"></i></span><div class="tx"><b>Cinema e jantar</b><span>Lazer · 10/10</span></div><span class="val neg">-R$ 238,00</span></div>
+        </div>
+        <button class="btn out sm" style="margin-top:auto;align-self:flex-start">Ver todos os lançamentos</button>
+      </div>
+
+      <div class="card s7">
+        <div class="card-head"><span class="sq sm"><i class="ph ph-chart-bar"></i></span><span class="t-h2">Últimos meses</span><div class="seg"><span class="on">Despesas</span><span>Receitas</span></div></div>
+        <p class="manchete">Outubro é o <b>maior gasto dos últimos seis meses</b>, R$ 230 acima de setembro.</p>
+        <svg id="barras" width="100%" height="230" viewBox="0 0 640 230" preserveAspectRatio="none" style="margin-top:8px"></svg>
+        <p class="ler"><i class="ph ph-info"></i>A barra lima é o mês atual; as cinzas são os meses anteriores. Passe o dedo ou o mouse para ver o valor.</p>
+      </div>
+      <div class="card s5">
+        <div class="card-head"><span class="sq sm"><i class="ph ph-trend-up"></i></span><span class="t-h2">Ritmo do mês</span><i class="ph ph-dots-three dots"></i></div>
+        <p class="manchete">Você está gastando <b>no mesmo ritmo</b> de setembro. Previsto para fechar em R$ 5.940.</p>
+        <svg id="linha" width="100%" height="236" viewBox="0 0 400 236" preserveAspectRatio="none" style="margin-top:12px"></svg>
+        <div style="display:flex;gap:18px;font-size:12.5px;color:var(--muted);margin-top:8px"><span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--green-900);margin-right:6px"></i>Outubro</span><span><i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#b8c2ba;margin-right:6px"></i>Setembro</span></div>
+      </div>
+
+      <div class="card s12">
+        <div class="card-head"><span class="sq sm lime"><i class="ph ph-compass"></i></span><span class="t-h2">O que fazer agora</span></div>
+        <div class="passos">
+          <div class="passo"><span class="sq sm c4"><i class="ph ph-warning"></i></span><div><b>Lazer subiu 31%.</b><br><span class="t-note">Veja onde dá para ajustar.</span></div></div>
+          <div class="passo"><span class="sq sm c3"><i class="ph ph-piggy-bank"></i></span><div><b>Você poupou acima de 20%.</b><br><span class="t-note">Que tal separar uma parte para investir?</span></div></div>
+          <div class="passo"><span class="sq sm c1"><i class="ph ph-calendar-check"></i></span><div><b>Faltam 13 dias para fechar.</b><br><span class="t-note">Lance os gastos pequenos para o número ficar fiel.</span></div></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:18px"><button class="btn lim"><i class="ph ph-plus"></i>Lançar agora</button><button class="btn out"><i class="ph ph-chat-circle-dots"></i>Perguntar no WhatsApp</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 2. LANÇAMENTOS · COMPUTADOR ============ -->
+<div class="rotulo">2 · Lançamentos, no computador<small>Lista agrupada por dia com ícone de categoria, busca e filtros em pílula, e um cartão lima com o total do período e a exportação.</small></div>
+<div class="frame">
+  <nav class="rail"><span class="logo"><i class="ph-fill ph-gauge"></i></span><a><i class="ph ph-squares-four"></i></a><a class="on"><i class="ph-fill ph-list-bullets"></i></a><a><i class="ph ph-gear-six"></i></a><span class="sp"></span><a><i class="ph ph-sign-out"></i></a></nav>
+  <div class="main">
+    <div class="top"><div class="grow"><h1>Lançamentos</h1><p>47 lançamentos em outubro de 2026.</p></div><button class="btn out"><i class="ph ph-download-simple"></i>Exportar CSV</button><button class="btn pri"><i class="ph ph-plus"></i>Novo lançamento</button></div>
+    <div class="filtros">
+      <div class="seg"><span class="on">Todos</span><span>Receitas</span><span>Despesas</span></div>
+      <div class="campo" style="flex:1;max-width:340px"><i class="ph ph-magnifying-glass"></i>Buscar por descrição</div>
+      <div class="campo"><i class="ph ph-tag"></i>Todas as categorias<i class="ph ph-caret-down"></i></div>
+      <div class="campo"><i class="ph ph-calendar-blank"></i>Outubro de 2026<i class="ph ph-caret-down"></i></div>
+    </div>
+    <div class="g">
+      <div class="card s8">
+        <div class="group-title" style="margin-top:0">Hoje</div>
+        <div class="row"><span class="sq c3"><i class="ph ph-gas-pump"></i></span><div class="tx"><b>Posto Shell</b><span>Transporte · Essencial</span></div><span class="val neg">-R$ 280,00</span><i class="ph ph-dots-three dots"></i></div>
+        <div class="row"><span class="sq c2"><i class="ph ph-shopping-cart"></i></span><div class="tx"><b>Mercado Ricardo</b><span>Alimentação · Essencial</span></div><span class="val neg">-R$ 412,00</span><i class="ph ph-dots-three dots"></i></div>
+        <div class="group-title">Ontem</div>
+        <div class="row"><span class="sq c4"><i class="ph ph-popcorn"></i></span><div class="tx"><b>Cinema e jantar</b><span>Lazer · Supérfluo</span></div><span class="val neg">-R$ 238,00</span><i class="ph ph-dots-three dots"></i></div>
+        <div class="row"><span class="sq c5"><i class="ph ph-heartbeat"></i></span><div class="tx"><b>Farmácia</b><span>Saúde · Essencial</span></div><span class="val neg">-R$ 96,40</span><i class="ph ph-dots-three dots"></i></div>
+        <div class="group-title">05 de outubro</div>
+        <div class="row"><span class="sq lime"><i class="ph ph-wallet"></i></span><div class="tx"><b>Salário</b><span>Receita</span></div><span class="val pos">+R$ 8.400,00</span><i class="ph ph-dots-three dots"></i></div>
+        <div class="row"><span class="sq c1"><i class="ph ph-house"></i></span><div class="tx"><b>Aluguel</b><span>Moradia · Essencial</span></div><span class="val neg">-R$ 1.800,00</span><i class="ph ph-dots-three dots"></i></div>
+      </div>
+      <div style="grid-column:span 4;display:flex;flex-direction:column;gap:18px">
+        <div class="card lime"><span class="pill-tag" style="align-self:flex-start"><i class="ph-fill ph-star-four"></i>NO PERÍODO</span><div class="t-label" style="color:#2f4a1f;margin-top:18px">Saldo de outubro</div><div class="t-hero" style="font-size:46px;color:var(--green-900);margin-top:6px">R$ 3.170<small>,00</small></div>
+          <div class="mini2"><div class="mini"><div class="t-label"><span>Entrou</span><i class="ph ph-arrow-down-left"></i></div><b>R$ 8.400</b></div><div class="mini"><div class="t-label"><span>Saiu</span><i class="ph ph-arrow-up-right"></i></div><b>R$ 5.230</b></div></div></div>
+        <div class="card"><div class="card-head"><span class="t-h2">Por categoria</span></div>
+          <div class="row"><span class="sq sm c1"><i class="ph ph-house"></i></span><div class="tx"><b>Moradia</b></div><span class="val">34%</span></div>
+          <div class="row"><span class="sq sm c2"><i class="ph ph-fork-knife"></i></span><div class="tx"><b>Alimentação</b></div><span class="val">22%</span></div>
+          <div class="row"><span class="sq sm c3"><i class="ph ph-car"></i></span><div class="tx"><b>Transporte</b></div><span class="val">12%</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 3. CONFIGURAÇÕES · PLANO ============ -->
+<div class="rotulo">3 · Configurações › Plano e pagamentos, no computador<small>Menu de áreas à esquerda com a área ativa em lima, cartão do plano atual em degradê verde, três planos lado a lado (o atual com contorno escuro) e o histórico de pagamentos.</small></div>
+<div class="frame">
+  <nav class="rail"><span class="logo"><i class="ph-fill ph-gauge"></i></span><a><i class="ph ph-squares-four"></i></a><a><i class="ph ph-list-bullets"></i></a><a class="on"><i class="ph-fill ph-gear-six"></i></a><span class="sp"></span><a><i class="ph ph-sign-out"></i></a></nav>
+  <div class="main">
+    <div class="top"><div class="grow"><h1>Configurações</h1><p>Sua conta, seu plano e quem mais usa o Gastômetro com você.</p></div></div>
+    <div class="g">
+      <div class="card s3"><div class="menu-conf">
+        <a><i class="ph ph-user-circle"></i>Conta</a><a><i class="ph ph-palette"></i>Aparência e segurança</a><a class="on"><i class="ph-fill ph-credit-card"></i>Plano e pagamentos</a><a><i class="ph ph-users-three"></i>Acesso compartilhado</a><a><i class="ph ph-whatsapp-logo"></i>WhatsApp</a><a><i class="ph ph-bell"></i>Notificações</a><a><i class="ph ph-shield-check"></i>Privacidade e dados</a>
+      </div></div>
+      <div style="grid-column:span 9;display:flex;flex-direction:column;gap:18px">
+        <div class="card hero" style="flex-direction:row;align-items:center;gap:28px">
+          <div style="flex:1"><span class="badge glass">Seu plano</span><div class="t-num" style="font-size:38px;margin-top:12px">Family <span style="font-size:18px;font-weight:500;opacity:.7">R$ 39 por mês</span></div><p style="opacity:.8;margin-top:6px">Ativa · 120 de 800 mensagens usadas neste mês.</p></div>
+          <svg width="116" height="116" viewBox="0 0 116 116"><circle cx="58" cy="58" r="48" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="12"/><circle cx="58" cy="58" r="48" fill="none" stroke="#bff25f" stroke-width="12" stroke-linecap="round" stroke-dasharray="45.2 301.6" transform="rotate(-90 58 58)"/><text x="58" y="64" text-anchor="middle" fill="#fff" font-size="22" font-weight="700" style="font-family:Urbanist">15%</text></svg>
+        </div>
+        <div class="g" style="grid-template-columns:repeat(3,1fr)">
+          <div class="card plano"><span class="t-h2">Teste grátis</span><div class="t-num" style="margin-top:10px">R$ 0 <small class="t-label">por 7 dias</small></div><ul><li><i class="ph-bold ph-check"></i>50 mensagens</li><li><i class="ph-bold ph-check"></i>Painel completo</li></ul><span class="t-note">Só no começo</span></div>
+          <div class="card plano"><span class="t-h2">Essencial</span><div class="t-num" style="margin-top:10px">R$ 19 <small class="t-label">por mês</small></div><ul><li><i class="ph-bold ph-check"></i>300 mensagens</li><li><i class="ph-bold ph-check"></i>Texto, áudio e foto</li><li><i class="ph-bold ph-check"></i>Painel completo</li></ul><button class="btn out blk">Assinar o Essencial</button></div>
+          <div class="card plano atual"><div style="display:flex;justify-content:space-between;align-items:center"><span class="t-h2">Family</span><span class="badge lime">Seu plano</span></div><div class="t-num" style="margin-top:10px">R$ 39 <small class="t-label">por mês</small></div><ul><li><i class="ph-bold ph-check"></i>800 mensagens</li><li><i class="ph-bold ph-check"></i>Até 4 pessoas com convite</li><li><i class="ph-bold ph-check"></i>Painel completo</li></ul><span class="t-note">Plano atual</span></div>
+        </div>
+        <div class="card"><div class="card-head"><span class="t-h2">Histórico de pagamentos</span></div>
+          <table class="tbl"><thead><tr><th>Data</th><th>Descrição</th><th class="r">Valor</th><th class="r">Situação</th></tr></thead><tbody>
+            <tr><td>07/10/2026</td><td>Family, mensalidade</td><td class="r">R$ 39,00</td><td class="r"><span class="badge pos">Pago</span></td></tr>
+            <tr><td>07/09/2026</td><td>Essencial, mensalidade</td><td class="r">R$ 19,00</td><td class="r"><span class="badge pos">Pago</span></td></tr></tbody></table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 4. CELULAR ============ -->
+<div class="rotulo">4 · No celular (a terceira referência)<small>Cartão herói em degradê verde, círculos de ação, lista com ícones coloridos, gráfico de barras com a barra do mês em lima e menu de Configurações em lista. A barra de baixo troca de aba com o polegar.</small></div>
+<div class="celulares">
+  <!-- 4a visão geral -->
+  <div class="cel">
+    <div class="stat"><span>9:41</span><span><i class="ph-fill ph-cell-signal-full"></i> <i class="ph-fill ph-battery-full"></i></span></div>
+    <div class="corpo">
+      <div class="hello"><span class="avatar" style="width:42px;height:42px;font-size:16px">W</span><div style="flex:1"><span>Bom dia,</span><b>Wesley</b></div><span class="icon-btn sm"><i class="ph ph-eye"></i></span></div>
+      <div class="card hero hero-m"><div class="cardglyph"></div><span style="opacity:.8;font-size:13px">Como você está · outubro</span><div class="t-hero">R$ 3.170<small>,00</small></div>
+        <div style="margin-top:12px"><span class="badge glass"><i class="ph-bold ph-trend-up"></i>37,7% da renda poupada</span></div>
+        <div style="display:flex;gap:18px;margin-top:16px;font-size:12.5px"><span style="opacity:.85"><i class="ph-bold ph-arrow-down-left" style="color:var(--lime)"></i> Entrou <b>R$ 8.400</b></span><span style="opacity:.85"><i class="ph-bold ph-arrow-up-right" style="color:#ff9a7a"></i> Saiu <b>R$ 5.230</b></span></div></div>
+      <div class="acoes-m"><div><span class="sq"><i class="ph ph-plus"></i></span>Lançar</div><div><span class="sq"><i class="ph ph-whatsapp-logo"></i></span>WhatsApp</div><div><span class="sq"><i class="ph ph-list-bullets"></i></span>Lançamentos</div><div><span class="sq"><i class="ph ph-dots-three"></i></span>Mais</div></div>
+      <div class="card lime" style="padding:16px 18px;flex-direction:row;align-items:center;gap:14px"><div style="flex:1"><span class="pill-tag" style="padding:5px 12px 5px 5px;font-size:10.5px"><i style="width:22px;height:22px"><i class="ph-fill ph-star-four"></i></i>PODE GASTAR POR DIA</span><div class="t-num" style="margin-top:8px;color:var(--green-900)">R$ 243,85</div><span style="font-size:12px;color:#2f4a1f">13 dias até o fim do mês</span></div><span class="go" style="width:48px;height:48px;font-size:20px;background:#fff"><i class="ph ph-arrow-up-right"></i></span></div>
+      <div style="display:flex;align-items:center"><b class="t-h2" style="flex:1">Maiores gastos</b><span style="color:var(--green-900);font-weight:600;font-size:13px">Ver todos ›</span></div>
+      <div class="card" style="padding:4px 16px"><div class="row"><span class="sq sm c1"><i class="ph ph-house"></i></span><div class="tx"><b>Aluguel</b><span>Moradia · 05/10</span></div><span class="val neg">-R$ 1.800</span></div><div class="row"><span class="sq sm c2"><i class="ph ph-shopping-cart"></i></span><div class="tx"><b>Mercado Ricardo</b><span>Alimentação · 12/10</span></div><span class="val neg">-R$ 412</span></div></div>
+    </div>
+    <nav class="tabbar"><a class="on"><i class="ph-fill ph-squares-four"></i>Visão geral</a><a><i class="ph ph-list-bullets"></i>Lançamentos</a><a><i class="ph ph-gear-six"></i>Configurações</a><a><i class="ph ph-sign-out"></i>Sair</a></nav>
+  </div>
+
+  <!-- 4b análise -->
+  <div class="cel">
+    <div class="stat"><span>9:41</span><span><i class="ph-fill ph-cell-signal-full"></i> <i class="ph-fill ph-battery-full"></i></span></div>
+    <div class="corpo">
+      <div class="hello"><span class="icon-btn sm"><i class="ph ph-caret-left"></i></span><b style="flex:1;text-align:center;font:700 18px var(--font-display)">Para onde foi</b><span class="icon-btn sm"><i class="ph ph-calendar-blank"></i></span></div>
+      <div class="seg" style="align-self:stretch;display:grid;grid-template-columns:repeat(3,1fr);text-align:center"><span>Mês</span><span class="on">30 dias</span><span>Ano</span></div>
+      <div class="card"><span class="t-label">Gasto total</span><div class="t-num" style="font-size:34px;margin-top:4px">R$ 5.230,00</div><span class="badge neg" style="align-self:flex-start;margin-top:8px"><i class="ph-bold ph-arrow-up-right"></i>6,7% a mais que o período anterior</span>
+        <svg id="barras-m" width="100%" height="170" viewBox="0 0 300 170" preserveAspectRatio="none" style="margin-top:10px"></svg></div>
+      <div style="display:flex;align-items:center"><b class="t-h2" style="flex:1">Principais categorias</b><span style="color:var(--green-900);font-weight:600;font-size:13px">Ver todas ›</span></div>
+      <div class="card" style="padding:2px 16px"><div class="row"><span class="sq sm c1"><i class="ph ph-house"></i></span><div class="tx"><b>Moradia</b><span>34%</span></div><span class="val">R$ 1.800</span></div><div class="row"><span class="sq sm c2"><i class="ph ph-fork-knife"></i></span><div class="tx"><b>Alimentação</b><span>22%</span></div><span class="val">R$ 1.150</span></div><div class="row"><span class="sq sm c3"><i class="ph ph-car"></i></span><div class="tx"><b>Transporte</b><span>12%</span></div><span class="val">R$ 640</span></div></div>
+    </div>
+    <nav class="tabbar"><a class="on"><i class="ph-fill ph-squares-four"></i>Visão geral</a><a><i class="ph ph-list-bullets"></i>Lançamentos</a><a><i class="ph ph-gear-six"></i>Configurações</a><a><i class="ph ph-sign-out"></i>Sair</a></nav>
+  </div>
+
+  <!-- 4c configurações -->
+  <div class="cel">
+    <div class="stat"><span>9:41</span><span><i class="ph-fill ph-cell-signal-full"></i> <i class="ph-fill ph-battery-full"></i></span></div>
+    <div class="corpo">
+      <div class="hello"><span class="avatar">W</span><div style="flex:1"><b>Wesley Almeida</b><span>wesley@exemplo.com</span></div></div>
+      <div class="card hero hero-m" style="padding:18px 20px;flex-direction:row;align-items:center;gap:14px"><div style="flex:1"><span class="badge glass">Seu plano</span><div class="t-num" style="margin-top:10px">Family</div><span style="font-size:12.5px;opacity:.8">120 de 800 mensagens usadas</span></div>
+        <svg width="82" height="82" viewBox="0 0 116 116"><circle cx="58" cy="58" r="48" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="13"/><circle cx="58" cy="58" r="48" fill="none" stroke="#bff25f" stroke-width="13" stroke-linecap="round" stroke-dasharray="45.2 301.6" transform="rotate(-90 58 58)"/><text x="58" y="66" text-anchor="middle" fill="#fff" font-size="26" font-weight="700" style="font-family:Urbanist">15%</text></svg></div>
+      <div class="card menu-list" style="padding:6px 18px">
+        <a><i class="ph ph-user-circle"></i>Conta<i class="ph ph-caret-right"></i></a>
+        <a><i class="ph ph-palette"></i>Aparência e segurança<i class="ph ph-caret-right"></i></a>
+        <a><i class="ph ph-credit-card"></i>Plano e pagamentos<i class="ph ph-caret-right"></i></a>
+        <a><i class="ph ph-users-three"></i>Acesso compartilhado<i class="ph ph-caret-right"></i></a>
+        <a><i class="ph ph-whatsapp-logo"></i>WhatsApp<i class="ph ph-caret-right"></i></a>
+        <a><i class="ph ph-shield-check"></i>Privacidade e dados<i class="ph ph-caret-right"></i></a>
+      </div>
+      <button class="btn out blk"><i class="ph ph-sign-out"></i>Sair da conta</button>
+    </div>
+    <nav class="tabbar"><a><i class="ph ph-squares-four"></i>Visão geral</a><a><i class="ph ph-list-bullets"></i>Lançamentos</a><a class="on"><i class="ph-fill ph-gear-six"></i>Configurações</a><a><i class="ph ph-sign-out"></i>Sair</a></nav>
+  </div>
+</div>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const cat = [["Moradia",1800,"#2a78d6"],["Alimentação",1150,"#eb6834"],["Transporte",640,"#1baf7a"],["Lazer",520,"#eda100"],["Saúde",380,"#e87ba4"],["Outros",740,"#6250d6"]];
+// rosca
+(function(){
+  const svg = document.getElementById("rosca"), leg = document.getElementById("leg");
+  const tot = cat.reduce((s,c)=>s+c[1],0), R=58, C=2*Math.PI*R; let off=0;
+  const trilho = document.createElementNS(NS,"circle"); trilho.setAttribute("cx",75);trilho.setAttribute("cy",75);trilho.setAttribute("r",R);trilho.setAttribute("fill","none");trilho.setAttribute("stroke","#e8ece7");trilho.setAttribute("stroke-width",16); svg.appendChild(trilho);
+  cat.forEach(([n,v,cor])=>{
+    const len = v/tot*C, c = document.createElementNS(NS,"circle");
+    c.setAttribute("cx",75);c.setAttribute("cy",75);c.setAttribute("r",R);c.setAttribute("fill","none");c.setAttribute("stroke",cor);c.setAttribute("stroke-width",16);
+    c.setAttribute("stroke-dasharray",`${Math.max(len-3,1)} ${C}`);c.setAttribute("stroke-dashoffset",-off);c.setAttribute("transform","rotate(-90 75 75)");svg.appendChild(c); off+=len;
+    leg.insertAdjacentHTML("beforeend",`<div><i style="background:${cor}"></i><span>${n}</span><b>${Math.round(v/tot*100)}%</b></div>`);
+  });
+  svg.insertAdjacentHTML("beforeend",`<text x="75" y="72" text-anchor="middle" font-size="11" fill="#68746d">Total</text><text x="75" y="92" text-anchor="middle" font-size="19" font-weight="700" fill="#0f1a14" style="font-family:Urbanist">R$ 5.230</text>`);
+})();
+// barras
+function barras(id, valores, rotulos, W, H, hi, fmt){
+  const svg = document.getElementById(id), max = Math.max(...valores)*1.15, bw = W/valores.length, base = H-24;
+  [0,.5,1].forEach(f=>{const y=base-(base-8)*f; svg.insertAdjacentHTML("beforeend",`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="#eef1ed"/>`)});
+  valores.forEach((v,i)=>{
+    const h=(v/max)*(base-8), x=i*bw+bw*.2, w=bw*.6, y=base-h, on=i===hi;
+    svg.insertAdjacentHTML("beforeend",`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${Math.min(10,w/2)}" fill="${on?"#bff25f":"#eceff0"}"/><text x="${x+w/2}" y="${H-6}" text-anchor="middle" font-size="12" fill="#68746d">${rotulos[i]}</text>`);
+    if(on){const tw=64, tx=Math.min(Math.max(x+w/2-tw/2,2),W-tw-2); svg.insertAdjacentHTML("beforeend",`<rect x="${tx}" y="${y-30}" width="${tw}" height="24" rx="8" fill="#0f1a14"/><text x="${tx+tw/2}" y="${y-14}" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">${fmt(v)}</text>`);}
+  });
+}
+barras("barras",[4100,4600,4300,5000,4900,5230],["mai","jun","jul","ago","set","out"],640,230,5,v=>"R$ "+v.toLocaleString("pt-BR"));
+barras("barras-m",[4100,4600,4300,5000,4900,5230],["mai","jun","jul","ago","set","out"],300,170,5,v=>"R$ "+v.toLocaleString("pt-BR"));
+// linha acumulada
+(function(){
+  const svg=document.getElementById("linha"),W=400,H=236,n=31;
+  const atual=Array.from({length:18},(_,i)=>(i+1)/31*5230*1.72), ant=Array.from({length:30},(_,i)=>(i+1)/30*4900);
+  const max=6200, X=i=>10+i/(n-1)*(W-20), Y=v=>H-20-(v/max)*(H-34);
+  [0,.5,1].forEach(f=>svg.insertAdjacentHTML("beforeend",`<line x1="0" x2="${W}" y1="${H-20-(H-34)*f}" y2="${H-20-(H-34)*f}" stroke="#eef1ed"/>`));
+  const path=(arr,cor,sw,dash)=>`<path d="${arr.map((v,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)).join(" ")}" fill="none" stroke="${cor}" stroke-width="${sw}" stroke-linecap="round" ${dash?'stroke-dasharray="5 6"':""}/>`;
+  svg.insertAdjacentHTML("beforeend",path(ant,"#b8c2ba",2.5,false)+path(atual,"#0b3a22",3.5,false));
+  const i=atual.length-1; svg.insertAdjacentHTML("beforeend",`<circle cx="${X(i)}" cy="${Y(atual[i])}" r="6" fill="#bff25f" stroke="#0b3a22" stroke-width="3"/>`);
+})();
+// encaixa os quadros largos na janela
+function ajusta(){const z=Math.min(1,(innerWidth-48)/1360);document.querySelectorAll(".frame,.rotulo").forEach(e=>e.style.zoom=z);}
+addEventListener("resize",ajusta);ajusta();
+</script>
+</body>
+</html>

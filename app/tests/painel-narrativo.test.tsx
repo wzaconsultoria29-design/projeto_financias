@@ -132,8 +132,9 @@ describe("ParaOndeFoi colorido e explicado", () => {
     expect(cor("Alimentação")).toBe("var(--c2)");
   });
 
-  it("explica como ler as barras", () => {
+  it("explica como ler a rosca", () => {
     render(<ParaOndeFoi p={base()} />);
-    expect(screen.getByText(/cada barra é uma categoria/i)).toBeInTheDocument();
+    expect(screen.getByText(/cada fatia da rosca é uma categoria/i)).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /rosca dos gastos por categoria/i })).toBeInTheDocument();
   });
 });

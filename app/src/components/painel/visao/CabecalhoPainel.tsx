@@ -17,6 +17,8 @@ const MODOS: { id: Modo; rotulo: string }[] = [
 type Props = {
   titulo: string;
   subtitulo: string;
+  /** "Bom dia, Maria": aparece acima do título quando o nome já chegou. */
+  saudacao?: string | null;
   modo: Modo;
   mes: string;
   mesAtual: string;
@@ -30,32 +32,36 @@ type Props = {
   onPrivado: () => void;
 };
 
-const campo = "rounded-[10px] border border-linha bg-superficie px-3 py-2 text-tinta";
+const campo = "rounded-[12px] border border-linha bg-superficie px-3 py-2 text-tinta";
 
 /** Título que responde à pergunta da tela, a escolha do período e as duas ações do dia a dia: lançar e conversar. */
-export function CabecalhoPainel({ titulo, subtitulo, modo, mes, mesAtual, custom, maximo, onModo, onMes, onCustom, onLancar, privado, onPrivado }: Props) {
+export function CabecalhoPainel({ titulo, subtitulo, saudacao, modo, mes, mesAtual, custom, maximo, onModo, onMes, onCustom, onLancar, privado, onPrivado }: Props) {
   const [de, setDe] = useState(custom?.de ?? "");
   const [ate, setAte] = useState(custom?.ate ?? "");
 
   return (
     <header className="flex flex-col gap-5">
-      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
-        <div>
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-tinta">{titulo}</h1>
-          <p className="mt-1 text-base text-suave">{subtitulo}</p>
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+        <div className="flex items-center gap-3.5">
+          {saudacao && (
+            <span aria-hidden="true" className="flex h-12 w-12 flex-none items-center justify-center rounded-full bg-lima font-display text-lg font-bold text-[#0b3a22]">
+              {saudacao.split(", ")[1]?.charAt(0).toUpperCase() ?? ""}
+            </span>
+          )}
+          <div className="min-w-0">
+            {saudacao && <p className="text-sm font-medium text-suave">{saudacao}</p>}
+            <h1 className="font-display text-[1.75rem] font-bold leading-tight tracking-tight text-tinta">{titulo}</h1>
+            <p className="mt-0.5 text-[0.9375rem] leading-snug text-suave">{subtitulo}</p>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <button type="button" onClick={onLancar} className="botao">
-            <Plus size={18} weight="bold" aria-hidden="true" />
-            Lançar
-          </button>
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
             aria-label="Esconder valores"
             aria-pressed={privado}
             title="Esconder valores"
             onClick={onPrivado}
-            className={`flex h-[46px] w-[46px] flex-none items-center justify-center rounded-full border transition-colors ${privado ? "border-floresta bg-folha text-tinta" : "border-linha text-suave hover:border-floresta hover:text-tinta"}`}
+            className={`flex h-11 w-11 flex-none items-center justify-center rounded-full border bg-superficie transition-colors ${privado ? "border-tinta text-tinta" : "border-linha text-tinta hover:border-linha-forte"}`}
           >
             {privado ? <EyeSlash size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
           </button>
@@ -63,18 +69,22 @@ export function CabecalhoPainel({ titulo, subtitulo, modo, mes, mesAtual, custom
             <WhatsappLogo size={18} aria-hidden="true" />
             Conversar no WhatsApp
           </a>
+          <button type="button" onClick={onLancar} className="botao">
+            <Plus size={18} weight="bold" aria-hidden="true" />
+            Lançar
+          </button>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-        <div role="group" aria-label="Período" className="inline-flex rounded-full bg-d-trilho p-1">
+        <div role="group" aria-label="Período" className="inline-flex gap-0.5 rounded-full bg-d-trilho p-1">
           {MODOS.map((m) => (
             <button
               key={m.id}
               type="button"
               aria-pressed={modo === m.id}
               onClick={() => onModo(m.id)}
-              className={`min-h-9 rounded-full px-4 text-sm font-medium transition-colors ${modo === m.id ? "bg-superficie text-tinta" : "text-suave hover:text-tinta"}`}
+              className={`min-h-9 rounded-full px-4 text-sm font-medium transition-colors ${modo === m.id ? "bg-superficie font-semibold text-tinta shadow-[0_1px_3px_rgba(15,26,20,0.1)]" : "text-suave hover:text-tinta"}`}
             >
               {m.rotulo}
             </button>

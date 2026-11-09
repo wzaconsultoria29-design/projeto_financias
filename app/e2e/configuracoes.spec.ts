@@ -66,14 +66,14 @@ test.describe("painel: configurações", () => {
   test("Aparência: tema escuro e claro mudam a página na hora", async ({ page }) => {
     await abrir(page);
     await page.goto("/painel/configuracoes/aparencia");
-    const fundo = () => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+    const fundo = () => page.evaluate(() => getComputedStyle(document.querySelector(".app-vl")!).backgroundColor);
     await page.getByText("Escuro", { exact: true }).click();
     await expect(page.locator("html")).toHaveAttribute("data-tema", "escuro");
-    expect(await fundo()).toBe("rgb(11, 20, 17)");
+    expect(await fundo()).toBe("rgb(10, 18, 14)");
     await page.screenshot({ path: `../docs/screens/painel-configuracoes-aparencia-${test.info().project.name}.png`, fullPage: true });
     await page.getByText("Claro", { exact: true }).click();
     await expect(page.locator("html")).toHaveAttribute("data-tema", "claro");
-    expect(await fundo()).toBe("rgb(243, 245, 241)");
+    expect(await fundo()).toBe("rgb(238, 241, 237)");
     await page.getByText("Automático", { exact: true }).click();
     await expect(page.locator("html")).not.toHaveAttribute("data-tema", /.+/);
   });
@@ -169,7 +169,7 @@ test.describe("painel: configurações", () => {
     await expect(page.getByText(/Este link aparece só agora/)).toBeVisible();
     await page.screenshot({ path: `../docs/screens/painel-configuracoes-acesso-${test.info().project.name}.png`, fullPage: true });
     await page.getByRole("button", { name: "Cancelar convite" }).first().click();
-    expect(cancelados).toEqual([{ p_id: "c1" }]);
+    await expect.poll(() => cancelados).toEqual([{ p_id: "c1" }]);
   });
 
   test("Convite: o link guarda o código e, ao entrar, o convite é aceito", async ({ page }) => {

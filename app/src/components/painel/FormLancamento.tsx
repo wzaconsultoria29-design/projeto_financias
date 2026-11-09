@@ -73,7 +73,7 @@ export function FormLancamento({ inicial, categorias: opcoesCategoria = CATEGORI
               type="button"
               aria-pressed={tipo === t}
               onClick={() => setTipo(t)}
-              className={`rounded-full border px-4 py-2 text-sm font-medium ${tipo === t ? "border-floresta bg-folha text-tinta" : "border-linha text-suave"}`}
+              className={`rounded-full border px-4 py-2 text-sm font-medium ${tipo === t ? "border-transparent bg-lima font-semibold text-[#0b3a22]" : "border-linha text-suave"}`}
             >
               {t === "despesa" ? "Despesa" : "Receita"}
             </button>

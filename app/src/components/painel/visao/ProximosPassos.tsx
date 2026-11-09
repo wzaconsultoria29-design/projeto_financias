@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChatCircleDots } from "@phosphor-icons/react/dist/ssr";
+import { ChatCircleDots, Compass } from "@phosphor-icons/react/dist/ssr";
 import type { Painel } from "@/lib/api";
 import { brand } from "@/config/brand";
 import { proximosPassos, type AcaoPasso } from "@/lib/narrativa";
@@ -38,10 +38,10 @@ export function ProximosPassos({ p, onLancar }: { p: Painel; onLancar: () => voi
   const passos = proximosPassos(p);
 
   return (
-    <Capitulo id="passos" titulo="O que fazer agora" manchete="Passos escolhidos pelos seus números deste período.">
+    <Capitulo id="passos" titulo="O que fazer agora" icone={Compass} manchete="Passos escolhidos pelos seus números deste período.">
       <ul className="grid gap-3 md:grid-cols-[repeat(auto-fit,minmax(15rem,1fr))]">
         {passos.map((passo, i) => (
-          <li key={passo.id} className="flex flex-col justify-between gap-4 rounded-[16px] border border-linha bg-papel/60 p-[18px]">
+          <li key={passo.id} className="flex flex-col justify-between gap-4 rounded-[16px] bg-papel p-[18px]">
             <p className="leading-snug text-tinta">{passo.texto}</p>
             <Acao acao={passo.acao} primario={i === 0} onLancar={onLancar} />
           </li>

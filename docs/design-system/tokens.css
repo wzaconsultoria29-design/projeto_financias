@@ -1,0 +1,144 @@
+/*
+  Gastômetro · Design system "Verde-lima" (proposta de 2026-11-08, a partir das três referências do dono).
+  Fonte única das cores, tipos, raios e componentes. As maquetes e, depois de aprovado, o app usam estes valores.
+  Regras: fundo cinza-esverdeado claro, cartões brancos MUITO arredondados e sem borda pesada, números grandes e leves,
+  UMA cor de destaque (lima) + um verde-escuro de ação, ícones Phosphor (regular no repouso, fill quando ativo).
+*/
+:root {
+  /* Superfícies */
+  --bg: #eef1ed;          /* fundo da página */
+  --card: #ffffff;        /* cartões */
+  --track: #e8ece7;       /* trilho de barras e de controles */
+  --line: #e5e9e4;        /* contornos finos */
+  /* Texto */
+  --ink: #0f1a14;         /* títulos e números */
+  --muted: #68746d;       /* rótulos e apoio (contraste 4,9:1 sobre branco) */
+  --faint: #a2ada5;       /* só para o que é decorativo */
+  /* Marca */
+  --green-900: #0b3a22;   /* botão primário, item ativo, barras de destaque */
+  --green-700: #12613a;   /* fim do degradê do cartão herói */
+  --green-600: #1a7a4a;
+  --lime: #bff25f;        /* cor de destaque (cartão, botão, barra do mês atual) */
+  --lime-300: #d6f79a;
+  --lime-100: #edfad0;    /* fundo de selo e de bloco suave */
+  --hero: linear-gradient(135deg, #12613a 0%, #0b3a22 100%);
+  /* Estado: sempre com ícone ou sinal, nunca só cor */
+  --pos: #1c9a52;
+  --neg: #df4048;
+  --warn: #f2682a;
+  --pos-bg: #e4f6ea;
+  --neg-bg: #fde8e8;
+  /* Oito cores de categoria (paleta já validada para daltonismo). A cor segue a categoria, nunca a posição. */
+  --c1: #2a78d6; --c2: #eb6834; --c3: #1baf7a; --c4: #eda100; --c5: #e87ba4; --c6: #008300; --c7: #6250d6; --c8: #e34948;
+  /* Formas */
+  --r-card: 28px;         /* cartão grande */
+  --r-md: 20px;           /* cartão pequeno e bloco interno */
+  --r-sm: 14px;           /* quadrado de ícone */
+  --r-pill: 999px;
+  --sombra: 0 1px 2px rgba(15, 26, 20, .04), 0 6px 20px rgba(15, 26, 20, .04);
+  /* Tipos: Urbanist nos títulos e números, Inter no texto de interface */
+  --font-display: "Urbanist", system-ui, sans-serif;
+  --font-ui: "Inter", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; }
+body { font-family: var(--font-ui); background: var(--bg); color: var(--ink); font-size: 14px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+i.ph, i.ph-fill, i.ph-bold, i.ph-duotone { display: inline-block; line-height: 1; }
+
+/* ---------- Tipos ---------- */
+.t-hero   { font-family: var(--font-display); font-size: 64px; font-weight: 500; letter-spacing: -.03em; line-height: 1; }
+.t-hero small { font-size: 28px; font-weight: 500; opacity: .55; letter-spacing: -.01em; }
+.t-num    { font-family: var(--font-display); font-size: 34px; font-weight: 600; letter-spacing: -.02em; line-height: 1.05; }
+.t-h1     { font-family: var(--font-display); font-size: 28px; font-weight: 700; letter-spacing: -.02em; }
+.t-h2     { font-family: var(--font-display); font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+.t-label  { font-size: 13px; color: var(--muted); font-weight: 500; }
+.t-note   { font-size: 12.5px; color: var(--muted); }
+.up { color: var(--pos); } .down { color: var(--neg); }
+
+/* ---------- Cartões ---------- */
+.card { background: var(--card); border-radius: var(--r-card); padding: 24px; box-shadow: var(--sombra); display: flex; flex-direction: column; min-width: 0; }
+.card.lime { background: var(--lime); }
+.card.hero { background: var(--hero); color: #fff; }
+.card.dark { background: var(--green-900); color: #fff; }
+.card-head { display: flex; align-items: center; gap: 12px; }
+.card-head .t-h2 { flex: 1; }
+.manchete { font-size: 14.5px; line-height: 1.45; margin-top: 10px; color: var(--ink); }
+.manchete b { font-weight: 600; }
+.ler { margin-top: 14px; font-size: 12.5px; color: var(--muted); background: var(--bg); border-radius: 12px; padding: 9px 12px; display: flex; gap: 8px; align-items: flex-start; }
+.ler i { font-size: 15px; margin-top: 1px; color: var(--green-900); flex: none; }
+
+/* ---------- Botões ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: var(--r-pill); padding: 11px 20px; font: 600 14px var(--font-ui); border: 1px solid transparent; white-space: nowrap; cursor: pointer; }
+.btn i { font-size: 17px; }
+.btn.pri { background: var(--green-900); color: #fff; }
+.btn.out { background: #fff; border-color: #cfd6cf; color: var(--ink); }
+.btn.lim { background: var(--lime); color: var(--green-900); }
+.btn.on-dark { background: rgba(255,255,255,.14); color: #fff; }
+.btn.sm { padding: 8px 15px; font-size: 13px; }
+.btn.blk { width: 100%; padding: 14px; font-size: 15px; }
+.go { width: 64px; height: 64px; border-radius: 50%; background: var(--lime); display: grid; place-items: center; color: var(--green-900); font-size: 26px; flex: none; }
+.icon-btn { width: 44px; height: 44px; border-radius: 50%; background: #fff; border: 1px solid var(--line); display: grid; place-items: center; font-size: 19px; color: var(--ink); position: relative; flex: none; }
+.icon-btn.sm { width: 36px; height: 36px; font-size: 17px; }
+.dots { color: var(--muted); font-size: 20px; }
+
+/* ---------- Controle segmentado (trilho cinza, ativo branco) ---------- */
+.seg { display: inline-flex; background: #e2e7e1; border-radius: var(--r-pill); padding: 4px; gap: 2px; }
+.seg span { padding: 8px 16px; border-radius: var(--r-pill); font-size: 13.5px; font-weight: 500; color: var(--muted); }
+.seg span.on { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(15,26,20,.1); font-weight: 600; }
+.seg.lime-on span.on { background: var(--lime); box-shadow: none; color: var(--green-900); }
+
+/* ---------- Selos e chips ---------- */
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: var(--r-pill); font-size: 12.5px; font-weight: 600; background: var(--lime-100); color: var(--green-900); }
+.badge.lime { background: var(--lime); }
+.badge.pos { background: var(--pos-bg); color: #0d6b36; }
+.badge.neg { background: var(--neg-bg); color: #b3262d; }
+.badge.glass { background: rgba(255,255,255,.2); color: #fff; }
+.pill-tag { display: inline-flex; align-items: center; gap: 8px; border-radius: var(--r-pill); padding: 8px 16px 8px 8px; background: var(--green-900); color: #fff; font: 700 12px var(--font-ui); letter-spacing: .06em; }
+.pill-tag i { width: 26px; height: 26px; border-radius: 50%; background: #fff; color: var(--green-900); display: grid; place-items: center; font-size: 14px; }
+
+/* ---------- Ícones: quadrado arredondado e círculo ---------- */
+.sq { width: 44px; height: 44px; border-radius: var(--r-sm); display: grid; place-items: center; font-size: 22px; flex: none; background: #f2f5f1; color: var(--green-900); }
+.sq.round { border-radius: 50%; }
+.sq.sm { width: 36px; height: 36px; font-size: 18px; border-radius: 12px; }
+.sq.c1 { background: #e3eefb; color: var(--c1); } .sq.c2 { background: #fdebe3; color: var(--c2); } .sq.c3 { background: #def5ec; color: var(--c3); }
+.sq.c4 { background: #fcf0d2; color: #b97d00; } .sq.c5 { background: #fbe6ee; color: var(--c5); } .sq.c7 { background: #e9e6fa; color: var(--c7); } .sq.c8 { background: #fbe3e3; color: var(--c8); }
+.sq.lime { background: var(--lime); color: var(--green-900); }
+.sq.dark { background: var(--green-900); color: var(--lime); }
+
+/* ---------- Listas de lançamentos ---------- */
+.row { display: flex; align-items: center; gap: 14px; padding: 13px 0; }
+.row + .row { border-top: 1px solid var(--line); }
+.row .tx { flex: 1; min-width: 0; }
+.row .tx b { display: block; font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .tx span { font-size: 12.5px; color: var(--muted); }
+.row .val { font-weight: 700; font-size: 14.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.row .val.pos { color: var(--pos); } .row .val.neg { color: var(--neg); }
+.group-title { font-family: var(--font-display); font-weight: 700; font-size: 15px; margin: 18px 0 2px; }
+
+/* ---------- Barras de progresso ---------- */
+.bar { height: 9px; border-radius: 99px; background: var(--track); position: relative; }
+.bar > i { display: block; height: 100%; border-radius: 99px; background: var(--lime); }
+.bar > i.dk { background: var(--green-900); }
+.bar .mark { position: absolute; top: 50%; transform: translate(-50%, -50%); background: var(--green-900); color: #fff; font: 700 11px var(--font-ui); padding: 3px 8px; border-radius: 99px; }
+.bar .ref { position: absolute; top: -4px; width: 2px; height: 17px; background: var(--ink); opacity: .55; border-radius: 2px; }
+
+/* ---------- Painel de KPI (cartão pequeno) ---------- */
+.kpi { padding: 18px 20px; border-radius: var(--r-md); }
+.kpi .top { display: flex; align-items: center; gap: 10px; }
+.kpi .top .t-label { flex: 1; }
+.kpi .t-num { margin: 12px 0 8px; font-size: 28px; }
+
+/* ---------- Navegação ---------- */
+.rail { background: #fff; border-radius: 40px; padding: 18px 10px; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: var(--sombra); width: 68px; }
+.rail .logo { width: 44px; height: 44px; border-radius: 14px; background: var(--green-900); color: var(--lime); display: grid; place-items: center; font-size: 24px; margin-bottom: 14px; }
+.rail a { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 22px; color: var(--muted); }
+.rail a.on { background: var(--green-900); color: var(--lime); }
+.topnav { display: inline-flex; gap: 4px; background: #fff; border-radius: var(--r-pill); padding: 5px; box-shadow: var(--sombra); }
+.topnav span { padding: 9px 20px; border-radius: var(--r-pill); font-weight: 500; color: var(--muted); font-size: 14px; }
+.topnav span.on { background: var(--lime); color: var(--green-900); font-weight: 700; }
+.tabbar { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; background: #fff; border-top: 1px solid var(--line); padding: 8px 6px 12px; }
+.tabbar a { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; font-weight: 500; color: var(--muted); }
+.tabbar a i { font-size: 23px; }
+.tabbar a.on { color: var(--green-900); font-weight: 700; }
+.tabbar a.on i { color: var(--green-900); }
+.avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--lime); color: var(--green-900); display: grid; place-items: center; font: 700 18px var(--font-display); flex: none; }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type PointerEvent } from "react";
+import { Pulse } from "@phosphor-icons/react/dist/ssr";
 import type { Painel } from "@/lib/api";
 import { brl, dataCurta } from "@/lib/format";
 import { eixo, mediaPorDiaSemana, NOME_DIA, NOME_DIA_CURTO, somarDias, valorCurto } from "@/lib/painel";
@@ -63,7 +64,7 @@ function GraficoAcumulado({ p }: { p: Painel }) {
   const resumo = `Gasto acumulado dia a dia: este período ${brl(ultimoAtual)}, período anterior ${brl(serie[ultimo >= 0 ? ultimo : n - 1]?.anterior ?? 0)} no mesmo ponto`;
 
   return (
-    <div ref={ref} className="dado relative mt-4">
+    <div ref={ref} className="dado relative mt-4 overflow-hidden">
       <svg
         role="img"
         aria-label={resumo}
@@ -188,6 +189,7 @@ export function Ritmo({ p }: { p: Painel }) {
     <Capitulo
       id="ritmo"
       titulo="O ritmo do período"
+      icone={Pulse}
       manchete={ritmo}
       comoLer={
         p.acumulado

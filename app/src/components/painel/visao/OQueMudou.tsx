@@ -1,3 +1,4 @@
+import { ChartLineUp } from "@phosphor-icons/react/dist/ssr";
 import type { Painel } from "@/lib/api";
 import { brl, pct } from "@/lib/format";
 import { manchetes, oQueMudou, type Mudanca } from "@/lib/narrativa";
@@ -16,6 +17,7 @@ export function OQueMudou({ p }: { p: Painel }) {
     <Capitulo
       id="mudou"
       titulo="O que mudou"
+      icone={ChartLineUp}
       manchete={mudou}
       comoLer="Comparamos com o período anterior do mesmo tamanho; no mês em andamento, até o mesmo dia. Verde é bom para o seu bolso e laranja pede atenção."
     >
@@ -24,7 +26,7 @@ export function OQueMudou({ p }: { p: Painel }) {
       ) : (
         <ul aria-label="Mudanças em relação ao período anterior" className="flex flex-col gap-3">
           {itens.map((i) => (
-            <li key={`${i.chave}-${i.rotulo}`} data-bom={i.bom} className="grid grid-cols-1 gap-y-2 rounded-[14px] border border-linha bg-papel/60 px-4 py-3 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-x-4 sm:gap-y-1">
+            <li key={`${i.chave}-${i.rotulo}`} data-bom={i.bom} className="grid grid-cols-1 gap-y-2 rounded-[18px] bg-papel px-4 py-3.5 sm:grid-cols-[1fr_auto] sm:items-center sm:gap-x-4 sm:gap-y-1">
               <div>
                 <p className="font-semibold text-tinta">{i.rotulo}</p>
                 {SUBROTULO[i.chave] && <p className="text-[13px] text-suave">{SUBROTULO[i.chave]}</p>}

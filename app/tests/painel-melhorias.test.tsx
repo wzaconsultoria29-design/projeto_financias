@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { podeGastarPorDia } from "@/lib/painel";
 import { gravarEscondido, lerEscondido } from "@/lib/privacidade";
-import { Resumo } from "@/components/painel/visao/Resumo";
+import { PodeGastar } from "@/components/painel/visao/PodeGastar";
 import { CabecalhoPainel } from "@/components/painel/visao/CabecalhoPainel";
 import { EsqueletoPainel } from "@/components/painel/visao/EsqueletoPainel";
 import { base } from "./painel-fixture";
@@ -41,22 +41,22 @@ describe("podeGastarPorDia", () => {
   });
 });
 
-describe("Resumo: quanto pode gastar por dia", () => {
+describe("PodeGastar: quanto pode gastar por dia", () => {
   it("mostra o valor por dia e de onde ele vem", () => {
-    render(<Resumo p={base({ projecao: NO_MEIO_DO_MES })} />);
+    render(<PodeGastar p={base({ projecao: NO_MEIO_DO_MES })} />);
     expect(screen.getByText("Pode gastar por dia até o fim do mês")).toBeInTheDocument();
     expect(screen.getByText("R$ 100,00")).toBeInTheDocument();
     expect(screen.getByText(/sobram R\$ 1\.600,00 da renda registrada, em 16 dias/i)).toBeInTheDocument();
   });
 
   it("estourou: troca o número por uma frase direta", () => {
-    render(<Resumo p={base({ projecao: NO_MEIO_DO_MES, resumo: { receitas: 1000, despesas: 1300, saldo: -300, taxa_poupanca: -30, media_diaria: 80, quantidade: 5 } })} />);
+    render(<PodeGastar p={base({ projecao: NO_MEIO_DO_MES, resumo: { receitas: 1000, despesas: 1300, saldo: -300, taxa_poupanca: -30, media_diaria: 80, quantidade: 5 } })} />);
     expect(screen.getByText(/você já passou R\$ 300,00 da renda registrada/i)).toBeInTheDocument();
     expect(screen.queryByText(/pode gastar por dia/i)).not.toBeInTheDocument();
   });
 
   it("mês encerrado não mostra o bloco", () => {
-    render(<Resumo p={base()} />);
+    render(<PodeGastar p={base()} />);
     expect(screen.queryByText(/pode gastar por dia/i)).not.toBeInTheDocument();
   });
 });

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Design system Verde-lima · Gastômetro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Urbanist:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<link rel="stylesheet" href="tokens.css">
+<style>
+body { padding: 40px 24px 80px; }
+.wrap { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+h1 { font: 700 40px var(--font-display); letter-spacing: -.03em; }
+.lead { color: var(--muted); font-size: 16px; max-width: 70ch; margin-top: 8px; }
+section > h2 { font: 700 22px var(--font-display); margin-bottom: 14px; letter-spacing: -.01em; }
+.grid { display: grid; gap: 16px; }
+.g4 { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.g2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.sw { border-radius: 20px; overflow: hidden; background: #fff; box-shadow: var(--sombra); }
+.sw .c { height: 84px; }
+.sw .i { padding: 10px 14px 14px; }
+.sw b { display: block; font-weight: 600; }
+.sw code { font-size: 12px; color: var(--muted); }
+.sw span { display: block; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.regra { background: #fff; border-radius: 20px; padding: 18px 20px; box-shadow: var(--sombra); font-size: 14.5px; }
+.regra b { font-family: var(--font-display); font-size: 16px; display: block; margin-bottom: 4px; }
+.regra.nao { background: #fff6f4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="badge lime"><i class="ph ph-sparkle"></i>Proposta · 2026-11-08</span>
+    <h1 style="margin-top:12px">Design system “Verde-lima”</h1>
+    <p class="lead">Tirado das três referências que o dono enviou: painel de saldo com cartão lima, painel de fluxo de caixa com barra em destaque e app de celular verde. Fundo cinza-esverdeado, cartões brancos bem arredondados, números grandes e leves, uma cor de destaque (lima), um verde-escuro de ação e ícones modernos.</p>
+  </header>
+
+  <section>
+    <h2>Cores</h2>
+    <div class="grid g4">
+      <div class="sw"><div class="c" style="background:var(--bg)"></div><div class="i"><b>Fundo</b><code>#eef1ed</code><span>Página inteira</span></div></div>
+      <div class="sw"><div class="c" style="background:#fff;border-bottom:1px solid var(--line)"></div><div class="i"><b>Cartão</b><code>#ffffff</code><span>Todo bloco de conteúdo</span></div></div>
+      <div class="sw"><div class="c" style="background:var(--ink)"></div><div class="i"><b>Tinta</b><code>#0f1a14</code><span>Títulos e números</span></div></div>
+      <div class="sw"><div class="c" style="background:var(--muted)"></div><div class="i"><b>Apoio</b><code>#68746d</code><span>Rótulos (4,9:1 no branco)</span></div></div>
+      <div class="sw"><div class="c" style="background:var(--green-900)"></div><div class="i"><b>Verde-escuro</b><code>#0b3a22</code><span>Botão primário, item ativo</span></div></div>
+      <div class="sw"><div class="c" style="background:var(--hero)"></div><div class="i"><b>Degradê herói</b><code>#12613a → #0b3a22</code><span>Cartão de abertura</span></div></div>
+      <div class="sw"><div class="c" style="background:var(--lime)"></div><div class="i"><b>Lima</b><code>#bff25f</code><span>Destaque: cartão, mês atual, botão</span></div></div>
+      <div class="sw"><div class="c" style="background:var(--lime-100)"></div><div class="i"><b>Lima suave</b><code>#edfad0</code><span>Selos e blocos leves</span></div></div>
+      <div class="sw"><div class="c" style="background:var(--pos)"></div><div class="i"><b>Entrou / bom</b><code>#1c9a52</code><span>Sempre com sinal “+” ou seta</span></div></div>
+      <div class="sw"><div class="c" style="background:var(--neg)"></div><div class="i"><b>Saiu / alerta</b><code>#df4048</code><span>Sempre com sinal “−” ou seta</span></div></div>
+      <div class="sw"><div class="c" style="background:var(--warn)"></div><div class="i"><b>Atenção</b><code>#f2682a</code><span>Sublinhado de meta, avisos</span></div></div>
+      <div class="sw"><div class="c" style="background:var(--track)"></div><div class="i"><b>Trilho</b><code>#e8ece7</code><span>Fundo de barras e barras do passado</span></div></div>
+    </div>
+    <p class="t-note" style="margin-top:12px">Categorias (8 cores, paleta já validada para daltonismo; a cor segue a categoria, não a posição):</p>
+    <div class="demo" style="margin-top:8px">
+      <span class="sq c1"><i class="ph ph-house"></i></span><span class="sq c2"><i class="ph ph-fork-knife"></i></span><span class="sq c3"><i class="ph ph-car"></i></span><span class="sq c4"><i class="ph ph-popcorn"></i></span>
+      <span class="sq c5"><i class="ph ph-heartbeat"></i></span><span class="sq c7"><i class="ph ph-graduation-cap"></i></span><span class="sq c8"><i class="ph ph-shopping-bag"></i></span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tipos</h2>
+    <div class="grid g2">
+      <div class="card"><span class="t-label">Número de abertura · Urbanist 500 · 64</span><div class="t-hero" style="margin-top:10px">R$ 3.170<small>,00</small></div></div>
+      <div class="card"><span class="t-label">Número de cartão · Urbanist 600 · 28–34</span><div class="t-num" style="margin-top:10px">R$ 8.400,00</div>
+        <span class="t-label" style="margin-top:18px">Título · Urbanist 700 · 19–28</span><div class="t-h1" style="margin-top:6px">Visão geral</div>
+        <span class="t-label" style="margin-top:14px">Texto · Inter 400/500/600 · 13–15</span><p style="margin-top:6px">Você gastou R$ 5.230,00. Moradia leva 34% de tudo.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Forma e relevo</h2>
+    <div class="demo">
+      <div class="card" style="width:200px;border-radius:28px"><b>Cartão grande</b><span class="t-note">raio 28 · sem borda, sombra suave</span></div>
+      <div class="card kpi" style="width:200px"><b>Cartão pequeno</b><span class="t-note">raio 20</span></div>
+      <span class="sq"><i class="ph ph-wallet"></i></span><span class="sq round"><i class="ph ph-wallet"></i></span>
+      <span class="t-note">quadrado de ícone: raio 14 · círculo para ação e avatar · pílula (999) para botão, selo e controle</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Botões, controles e selos</h2>
+    <div class="demo">
+      <button class="btn pri"><i class="ph ph-plus"></i>Lançar gasto</button>
+      <button class="btn out"><i class="ph ph-whatsapp-logo"></i>Perguntar no WhatsApp</button>
+      <button class="btn lim">Assinar o Family</button>
+      <span class="go"><i class="ph ph-arrow-up-right"></i></span>
+      <span class="icon-btn"><i class="ph ph-eye"></i></span><span class="icon-btn"><i class="ph ph-gear-six"></i></span>
+    </div>
+    <div class="demo" style="margin-top:14px">
+      <div class="seg"><span class="on">Mês</span><span>30 dias</span><span>Ano</span><span>Personalizado</span></div>
+      <div class="seg lime-on"><span class="on">Todos</span><span>Receitas</span><span>Despesas</span></div>
+      <span class="badge pos"><i class="ph-bold ph-arrow-up-right"></i>+4,1%</span><span class="badge neg"><i class="ph-bold ph-arrow-down-right"></i>-12%</span>
+      <span class="badge lime">Seu plano</span><span class="pill-tag"><i class="ph-fill ph-star-four"></i>PODE GASTAR</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cartões do painel</h2>
+    <div class="grid g2">
+      <div class="card hero"><span style="opacity:.8">Como você está</span><div class="t-hero" style="margin-top:10px;font-size:48px">R$ 3.170<small>,00</small></div><div style="margin-top:14px"><span class="badge glass"><i class="ph-bold ph-trend-up"></i>37,7% da renda poupada</span></div></div>
+      <div class="card lime"><span class="pill-tag" style="align-self:flex-start"><i class="ph-fill ph-star-four"></i>PODE GASTAR POR DIA</span><div class="t-hero" style="margin-top:16px;font-size:48px;color:var(--green-900)">R$ 243<small>,85</small></div></div>
+      <div class="card kpi"><div class="top"><span class="sq sm c3"><i class="ph ph-arrow-down-left"></i></span><span class="t-label">Receitas</span><i class="ph ph-dots-three dots"></i></div><div class="t-num">R$ 8.400,00</div><span class="badge pos">+2,4% vs setembro</span></div>
+      <div class="card"><div class="row" style="padding-top:0"><span class="sq c2"><i class="ph ph-fork-knife"></i></span><div class="tx"><b>Mercado Ricardo</b><span>Alimentação · hoje</span></div><span class="val neg">-R$ 412,00</span></div><div class="row"><span class="sq c3"><i class="ph ph-wallet"></i></span><div class="tx"><b>Salário</b><span>Receita · dia 05</span></div><span class="val pos">+R$ 8.400,00</span></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Regras de uso</h2>
+    <div class="grid g2">
+      <div class="regra"><b>Faça</b>Um destaque lima por tela (o cartão de ação ou o mês atual). Números grandes e leves; rótulo pequeno e cinza acima. Sinal “+” ou “−” junto da cor. Ícone Phosphor regular; <i>fill</i> só quando está ativo. Uma frase de manchete e um “Como ler” em cada cartão (o painel continua didático).</div>
+      <div class="regra nao"><b>Não faça</b>Gradiente fora do cartão herói. Sombra pesada ou borda grossa. Duas cores de destaque. Cor como única pista de bom ou ruim. Gráfico sem rótulo. Inventar função que não existe (busca global, sino de avisos, saldo bancário).</div>
+      <div class="regra"><b>Acessibilidade</b>Texto de apoio a 4,5:1 ou mais; alvo de toque de 44px; foco visível em verde-escuro; tabela de dados para cada gráfico; respeita “reduzir movimento”; modo “esconder valores” borra todo número.</div>
+      <div class="regra"><b>Tema escuro</b>Mesmo sistema com fundo verde quase preto, cartões #111d18 e a lima como única cor viva. Entra junto com a construção (o app já tem o seletor de tema).</div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

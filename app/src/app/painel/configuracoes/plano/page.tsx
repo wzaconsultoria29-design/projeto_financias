@@ -49,7 +49,7 @@ export default function PlanoPage() {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h2 className="font-display text-xl font-semibold tracking-tight text-tinta">Plano e pagamentos</h2>
+        <h2 className="font-display text-xl font-bold tracking-tight text-tinta">Plano e pagamentos</h2>
         <p className="mt-1 text-suave">O que você tem hoje, como mudar e o histórico das cobranças.</p>
       </div>
 
@@ -106,10 +106,10 @@ export default function PlanoPage() {
                 const pedido = estado.dados.plano.solicitacao?.codigo === p.codigo;
                 const pago = p.codigo !== "trial";
                 return (
-                  <article key={p.codigo} aria-label={p.nome} className={`flex flex-col gap-3 rounded-[18px] border-[1.5px] p-5 ${atual ? "border-floresta bg-folha/50" : "border-linha bg-superficie"}`}>
+                  <article key={p.codigo} aria-label={p.nome} className={`flex flex-col gap-3 rounded-[28px] border-2 p-6 shadow-[var(--sombra)] ${atual ? "border-verde-escuro bg-superficie" : "border-transparent bg-superficie"}`}>
                     <h4 className="font-display text-lg font-semibold text-tinta">{p.nome}</h4>
                     <p className="flex items-baseline gap-1.5">
-                      <span className="text-3xl font-semibold tracking-tight text-tinta">{p.preco}</span>
+                      <span className="font-display text-3xl font-bold tracking-tight text-tinta">{p.preco}</span>
                       <span className="text-sm text-suave">{p.periodo}</span>
                     </p>
                     <ul className="flex flex-1 flex-col gap-1.5 text-sm text-suave">
@@ -120,7 +120,7 @@ export default function PlanoPage() {
                         </li>
                       ))}
                     </ul>
-                    {atual && <span className="self-start rounded-full bg-floresta px-3 py-1 text-xs font-semibold text-papel">Seu plano</span>}
+                    {atual && <span className="self-start rounded-full bg-lima px-3 py-1 text-xs font-bold text-[#0b3a22]">Seu plano</span>}
                     {!atual && pago && !pedido && (
                       <button type="button" disabled={ocupado} onClick={() => agir(() => solicitarPlano(p.codigo))} className="botao self-start !px-5 !py-2.5 !text-sm">
                         {`Assinar o ${p.nome}`}

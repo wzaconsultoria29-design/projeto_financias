@@ -130,9 +130,9 @@ export default function LancamentosPage() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-        <h1 className="font-display text-3xl font-semibold tracking-tight text-tinta md:text-4xl">Lançamentos</h1>
+        <h1 className="font-display text-[1.75rem] font-bold leading-tight tracking-tight text-tinta">Lançamentos</h1>
         <div className="flex flex-wrap gap-3">
           <button type="button" className="botao-contorno" onClick={exportar} disabled={exportando}>
             {exportando ? "Preparando…" : "Exportar CSV"}
@@ -181,7 +181,7 @@ export default function LancamentosPage() {
             onChange={(e) => setCampoBusca(e.target.value)}
             placeholder="Buscar por descrição ou categoria"
             aria-label="Buscar"
-            className="min-w-0 flex-1 rounded-[12px] border border-linha bg-superficie px-3 py-2.5 text-tinta"
+            className="min-w-0 flex-1 rounded-full border border-linha bg-superficie px-4 py-2.5 text-tinta"
           />
           <button type="submit" className="botao-contorno">Buscar</button>
         </form>
@@ -190,7 +190,7 @@ export default function LancamentosPage() {
           <select
             value={categoria}
             onChange={(e) => mudarFiltro(() => setCategoria(e.target.value))}
-            className="rounded-[12px] border border-linha bg-superficie px-3 py-2.5 text-tinta"
+            className="rounded-full border border-linha bg-superficie px-4 py-2.5 text-tinta"
           >
             <option value="">Todas</option>
             {categorias.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -198,7 +198,7 @@ export default function LancamentosPage() {
         </label>
       </div>
 
-      <section className="cartao py-4" aria-label="Lista de lançamentos">
+      <section className="cartao py-3" aria-label="Lista de lançamentos">
         {!carga && (
           <div className="flex flex-col gap-3 px-4" aria-busy="true" aria-label="Carregando">
             {[0, 1, 2, 3].map((i) => <div key={i} className="h-12 rounded-[12px] bg-folha/50" />)}

@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { brand } from "@/config/brand";
 import { minhaConta, painel, type Painel } from "@/lib/api";
 import { dataCurta } from "@/lib/format";
-import { aplicarRendaDoPerfil, veredito } from "@/lib/painel";
+import { aplicarRendaDoPerfil, podeGastarPorDia, veredito } from "@/lib/painel";
+import { saudacao } from "@/lib/saudacao";
 import { useEscondido } from "@/lib/privacidade";
 import { deslocarMes, hojeIso, intervalo, intervaloDoMes, mesDe, type Intervalo } from "@/lib/periodo";
 import { MaioresGastos } from "@/components/painel/MaioresGastos";
@@ -16,6 +17,7 @@ import { OQueMudou } from "@/components/painel/visao/OQueMudou";
 import { ParaOndeFoi } from "@/components/painel/visao/ParaOndeFoi";
 import { PrimeirosPassos } from "@/components/painel/visao/PrimeirosPassos";
 import { ProximosPassos } from "@/components/painel/visao/ProximosPassos";
+import { PodeGastar } from "@/components/painel/visao/PodeGastar";
 import { Resumo } from "@/components/painel/visao/Resumo";
 import { Ritmo } from "@/components/painel/visao/Ritmo";
 import { Tendencia } from "@/components/painel/visao/Tendencia";
@@ -36,6 +38,7 @@ export default function PainelPage() {
   const [tentativa, setTentativa] = useState(0);
   const [lancando, setLancando] = useState(false);
   const [privado, alternarPrivado] = useEscondido();
+  const [boasVindas, setBoasVindas] = useState<string | null>(null);
 
   const mesAtual = mesDe(new Date());
   const periodo = useMemo(() => (modo === "mes" ? intervaloDoMes(mes) : intervalo(modo, new Date(), custom)), [modo, mes, custom]);
@@ -45,10 +48,14 @@ export default function PainelPage() {
 
   useEffect(() => {
     let ativo = true;
-    // A renda mensal do perfil só entra quando falta receita lançada; se a leitura dela falhar, o painel segue sem ela.
-    const renda = minhaConta().then((c) => c.renda_mensal, () => null);
-    Promise.all([painel(periodo), renda])
-      .then(([dados, rendaMensal]) => ativo && setResultado({ chave, estado: "ok", dados: aplicarRendaDoPerfil(dados, rendaMensal) }))
+    // A renda mensal do perfil só entra quando falta receita lançada; se a leitura da conta falhar, o painel segue sem ela.
+    const conta = minhaConta().then((c) => c, () => null);
+    Promise.all([painel(periodo), conta])
+      .then(([dados, c]) => {
+        if (!ativo) return;
+        setBoasVindas(c ? saudacao(c.nome, new Date()) : null);
+        setResultado({ chave, estado: "ok", dados: aplicarRendaDoPerfil(dados, c?.renda_mensal ?? null) });
+      })
       .catch((e: unknown) => {
         if (!ativo) return;
         setResultado({ chave, estado: "erro", mensagem: e instanceof Error ? e.message : "Algo deu errado. Tente de novo em instantes." });
@@ -60,6 +67,7 @@ export default function PainelPage() {
 
   const recarregar = useCallback(() => setTentativa((n) => n + 1), []);
   const dados = carga.estado === "ok" ? carga.dados : undefined;
+  const temFolga = dados ? podeGastarPorDia(dados) !== null : false;
   const temFixos = dados ? dados.fixos.fixos_total + dados.fixos.variaveis_total > 0 : false;
   const subtitulo = dados ? veredito(dados) : `De ${dataCurta(periodo.de)} a ${dataCurta(periodo.ate)}`;
 
@@ -68,6 +76,7 @@ export default function PainelPage() {
       <CabecalhoPainel
         titulo="Visão geral"
         subtitulo={subtitulo}
+        saudacao={boasVindas}
         modo={modo}
         mes={mes}
         mesAtual={mesAtual}
@@ -98,9 +107,16 @@ export default function PainelPage() {
       {dados && (
         <>
           <PrimeirosPassos p={dados} whatsappUrl={brand.botWaUrl("")} onLancar={() => setLancando(true)} />
-          <Resumo p={dados} />
           {/* A história em ordem, de cima para baixo: o que mudou, para onde foi, como se divide, o ritmo, os meses e o que fazer. */}
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+            <Celula className={temFolga ? "lg:col-span-7" : "lg:col-span-12"}>
+              <Resumo p={dados} />
+            </Celula>
+            {temFolga && (
+              <Celula className="lg:col-span-5">
+                <PodeGastar p={dados} />
+              </Celula>
+            )}
             <Celula className="lg:col-span-5">
               <OQueMudou p={dados} />
             </Celula>
