@@ -5,17 +5,18 @@ export type EstadoLogin = "pendente" | "expirado" | "ok";
 
 const base = () => `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1`;
 
-async function chamar(funcao: string, corpo: unknown): Promise<{ ok: boolean; json: Record<string, unknown> }> {
+async function chamar(funcao: string, corpo: unknown): Promise<{ ok: boolean; status: number; json: Record<string, unknown> }> {
   const r = await fetch(`${base()}/${funcao}`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(corpo),
   });
-  return { ok: r.ok, json: ((await r.json().catch(() => ({}))) ?? {}) as Record<string, unknown> };
+  return { ok: r.ok, status: r.status, json: ((await r.json().catch(() => ({}))) ?? {}) as Record<string, unknown> };
 }
 
 export async function iniciarLogin(): Promise<SessaoLogin> {
   const r = await chamar("login-iniciar", {});
+  if (r.status === 429) throw new Error("Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente de novo.");
   if (!r.ok) throw new Error("Não foi possível gerar o código. Tente de novo.");
   return { sessaoId: String(r.json.sessao_id), codigo: String(r.json.codigo), expiraEm: String(r.json.expira_em) };
 }

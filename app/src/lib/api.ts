@@ -83,6 +83,13 @@ const MENSAGENS: Record<string, string> = {
   nao_permitido: "Esta ação não é permitida.",
   plano_invalido: "Este plano não está disponível.",
   ja_no_plano: "Você já está neste plano.",
+  versao_invalida: "Não foi possível registrar o aceite. Recarregue a página e tente de novo.",
+  nao_autenticado: "A sua sessão terminou. Entre de novo para continuar.",
+  pagamento_indisponivel: "O pagamento online ainda não está disponível. Tente mais tarde.",
+  muitas_cobrancas: "Muitas tentativas de pagamento hoje. Tente de novo amanhã ou fale com o suporte.",
+  usuario_bloqueado: "Esta conta não pode assinar um plano agora. Fale com o suporte.",
+  falha_mercado_pago: "O Mercado Pago não respondeu. Tente de novo em instantes.",
+  falha_rede: "Sem conexão com o servidor. Confira a internet e tente de novo.",
 };
 
 function erro(motivo: string): ApiError {
@@ -227,11 +234,39 @@ export async function planoEPagamentos(): Promise<PlanoEPagamentos> {
   return data as PlanoEPagamentos;
 }
 
-/** Registra o pedido de assinar um plano. Não troca o plano: isso vem com o pagamento online. */
-export async function solicitarPlano(codigo: string): Promise<{ nome: string }> {
-  const d = await executar<{ nome: string }>("app_solicitar_plano", { p_codigo: codigo });
-  return { nome: d.nome };
+const CHECKOUT_MP = /^([a-z0-9-]+\.)*mercadopago\.com(\.br)?$/;
+
+/**
+ * Abre o pagamento de um plano no Mercado Pago e devolve o endereço do checkout.
+ * Só o código do plano sai do navegador: o preço e a pessoa são decididos no servidor (função pagamento-criar).
+ */
+export async function iniciarPagamento(plano: string): Promise<string> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) throw erro("nao_autenticado");
+  let r: Response;
+  try {
+    r = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/pagamento-criar`, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+      body: JSON.stringify({ plano }),
+    });
+  } catch {
+    throw erro("falha_rede");
+  }
+  const json = ((await r.json().catch(() => ({}))) ?? {}) as { url?: unknown; erro?: unknown };
+  if (!r.ok) throw erro(String(json.erro ?? "falha"));
+  // Só seguimos para um endereço https do próprio Mercado Pago.
+  try {
+    const destino = new URL(String(json.url));
+    if (typeof json.url === "string" && destino.protocol === "https:" && CHECKOUT_MP.test(destino.hostname)) return json.url;
+  } catch {
+    // cai no erro genérico abaixo
+  }
+  throw erro("falha");
 }
-export async function cancelarPedidoPlano(): Promise<void> {
-  await executar("app_cancelar_pedido_plano");
+
+/** Registra o aceite dos termos e da política na versão informada (migração 019). */
+export async function aceitarTermos(versao: string): Promise<void> {
+  await executar("app_aceitar_termos", { p_versao: versao });
 }

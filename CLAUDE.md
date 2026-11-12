@@ -101,20 +101,20 @@
 
 ---
 
-## 4. Estado atual (2026-11-07)
+## 4. Estado atual (2026-11-12)
 
 | Área | Estado |
 |---|---|
-| Banco (Supabase) | Migrações **001 a 007 e 009 a 018 aplicadas** (016, 017 e 018 em 2026-11-08, com OK do dono, depois de ensaio). A 015 (painel novo) foi aplicada em 2026-11-07 depois de ensaio que achou e corrigiu um bug de acento. |
+| Banco (Supabase) | Migrações **001 a 007 e 009 a 020 aplicadas** (016 a 018 em 2026-11-08; **019 e 020 em 2026-11-12**; todas com OK do dono, depois de ensaio). `pg_cron` ligado; tarefa `limpar-dados-antigos` roda todo dia às 06:15 UTC. A 015 (painel novo) foi aplicada em 2026-11-07 depois de ensaio que achou e corrigiu um bug de acento. |
 | Bot (n8n + Evolution) | **Ativo**. Bot **fechado**: só atende quem tem cadastro e conectou o WhatsApp. |
-| Site e painel | **Publicados na Vercel** (último deploy READY: commit `a401844`). Abre sem login da Vercel em 2026-11-07. |
+| Site e painel | **Publicados na Vercel** (último deploy READY em 2026-11-12: commit `02cb7af`). Abre sem login da Vercel. Endereço atual: `projeto-financias-pi.vercel.app` (domínio definitivo pendente). |
 | Landing | Nova versão no ar (seção 9). |
-| Painel Visão geral | **Refeito como narrativa em 2026-11-07** (seção 8.4): abertura em cor cheia e sete capítulos com manchete e "Como ler". Commitado e enviado em 2026-11-07 (commit `4a83975`); deploy de produção iniciado na Vercel. Lançamentos e Conta seguem como na Fase 1. |
+| Painel Visão geral | **Narrativa em 2026-11-07 e visual Verde-lima em 2026-11-08** (seções 8.3 e 8.4), no ar. Usa a renda do perfil quando falta receita lançada. Lançamentos e Configurações também no visual novo. |
 | Cadastro | **Fluxo antigo ainda em uso:** nome, e-mail, WhatsApp e aceite; devolve link `wa.me` com `ATIVAR <código>`. O fluxo novo em 3 passos **não foi construído**. |
 | Login | **Ainda por código pelo WhatsApp** (`/entrar`, `PAINEL <código>`). O login por e-mail e senha **não foi construído**. |
-| Pagamento | **Nada na v3.** Mercado Pago pendente (depende da conta do dono). "Assinar" só **registra um pedido** (migração 017); ninguém é cobrado e o plano não muda. |
-| Plano Family | **À venda no site** (landing, cadastro e Configurações têm "Assinar o Family"; sem "em breve"). Convite de pessoas existe no código e no banco (migração 018 aplicada); o site com as telas ainda não foi enviado. A **visão compartilhada dos valores e a cota compartilhada de mensagens NÃO existem**: cada pessoa do grupo vê só os próprios lançamentos e usa o próprio plano. |
-| Testes | 274 unitários (Vitest) e 130 de ponta a ponta (Playwright, 2 pulados), tudo verde em 2026-11-08. |
+| Pagamento | **Mercado Pago no servidor desde 2026-11-12 (pagamento mensal avulso, Checkout Pro): migração 020 aplicada, token de TESTE gravado em `segredos_app`, funções de borda publicadas. O botão do site só passa a pagar depois do push do código do app. Nenhum pagamento de teste completo foi feito ainda.** Migração 020 (`cobrancas`, `cobranca_criar`, `cobranca_vincular_preferencia`, `cobranca_processar`), funções de borda `pagamento-criar` (exige login; o preço vem do banco) e `pagamento-webhook` (pública; busca o pagamento na API do Mercado Pago antes de confiar; idempotente). Aprovado = plano ativo por 1 mês (renovar antes do fim soma 1 mês). Sem renovação automática; o painel oferece Renovar a partir de 7 dias antes do fim. **Só chaves de teste**; o token fica em `segredos_app` (chave `mp_access_token`), nunca no repositório nem no navegador. O dono passou as chaves de teste em conversa: gerar novas antes de produção. A Public Key não é usada (Checkout Pro só redireciona). O antigo "pedido de plano" (migração 017) saiu da tela; a tabela `solicitacoes_plano` continua e o pedido pendente vira "atendida" quando o pagamento aprova. |
+| Plano Family | **À venda no site** (landing, cadastro e Configurações têm "Assinar o Family"; sem "em breve"). Convite de pessoas no ar (migração 018 aplicada e telas enviadas). A **visão compartilhada dos valores e a cota compartilhada de mensagens NÃO existem**: cada pessoa do grupo vê só os próprios lançamentos e usa o próprio plano. |
+| Testes | 280 unitários (Vitest) e 130 de ponta a ponta (Playwright, 2 pulados), tudo verde em 2026-11-11. |
 | Configurações | **Blocos A, B e C construídos localmente em 2026-11-07** (menu, Conta com renda e custo de vida, Aparência com tema, Plano e pagamentos com assinar/pedido/histórico, Acesso compartilhado com convites, WhatsApp, Notificações, Privacidade, página `/convite/<código>`). **Migrações 016, 017 e 018 APLICADAS no banco em 2026-11-08** (ensaiadas antes, "FALHAS: 0" cada). O código do site que as usa **ainda não foi commitado nem enviado**: até o push, o site publicado não mostra as telas novas. |
 | Conta do dono | Colocada **manualmente no plano Family** em 2026-11-07 (seção 5.6). |
 
@@ -354,6 +354,7 @@ Levantamento técnico, **não é parecer jurídico**.
 | `docs/superpowers/specs/2026-11-02-cadastro-login-planos-design.md` | Cadastro completo, login por e-mail, recuperação pelo WhatsApp, troca de plano | **Parcialmente superado** pelo fluxo de 3 passos do mapa |
 | `docs/superpowers/specs/2026-11-06-painel-novo-design.md` | Painel novo (primeira versão) | **Superado em partes** pela narrativa de 2026-11-07 |
 | `docs/superpowers/specs/2026-11-07-painel-narrativo-e-configuracoes-design.md` | **Painel narrativo e Configurações** (desenho aprovado) | Painel construído; Configurações a construir |
+| `docs/CHECKLIST-LANCAMENTO.md` | O que falta para abrir: aplicar, pagamento, dono, operação, dia de abrir | Vivo: marcar ao conferir |
 | `docs/design-system/index.html` e `tokens.css` | Design system Verde-lima (cores, tipos, formas, componentes, regras) | Fonte do visual do app logado |
 | `docs/mockups/2026-11-08/index.html` (+ PNGs) | Maquetes aprovadas do app no estilo Verde-lima (Visão geral, Lançamentos, Plano, 3 telas de celular) | Referência visual |
 | `docs/mockups/2026-11-07/index.html` | Maquetes aprovadas pelo dono (Visão geral, celular, Conta, Aparência, Plano e pagamentos, Acesso compartilhado) | Referência visual |
@@ -395,6 +396,8 @@ Levantamento técnico, **não é parecer jurídico**.
 | 2026-11-07 | **Configurações** completas como as do Dinzo: Conta (renda e custo de vida), Aparência e segurança (tema, ocultar ao abrir), Plano e pagamentos, Acesso compartilhado (Família), WhatsApp, Notificações, Privacidade e dados | Aprovado pelas maquetes |
 | 2026-11-07 | **Upgrade sem pagamento:** "Assinar" só **registra o pedido** e avisa; **não troca o plano** até o Mercado Pago existir | Ninguém ganha plano pago de graça *(minha escolha)* |
 | 2026-11-08 | **Renda do perfil alimenta o painel** (só quando não há receita lançada no período). Feito no navegador, sem mudar o banco; custo de vida segue sem uso | Dono salvou renda e custo nas Configurações e o painel continuava pedindo a renda *(minha escolha: aplicar no navegador, sem nova migração)* |
+| 2026-11-12 | **Pagamento mensal avulso pelo Mercado Pago (Checkout Pro)**, não assinatura recorrente: aceita Pix, cartão e boleto e é mais simples de testar. Recorrência no cartão fica para depois | Escolha do dono |
+| 2026-11-12 | Reembolso só é **registrado**; não corta o plano sozinho. Valor ou moeda diferentes do preço marcam a cobrança como `divergente` e não ativam nada | Evitar corte ou ativação indevidos *(minha escolha; rever com o dono)* |
 | 2026-11-08 | **Novo visual do app logado (Verde-lima)** a partir de três imagens do dono (painel de saldo com cartão lima, painel de fluxo de caixa com coluna em destaque, app de celular verde). Escopo: Visão geral, Lançamentos e Configurações, com tema escuro; landing fica para depois. Não copiamos o que o app não tem (busca global, sino, cartão de crédito, transferência) | Aprovado pelas maquetes ("Sim, construir") |
 | 2026-11-07 | **Family à venda, sem "em breve":** o dono mandou colocar a opção de comprar. Os itens do cartão listam só o que existe (sem prometer visão compartilhada) | Pedido do dono; honestidade sobre o que já funciona |
 | 2026-11-07 | **Convite da Família por link com código** (sem depender de e-mail); **visão compartilhada dos valores fica para etapa própria** | Mexe em quem enxerga o quê no banco *(minha escolha)* |
@@ -416,6 +419,9 @@ Levantamento técnico, **não é parecer jurídico**.
 - **2026-11-08 (local, ainda sem commit):** correção: a renda salva em Configurações agora aparece na Visão geral (`aplicarRendaDoPerfil`, nota no Resumo). Confirmado no banco que Salvar grava (renda 10000 e custo 20000 na conta do dono). 274 unitários e 130 E2E verdes.
 - **2026-11-08 (local, ainda sem commit):** novo visual Verde-lima no painel, Lançamentos e Configurações (tokens com escopo `.app-vl`, fontes Urbanist e Inter, casca flutuante, `PodeGastar`, rosca, `IconeCategoria`, tema escuro). Testes ajustados ao novo desenho (`PodeGastar`, rosca, fundo `.app-vl`); E2E de convite agora espera a requisição.
 - **2026-11-11 (local, ainda sem commit):** correção: o formulário "Lançar" da Visão geral (`LancarRapido`) mostrava só as categorias que a pessoa já usou; agora mistura as 10 padrão com as dela (`mesclarCategorias`), como a página Lançamentos já fazia. Teste novo `tests/lancar-rapido.test.tsx`; 280 unitários verdes.
+- **2026-11-12 (local, ainda sem commit; migrações 019 e 020 escritas com teste SQL, NÃO aplicadas; funções de borda NÃO publicadas):** pagamento pelo Mercado Pago (acima); novo aceite dos termos quando `VERSAO_LEGAL` muda (`app_aceitar_termos`, `TermosAtualizados` no `PainelShell`); limite de 20 códigos de login por IP a cada 10 minutos (`login_iniciar_limitado`, só o hash do IP; `login-iniciar` devolve 429); limpeza diária agendada com `pg_cron` às 06:15 UTC (`limpar_dados_antigos` ampliada); `docs/CHECKLIST-LANCAMENTO.md`. 296 unitários verdes; E2E de Configurações e painel verdes.
+- **2026-11-12:** ensaio das migrações 019 (21 verificações) e 020 (41 verificações) no banco real, tudo desfeito: zero falhas; conferido que nada ficou gravado. O teste da 020 tinha um defeito (usuários de teste sem `telefone_verificado_em`, e o bot fechado barra antes de olhar o plano); corrigido no teste, a migração não mudou. Continuam NÃO aplicadas.
+- **2026-11-12:** migrações 019 e 020 aplicadas; token de teste do Mercado Pago gravado (`segredos_app.mp_access_token`, só o servidor lê); funções de borda publicadas com `verify_jwt` desligado e autenticação própria: `login-iniciar` v2 (limite por IP), `pagamento-criar` v1, `pagamento-webhook` v1. Conferido por chamada: login-iniciar 200; pagamento-criar sem login ou com token falso 401; preflight 204; webhook ignora pagamento inexistente, outros assuntos e id malformado com 200 (a consulta ao Mercado Pago respondeu, então o token de teste é aceito). **Não testado:** criar preferência com usuário logado e um pagamento de teste de ponta a ponta. O código do app (botão Assinar, termos) segue sem commit.
 - Deploys de produção da Vercel acompanham cada push na `feat/fase-1-app` (último verificado: `a401844`, READY).
 
 ---
@@ -441,7 +447,7 @@ Levantamento técnico, **não é parecer jurídico**.
 6. **Orçamentos e metas** (tabelas novas).
 7. **Operação, jurídico e beta fechado** (monitoramento do n8n e do chip, backups, suporte, `limpar_dados_antigos` agendado, checklist final de lançamento).
 
-**Pendências técnicas pequenas:** pedir **novo aceite** quando `termos_versao` mudar (hoje só guarda a versão); **limite por IP** em `login-iniciar`; limite de requisições no webhook de cadastro; configurar `SITE_ORIGIN` (Supabase Edge Functions) e `allowedOrigins` do webhook de cadastro (n8n) com o domínio final; ajustar `checkout_url`, `politica_url`, `termos_url`, `cadastro_url` no nó Config para o domínio final; comando "painel" no bot com link; alertas de orçamento (só em resposta).
+**Pendências técnicas pequenas:** ~~novo aceite quando a versão dos termos mudar~~ e ~~limite por IP em `login-iniciar`~~ (feitos em 2026-11-12, falta aplicar); limite de requisições no webhook de cadastro; configurar `SITE_ORIGIN` (Supabase Edge Functions) e `allowedOrigins` do webhook de cadastro (n8n) com o domínio final; ajustar `checkout_url`, `politica_url`, `termos_url`, `cadastro_url` no nó Config para o domínio final; comando "painel" no bot com link; alertas de orçamento (só em resposta).
 
 **Antes de divulgar a landing:** revisar textos legais; confirmar que as promessas ("sem fidelidade", "preço final à vista") se cumprem; nada de prova inventada.
 

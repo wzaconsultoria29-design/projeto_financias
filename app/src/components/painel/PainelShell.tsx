@@ -9,6 +9,8 @@ import { supabase } from "@/lib/supabase";
 import { minhaConta } from "@/lib/api";
 import { aplicarPreferenciasAoAbrir } from "@/lib/tema";
 import { ConviteAoEntrar } from "@/components/painel/ConviteAoEntrar";
+import { TermosAtualizados } from "@/components/painel/TermosAtualizados";
+import { VERSAO_LEGAL } from "@/config/legal";
 
 const LINKS: { href: string; rotulo: string; icone: Icon }[] = [
   { href: "/painel", rotulo: "Visão geral", icone: SquaresFour },
@@ -32,6 +34,8 @@ export function PainelShell({ children }: { children: ReactNode }) {
   const caminho = usePathname();
   const [estado, setEstado] = useState<Estado>("verificando");
   const [nome, setNome] = useState<string | null>(null);
+  // undefined = ainda não sabemos; só pedimos novo aceite depois de ler a conta.
+  const [versaoAceita, setVersaoAceita] = useState<string | null | undefined>(undefined);
 
   // Tema escolhido e "ocultar valores ao abrir": valem assim que o painel abre.
   useEffect(() => {
@@ -56,7 +60,11 @@ export function PainelShell({ children }: { children: ReactNode }) {
       if (!ativo) return;
       setEstado("autenticado");
       minhaConta()
-        .then((c) => ativo && setNome(c.nome))
+        .then((c) => {
+          if (!ativo) return;
+          setNome(c.nome);
+          setVersaoAceita(c.consentimento.versao);
+        })
         .catch(() => {});
     }
     void verificar();
@@ -132,6 +140,7 @@ export function PainelShell({ children }: { children: ReactNode }) {
       <main className="mx-auto w-full max-w-[1320px] px-4 pb-28 pt-5 md:px-8 md:pb-10 md:pt-8">
         <ConviteAoEntrar />
         {children}
+        {versaoAceita !== undefined && <TermosAtualizados versaoAceita={versaoAceita} onAceito={() => setVersaoAceita(VERSAO_LEGAL)} />}
       </main>
 
       <nav aria-label="Painel (celular)" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 rounded-t-[24px] bg-superficie px-1.5 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-2 shadow-[0_-6px_20px_rgba(15,26,20,0.06)] md:hidden [border-top:var(--borda-cartao)]">

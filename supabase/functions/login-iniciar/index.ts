@@ -27,7 +27,10 @@ Deno.serve(async (req) => {
   const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const { data, error } = await sb.rpc("login_iniciar");
+  // Limite por endereço: a função do banco guarda só o hash do IP e barra excesso de códigos em pouco tempo.
+  const ip = req.headers.get("cf-connecting-ip") ?? (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim();
+  const { data, error } = await sb.rpc("login_iniciar_limitado", { p_ip: ip || null });
   if (error || !data) return resp({ erro: "falha" }, 500, h);
+  if (data.erro === "muitas_tentativas") return resp({ erro: "muitas_tentativas" }, 429, h);
   return resp(data, 200, h);
 });

@@ -18,7 +18,7 @@ const USUARIO = { id: "u1", aud: "authenticated", role: "authenticated", email: 
 export const CONTA = {
   nome: "Maria Silva", email: "maria@exemplo.com", telefone_mascarado: "+55 11 *****-8888", renda_mensal: null, custo_vida_mensal: null,
   plano: null, assinatura: null, uso: { mensagens: 0, limite: null, restantes: null },
-  consentimento: { em: null, versao: null },
+  consentimento: { em: "2026-10-24T12:00:00Z", versao: "v1-2026-10" }, // igual a VERSAO_LEGAL; outra versão abre o pedido de novo aceite
 };
 
 export const PLANOS = {

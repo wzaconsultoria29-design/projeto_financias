@@ -27,6 +27,11 @@ describe("login pelo WhatsApp", () => {
     await expect(iniciarLogin()).rejects.toThrow("código");
   });
 
+  it("iniciarLogin avisa que são muitas tentativas quando o servidor limita (429)", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 429, json: async () => ({ erro: "muitas_tentativas" }) }));
+    await expect(iniciarLogin()).rejects.toThrow(/muitas tentativas/i);
+  });
+
   it("statusLogin repassa pendente e expirado sem abrir sessão", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ estado: "pendente" }) }));
     expect(await statusLogin("s1")).toBe("pendente");

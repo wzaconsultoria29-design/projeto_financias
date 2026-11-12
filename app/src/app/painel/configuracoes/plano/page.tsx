@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Check } from "@phosphor-icons/react";
-import { cancelarPedidoPlano, minhaConta, planoEPagamentos, solicitarPlano, type Conta, type PlanoEPagamentos } from "@/lib/api";
+import { iniciarPagamento, minhaConta, planoEPagamentos, type Conta, type PlanoEPagamentos } from "@/lib/api";
+import { irPara } from "@/lib/navegar";
 import { brl, dataLonga } from "@/lib/format";
 import { planos as VITRINE } from "@/config/planos";
 import { UsoPlano } from "@/components/painel/UsoPlano";
@@ -13,6 +14,25 @@ const STATUS_PAGAMENTO: Record<string, string> = { pago: "Pago", pendente: "Pend
 type Dados = { conta: Conta; plano: PlanoEPagamentos };
 type Estado = { tipo: "carregando" } | { tipo: "erro"; mensagem: string } | { tipo: "ok"; dados: Dados };
 
+const RETORNO: Record<string, string> = {
+  ok: "Pagamento aprovado. O seu plano é ativado em instantes; se ainda não mudou, atualize a página.",
+  pendente: "Pagamento pendente. Assim que o Mercado Pago confirmar (Pix e boleto podem levar um tempo), o plano é ativado sozinho.",
+  falhou: "O pagamento não foi concluído e o seu plano não mudou. Você pode tentar de novo.",
+};
+const DIAS_PARA_AVISAR = 7;
+const semAssinar = () => () => {};
+
+/** Como a pessoa voltou do checkout do Mercado Pago (?pagamento=ok|pendente|falhou), lido só no navegador. */
+function useRetornoDoPagamento(): string | null {
+  return useSyncExternalStore(semAssinar, () => new URLSearchParams(window.location.search).get("pagamento"), () => null);
+}
+
+/** Quantos dias faltam para o fim do período pago (negativo = já venceu); null quando não há vencimento. */
+function diasParaVencer(fim: string | null): number | null {
+  if (!fim) return null;
+  return Math.ceil((Date.parse(fim) - Date.now()) / 86_400_000);
+}
+
 function mensagemDe(e: unknown): string {
   return e instanceof Error ? e.message : "Algo deu errado. Tente de novo em instantes.";
 }
@@ -20,8 +40,9 @@ function mensagemDe(e: unknown): string {
 export default function PlanoPage() {
   const [estado, setEstado] = useState<Estado>({ tipo: "carregando" });
   const [tentativa, setTentativa] = useState(0);
-  const [ocupado, setOcupado] = useState(false);
+  const [pagando, setPagando] = useState<string | null>(null);
   const [erro, setErro] = useState("");
+  const retorno = useRetornoDoPagamento();
 
   useEffect(() => {
     let ativo = true;
@@ -33,16 +54,22 @@ export default function PlanoPage() {
     };
   }, [tentativa]);
 
-  async function agir(acao: () => Promise<unknown>) {
-    setOcupado(true);
+  // O aviso do Mercado Pago pode chegar um pouco depois da volta do checkout: relê o plano algumas vezes.
+  useEffect(() => {
+    if (retorno !== "ok" && retorno !== "pendente") return;
+    const ids = [4000, 9000, 16000].map((ms) => setTimeout(() => setTentativa((n) => n + 1), ms));
+    return () => ids.forEach(clearTimeout);
+  }, [retorno]);
+
+  /** Abre o checkout do plano. O botão fica desligado até a página sair, para não gerar duas cobranças. */
+  async function pagar(codigo: string) {
+    setPagando(codigo);
     setErro("");
     try {
-      await acao();
-      setTentativa((n) => n + 1);
+      irPara(await iniciarPagamento(codigo));
     } catch (e) {
       setErro(mensagemDe(e));
-    } finally {
-      setOcupado(false);
+      setPagando(null);
     }
   }
 
@@ -52,6 +79,12 @@ export default function PlanoPage() {
         <h2 className="font-display text-xl font-bold tracking-tight text-tinta">Plano e pagamentos</h2>
         <p className="mt-1 text-suave">O que você tem hoje, como mudar e o histórico das cobranças.</p>
       </div>
+
+      {retorno && RETORNO[retorno] && (
+        <p role="status" className={`rounded-[16px] px-4 py-3 text-sm font-medium ${retorno === "ok" ? "bg-bom-bg text-bom-ink" : retorno === "falhou" ? "bg-ruim-bg text-ruim-ink" : "bg-folha text-tinta"}`}>
+          {RETORNO[retorno]}
+        </p>
+      )}
 
       {estado.tipo === "carregando" && <div className="cartao h-64 bg-folha/40" aria-busy="true" aria-label="Carregando" />}
 
@@ -80,6 +113,23 @@ export default function PlanoPage() {
                 {estado.dados.conta.assinatura.periodo_fim ? `, até ${dataLonga(estado.dados.conta.assinatura.periodo_fim)}` : ""}
               </p>
             )}
+            {(() => {
+              const { plano, assinatura } = estado.dados.conta;
+              const dias = diasParaVencer(assinatura?.periodo_fim ?? null);
+              if (!plano || plano.preco_centavos <= 0 || !assinatura?.periodo_fim || dias === null || dias > DIAS_PARA_AVISAR) return null;
+              return (
+                <div className={`mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[16px] px-4 py-3 ${dias <= 0 ? "bg-ruim-bg text-ruim-ink" : "bg-lima-suave text-tinta"}`}>
+                  <p className="text-sm font-medium">
+                    {dias <= 0
+                      ? `O seu plano venceu em ${dataLonga(assinatura.periodo_fim)}. Renove para o assistente voltar a responder.`
+                      : `O seu plano vence em ${dias} ${dias === 1 ? "dia" : "dias"}. Renovando agora, o mês novo começa depois do fim do atual.`}
+                  </p>
+                  <button type="button" disabled={pagando !== null} onClick={() => pagar(plano.codigo)} className="botao !px-5 !py-2.5 !text-sm">
+                    {pagando === plano.codigo ? "Abrindo o pagamento…" : `Renovar o ${plano.nome} por mais 1 mês`}
+                  </button>
+                </div>
+              );
+            })()}
             <div className="mt-5 border-t border-linha pt-5">
               <UsoPlano uso={estado.dados.conta.uso} />
             </div>
@@ -88,22 +138,12 @@ export default function PlanoPage() {
           <section aria-labelledby="t-mudar" className="flex flex-col gap-3">
             <h3 id="t-mudar" className="font-display text-lg font-semibold text-tinta">Mudar de plano</h3>
 
-            {estado.dados.plano.solicitacao && (
-              <div className="rounded-[14px] border border-linha bg-folha/60 px-4 py-3 text-sm text-tinta">
-                <p role="status">
-                  {`Pedido registrado: ${estado.dados.plano.solicitacao.nome}. Avisamos quando o pagamento online abrir. O seu plano atual não muda até lá.`}
-                </p>
-                <button type="button" disabled={ocupado} onClick={() => agir(cancelarPedidoPlano)} className="botao-contorno mt-3 !px-4 !py-2 !text-sm">
-                  Cancelar pedido
-                </button>
-              </div>
-            )}
+            <p className="text-sm text-suave">O pagamento é feito no Mercado Pago (Pix, cartão ou boleto) e vale por 1 mês. Não há renovação automática: perto do fim, avisamos aqui.</p>
             {erro && <p role="alert" className="text-sm text-ruim-ink">{erro}</p>}
 
             <div className="grid gap-3.5 md:grid-cols-3">
               {VITRINE.map((p) => {
                 const atual = estado.dados.plano.atual === p.codigo;
-                const pedido = estado.dados.plano.solicitacao?.codigo === p.codigo;
                 const pago = p.codigo !== "trial";
                 return (
                   <article key={p.codigo} aria-label={p.nome} className={`flex flex-col gap-3 rounded-[28px] border-2 p-6 shadow-[var(--sombra)] ${atual ? "border-verde-escuro bg-superficie" : "border-transparent bg-superficie"}`}>
@@ -121,12 +161,11 @@ export default function PlanoPage() {
                       ))}
                     </ul>
                     {atual && <span className="self-start rounded-full bg-lima px-3 py-1 text-xs font-bold text-[#0b3a22]">Seu plano</span>}
-                    {!atual && pago && !pedido && (
-                      <button type="button" disabled={ocupado} onClick={() => agir(() => solicitarPlano(p.codigo))} className="botao self-start !px-5 !py-2.5 !text-sm">
-                        {`Assinar o ${p.nome}`}
+                    {!atual && pago && (
+                      <button type="button" disabled={pagando !== null} onClick={() => pagar(p.codigo)} className="botao self-start !px-5 !py-2.5 !text-sm">
+                        {pagando === p.codigo ? "Abrindo o pagamento…" : `Assinar o ${p.nome}`}
                       </button>
                     )}
-                    {!atual && pago && pedido && <span className="self-start text-sm font-medium text-floresta">Pedido em andamento</span>}
                     {!atual && !pago && <span className="self-start text-sm text-suave">Teste de 7 dias, só no começo</span>}
                   </article>
                 );

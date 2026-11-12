@@ -6,8 +6,7 @@ vi.mock("next/navigation", () => ({ useRouter: () => roteador, usePathname: () =
 
 const minhaConta = vi.fn();
 const planoEPagamentos = vi.fn();
-const solicitarPlano = vi.fn();
-const cancelarPedidoPlano = vi.fn();
+const iniciarPagamento = vi.fn();
 const grupoAtual = vi.fn();
 const criarConvite = vi.fn();
 const cancelarConvite = vi.fn();
@@ -20,8 +19,7 @@ vi.mock("@/lib/api", async () => {
     ...real,
     minhaConta: () => minhaConta(),
     planoEPagamentos: () => planoEPagamentos(),
-    solicitarPlano: (c: string) => solicitarPlano(c),
-    cancelarPedidoPlano: () => cancelarPedidoPlano(),
+    iniciarPagamento: (c: string) => iniciarPagamento(c),
     grupoAtual: () => grupoAtual(),
     criarConvite: () => criarConvite(),
     cancelarConvite: (id: string) => cancelarConvite(id),
@@ -30,6 +28,9 @@ vi.mock("@/lib/api", async () => {
     aceitarConvite: (c: string) => aceitarConvite(c),
   };
 });
+
+const irPara = vi.fn();
+vi.mock("@/lib/navegar", () => ({ irPara: (u: string) => irPara(u) }));
 
 import { ApiError } from "@/lib/api";
 import PlanoPage from "@/app/painel/configuracoes/plano/page";
@@ -70,6 +71,7 @@ beforeEach(() => {
 afterEach(() => {
   vi.clearAllMocks();
   window.localStorage.clear();
+  window.history.pushState({}, "", "/");
 });
 
 describe("Plano e pagamentos", () => {
@@ -88,30 +90,74 @@ describe("Plano e pagamentos", () => {
     expect(screen.getByRole("button", { name: "Assinar o Family" })).toBeEnabled();
   });
 
-  it("assinar registra o pedido, avisa que o plano não muda e deixa cancelar", async () => {
-    // o servidor de mentira acompanha o estado: depois de solicitar, a próxima leitura traz o pedido
-    solicitarPlano.mockImplementation(async () => {
-      planoEPagamentos.mockResolvedValue({ ...PLANOS, solicitacao: { codigo: "family", nome: "Family", criado_em: "2026-11-07T00:00:00Z" } });
-      return { nome: "Family" };
-    });
+  it("assinar abre o pagamento do plano e leva a pessoa ao checkout", async () => {
+    iniciarPagamento.mockResolvedValue("https://sandbox.mercadopago.com.br/checkout/v1/redirect?pref_id=123");
     render(<PlanoPage />);
     fireEvent.click(await screen.findByRole("button", { name: "Assinar o Family" }));
-    await waitFor(() => expect(solicitarPlano).toHaveBeenCalledWith("family"));
-    expect(await screen.findByText(/pedido registrado/i)).toBeInTheDocument();
-    expect(screen.getByText(/o seu plano atual não muda até lá/i)).toBeInTheDocument();
-    cancelarPedidoPlano.mockImplementation(async () => {
-      planoEPagamentos.mockResolvedValue(PLANOS);
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Cancelar pedido" }));
-    await waitFor(() => expect(cancelarPedidoPlano).toHaveBeenCalled());
-    expect(await screen.findByRole("button", { name: "Assinar o Family" })).toBeInTheDocument();
+    await waitFor(() => expect(iniciarPagamento).toHaveBeenCalledWith("family"));
+    await waitFor(() => expect(irPara).toHaveBeenCalledWith("https://sandbox.mercadopago.com.br/checkout/v1/redirect?pref_id=123"));
+    expect(document.body).not.toHaveTextContent(/pedido registrado/i);
   });
 
-  it("pedido que já existe aparece desde o carregamento", async () => {
-    planoEPagamentos.mockResolvedValue({ ...PLANOS, solicitacao: { codigo: "family", nome: "Family", criado_em: "2026-11-06T00:00:00Z" } });
+  it("enquanto abre o pagamento, o botão fica desligado para não cobrar duas vezes", async () => {
+    iniciarPagamento.mockReturnValue(new Promise(() => {}));
     render(<PlanoPage />);
-    expect(await screen.findByText(/pedido registrado/i)).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Assinar o Family" })).not.toBeInTheDocument();
+    fireEvent.click(await screen.findByRole("button", { name: "Assinar o Family" }));
+    await waitFor(() => expect(screen.getByRole("button", { name: /abrindo o pagamento/i })).toBeDisabled());
+  });
+
+  it("erro ao abrir o pagamento mostra a mensagem sem detalhe técnico e deixa tentar de novo", async () => {
+    iniciarPagamento.mockRejectedValue(new ApiError("pagamento_indisponivel", "O pagamento online ainda não está disponível. Tente mais tarde."));
+    render(<PlanoPage />);
+    fireEvent.click(await screen.findByRole("button", { name: "Assinar o Family" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("O pagamento online ainda não está disponível");
+    expect(irPara).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Assinar o Family" })).toBeEnabled();
+  });
+
+  it("plano com vencimento perto mostra os dias e oferece renovar", async () => {
+    const em3dias = new Date(Date.now() + 3 * 86_400_000).toISOString();
+    minhaConta.mockResolvedValue({ ...CONTA, assinatura: { status: "ativa", periodo_inicio: "2026-10-01T00:00:00Z", periodo_fim: em3dias } });
+    iniciarPagamento.mockResolvedValue("https://sandbox.mercadopago.com.br/x");
+    render(<PlanoPage />);
+    expect(await screen.findByText(/vence em 3 dias/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Renovar o Essencial por mais 1 mês" }));
+    await waitFor(() => expect(iniciarPagamento).toHaveBeenCalledWith("essencial"));
+  });
+
+  it("plano vencido avisa e oferece renovar", async () => {
+    const ha2dias = new Date(Date.now() - 2 * 86_400_000).toISOString();
+    minhaConta.mockResolvedValue({ ...CONTA, assinatura: { status: "ativa", periodo_inicio: "2026-10-01T00:00:00Z", periodo_fim: ha2dias } });
+    render(<PlanoPage />);
+    expect(await screen.findByText(/venceu em/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Renovar o Essencial por mais 1 mês" })).toBeEnabled();
+  });
+
+  it("plano longe do vencimento ou sem vencimento não pede renovação", async () => {
+    render(<PlanoPage />); // CONTA: periodo_fim nulo
+    await screen.findByRole("article", { name: "Family" });
+    expect(screen.queryByRole("button", { name: /renovar/i })).not.toBeInTheDocument();
+    const em20dias = new Date(Date.now() + 20 * 86_400_000).toISOString();
+    minhaConta.mockResolvedValue({ ...CONTA, assinatura: { status: "ativa", periodo_inicio: "2026-10-01T00:00:00Z", periodo_fim: em20dias } });
+    render(<PlanoPage />);
+    await waitFor(() => expect(screen.queryAllByRole("article", { name: "Family" }).length).toBe(2));
+    expect(screen.queryByRole("button", { name: /renovar/i })).not.toBeInTheDocument();
+  });
+
+  it("de volta do checkout com pagamento aprovado, avisa que o plano está sendo ativado", async () => {
+    window.history.pushState({}, "", "/painel/configuracoes/plano?pagamento=ok");
+    render(<PlanoPage />);
+    expect(await screen.findByRole("status")).toHaveTextContent(/pagamento aprovado/i);
+  });
+
+  it("de volta do checkout com pagamento pendente ou recusado, explica o que acontece", async () => {
+    window.history.pushState({}, "", "/painel/configuracoes/plano?pagamento=pendente");
+    const { unmount } = render(<PlanoPage />);
+    expect(await screen.findByRole("status")).toHaveTextContent(/pendente/i);
+    unmount();
+    window.history.pushState({}, "", "/painel/configuracoes/plano?pagamento=falhou");
+    render(<PlanoPage />);
+    expect(await screen.findByRole("status")).toHaveTextContent(/não foi concluído/i);
   });
 
   it("histórico vazio explica que o teste não cobra", async () => {
@@ -128,12 +174,6 @@ describe("Plano e pagamentos", () => {
     expect(within(tabela).getByText("Pago")).toBeInTheDocument();
   });
 
-  it("erro ao pedir mostra a mensagem sem detalhe técnico", async () => {
-    solicitarPlano.mockRejectedValue(new ApiError("ja_no_plano", "Você já está neste plano."));
-    render(<PlanoPage />);
-    fireEvent.click(await screen.findByRole("button", { name: "Assinar o Family" }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Você já está neste plano.");
-  });
 });
 
 describe("Acesso compartilhado", () => {

@@ -172,6 +172,26 @@ test.describe("painel: visão geral", () => {
     await expect(page.getByRole("meter", { name: "Taxa de poupança" })).toHaveAttribute("aria-valuenow", "75");
   });
 
+  test("termos de outra versão pedem novo aceite antes de seguir, e o aceite é registrado", async ({ page }) => {
+    const aceites: unknown[] = [];
+    await page.clock.setFixedTime(AGORA);
+    await simular(page, { login: ["ok"] }, {
+      app_painel: () => PAINEL,
+      app_minha_conta: () => ({ ...CONTA, consentimento: { em: "2026-01-01T00:00:00Z", versao: "v0-2026-01" } }),
+      app_aceitar_termos: (c) => {
+        aceites.push(c);
+        return { ok: true };
+      },
+    });
+    await entrar(page);
+    const dialogo = page.getByRole("dialog", { name: /atualizamos os nossos termos/i });
+    await expect(dialogo).toBeVisible();
+    await expect(dialogo.getByRole("link", { name: /termos de uso/i })).toHaveAttribute("href", "/termos");
+    await dialogo.getByRole("button", { name: "Li e aceito" }).click();
+    await expect(dialogo).toHaveCount(0);
+    expect(aceites).toEqual([{ p_versao: "v1-2026-10" }]);
+  });
+
   test("erro do servidor mostra mensagem amigável e Tentar de novo recarrega", async ({ page }) => {
     let falhar = true;
     const chamadas = await abrirPainel(page, () => (falhar ? new Error("erro_interno: detalhe técnico") : PAINEL));

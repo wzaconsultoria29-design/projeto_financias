@@ -98,30 +98,49 @@ test.describe("painel: configurações", () => {
     await expect(page.getByText("Teste grátis").first()).toBeVisible();
   });
 
-  test("Plano: Family tem botão para assinar, o pedido é registrado e o plano não muda", async ({ page }) => {
-    let estado: typeof PLANOS = { ...PLANOS, atual: "essencial" };
-    const pedidos: unknown[] = [];
-    await abrir(page, {
-      app_plano_e_pagamentos: () => estado,
-      app_solicitar_plano: (c) => {
-        pedidos.push(c);
-        estado = { ...estado, solicitacao: { codigo: "family", nome: "Family", criado_em: "2026-11-07T12:00:00Z" } };
-        return { ok: true, nome: "Family" };
-      },
-      app_cancelar_pedido_plano: () => {
-        estado = { ...estado, solicitacao: null };
-        return { ok: true };
-      },
+  test("Plano: Assinar o Family abre o checkout do Mercado Pago, e a volta avisa o resultado", async ({ page }) => {
+    const pedidos: { corpo: unknown; autorizacao: string | undefined }[] = [];
+    await abrir(page, { app_plano_e_pagamentos: () => ({ ...PLANOS, atual: "essencial" }) });
+    // Registradas depois de abrir(): valem antes da simulação geral do Supabase.
+    await page.route("**/functions/v1/pagamento-criar", async (route) => {
+      const req = route.request();
+      const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" };
+      if (req.method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
+      pedidos.push({ corpo: JSON.parse(req.postData() ?? "{}"), autorizacao: req.headers().authorization });
+      return route.fulfill({ status: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ url: "https://sandbox.mercadopago.com.br/checkout/v1/redirect?pref_id=TESTE-1" }) });
     });
+    await page.route("https://sandbox.mercadopago.com.br/**", (route) => route.fulfill({ status: 200, contentType: "text/html", body: "<h1>Checkout de teste</h1>" }));
+
     await page.goto("/painel/configuracoes/plano");
     await expect(page.locator("body")).not.toContainText(/em breve/i);
-    await page.getByRole("button", { name: "Assinar o Family" }).click();
-    await expect(page.getByText(/Pedido registrado: Family/)).toBeVisible();
-    await expect(page.getByText(/plano atual não muda até lá/)).toBeVisible();
-    expect(pedidos).toEqual([{ p_codigo: "family" }]);
+    await expect(page.getByText(/O pagamento é feito no Mercado Pago/)).toBeVisible();
     await page.screenshot({ path: `../docs/screens/painel-configuracoes-plano-${test.info().project.name}.png`, fullPage: true });
-    await page.getByRole("button", { name: "Cancelar pedido" }).click();
-    await expect(page.getByRole("button", { name: "Assinar o Family" })).toBeVisible();
+    await page.getByRole("button", { name: "Assinar o Family" }).click();
+    await expect(page).toHaveURL("https://sandbox.mercadopago.com.br/checkout/v1/redirect?pref_id=TESTE-1");
+    await expect(page.getByRole("heading", { name: "Checkout de teste" })).toBeVisible();
+    expect(pedidos).toHaveLength(1);
+    expect(pedidos[0].corpo).toEqual({ plano: "family" });
+    expect(pedidos[0].autorizacao).toMatch(/^Bearer .+/);
+
+    // O Mercado Pago devolve a pessoa para o painel com o resultado no endereço.
+    await page.goto("/painel/configuracoes/plano?pagamento=ok");
+    await expect(page.getByRole("status").filter({ hasText: "Pagamento aprovado" })).toBeVisible();
+    await page.goto("/painel/configuracoes/plano?pagamento=falhou");
+    await expect(page.getByRole("status").filter({ hasText: "não foi concluído" })).toBeVisible();
+  });
+
+  test("Plano: se o pagamento estiver indisponível, mostra o motivo e não sai da página", async ({ page }) => {
+    await abrir(page, { app_plano_e_pagamentos: () => ({ ...PLANOS, atual: "essencial" }) });
+    await page.route("**/functions/v1/pagamento-criar", async (route) => {
+      const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" };
+      if (route.request().method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
+      return route.fulfill({ status: 503, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ erro: "pagamento_indisponivel" }) });
+    });
+    await page.goto("/painel/configuracoes/plano");
+    await page.getByRole("button", { name: "Assinar o Family" }).click();
+    await expect(page.getByText("O pagamento online ainda não está disponível. Tente mais tarde.")).toBeVisible();
+    await expect(page).toHaveURL(/\/painel\/configuracoes\/plano$/);
+    await expect(page.getByRole("button", { name: "Assinar o Family" })).toBeEnabled();
   });
 
   test("Plano: histórico de pagamentos lista as cobranças", async ({ page }) => {
