@@ -1,4 +1,4 @@
-import type { Painel } from "@/lib/api";
+import type { Objetivo, Painel } from "@/lib/api";
 import { brl } from "@/lib/format";
 import { deltaBrl, participacao, pctTexto } from "@/lib/painel";
 
@@ -205,4 +205,30 @@ export function corDaCategoria(nome: string): string {
   let soma = 0;
   for (const ch of chave) soma += ch.charCodeAt(0);
   return `var(--c${(soma % 8) + 1})`;
+}
+
+/** O passo que vem do objetivo escolhido no primeiro acesso (aparece primeiro em "O que fazer agora"). */
+export function passoDoObjetivo(objetivo: Objetivo | null | undefined, p: Painel): Passo | null {
+  if (!objetivo) return null;
+  const { resumo } = p;
+  if (objetivo === "guardar") {
+    if (p.sem_receita || resumo.taxa_poupanca === null) {
+      return { id: "obj-guardar", texto: "Seu objetivo é guardar dinheiro: registre a renda para ver quanto dá para separar.", acao: { tipo: "lancar", rotulo: "Registrar renda" } };
+    }
+    return {
+      id: "obj-guardar",
+      texto: `Seu objetivo é guardar dinheiro: neste período você poupou ${pctTexto(resumo.taxa_poupanca)} da renda. Que tal separar uma parte agora?`,
+      acao: { tipo: "pergunta", rotulo: "Perguntar como guardar", pergunta: "Como posso guardar mais dinheiro este mês?" },
+    };
+  }
+  if (objetivo === "aperto") {
+    const maior = p.categorias[0];
+    if (!maior) return { id: "obj-aperto", texto: "Seu objetivo é sair do aperto: lance os gastos do mês para ver onde dá para cortar.", acao: { tipo: "lancar", rotulo: "Lançar gasto" } };
+    const href = `/painel/lancamentos?categoria=${encodeURIComponent(maior.categoria)}&de=${p.periodo.de}&ate=${p.periodo.ate}`;
+    return { id: "obj-aperto", texto: `Seu objetivo é sair do aperto: ${maior.categoria} é onde mais sai dinheiro (${pctTexto(maior.pct)} do gasto). Comece por lá.`, acao: { tipo: "link", rotulo: "Ver lançamentos", href } };
+  }
+  if (objetivo === "familia") {
+    return { id: "obj-familia", texto: "Seu objetivo é organizar a família: convide quem divide a casa com você.", acao: { tipo: "link", rotulo: "Convidar alguém", href: "/painel/configuracoes/acesso" } };
+  }
+  return { id: "obj-dia", texto: "Seu objetivo é controlar o dia a dia: lance também os gastos pequenos, eles somam no fim do mês.", acao: { tipo: "lancar", rotulo: "Lançar gasto" } };
 }

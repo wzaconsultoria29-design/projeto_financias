@@ -43,16 +43,29 @@ Deno.serve(async (req) => {
   if (data.estado !== "ok") return resp({ estado: data.estado }, 200, h);
 
   const usuarioId = data.usuario_id as string;
-  const email = `u-${usuarioId}@painel.invalid`;
 
-  let link = await sb.auth.admin.generateLink({ type: "magiclink", email });
-  if (link.error) {
-    const criado = await sb.auth.admin.createUser({ email, email_confirm: true, user_metadata: { usuario_id: usuarioId } });
-    if (criado.error) return resp({ erro: "falha_auth" }, 500, h);
-    link = await sb.auth.admin.generateLink({ type: "magiclink", email });
-    if (link.error) return resp({ erro: "falha_auth" }, 500, h);
+  // Conta que já entrou antes: usa o usuário do Auth ligado ao cadastro, com o e-mail que ele tiver hoje
+  // (o e-mail interno antigo ou o e-mail real, depois que a pessoa cria a senha).
+  const { data: cadastro } = await sb.from("usuarios").select("auth_user_id").eq("id", usuarioId).maybeSingle();
+  let email: string | null = null;
+  if (cadastro?.auth_user_id) {
+    const existente = await sb.auth.admin.getUserById(cadastro.auth_user_id);
+    email = existente.data?.user?.email ?? null;
   }
 
+  // Primeiro login: cria o usuário do Auth com um e-mail interno (não recebe mensagens).
+  if (!email) {
+    email = `u-${usuarioId}@painel.invalid`;
+    const tentativa = await sb.auth.admin.generateLink({ type: "magiclink", email });
+    if (tentativa.error) {
+      const criado = await sb.auth.admin.createUser({ email, email_confirm: true, user_metadata: { usuario_id: usuarioId } });
+      if (criado.error) return resp({ erro: "falha_auth" }, 500, h);
+    }
+  }
+
+  const link = await sb.auth.admin.generateLink({ type: "magiclink", email });
+  if (link.error) return resp({ erro: "falha_auth" }, 500, h);
+
   await sb.from("usuarios").update({ auth_user_id: link.data.user.id }).eq("id", usuarioId);
-  return resp({ estado: "ok", email, token_hash: link.data.properties.hashed_token }, 200, h);
+  return resp({ estado: "ok", token_hash: link.data.properties.hashed_token }, 200, h);
 });

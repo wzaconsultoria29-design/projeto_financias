@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Urbanist } from "next/font/google";
+import { inter, urbanist } from "@/app/fontes";
 import { PainelShell } from "@/components/painel/PainelShell";
 
-// O app logado tem o visual Verde-lima (ver docs/design-system): Urbanist nos títulos e números, Inter no texto.
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"], weight: ["400", "500", "600", "700"], display: "swap" });
-const urbanist = Urbanist({ variable: "--font-urbanist", subsets: ["latin"], weight: ["500", "600", "700"], display: "swap" });
+// O app logado tem o visual Verde-lima (ver docs/design-system).
 
 export const metadata: Metadata = {
   title: { default: "Painel", template: "%s | Painel" },

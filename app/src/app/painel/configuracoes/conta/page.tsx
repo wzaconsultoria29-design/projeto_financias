@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { minhaConta, salvarPerfil, type Conta } from "@/lib/api";
 import { lerReais } from "@/lib/format";
 import { supabase } from "@/lib/supabase";
+import { FormSenha } from "@/components/acesso/FormSenha";
 
 type Estado = { tipo: "carregando" } | { tipo: "erro"; mensagem: string } | { tipo: "ok"; conta: Conta };
 
@@ -21,6 +22,9 @@ function Formulario({ conta }: { conta: Conta }) {
   const [custo, setCusto] = useState(emReais(conta.custo_vida_mensal));
   const [ocupado, setOcupado] = useState(false);
   const [aviso, setAviso] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
+  const [temSenha, setTemSenha] = useState(Boolean(conta.tem_senha));
+  const [senhaAberta, setSenhaAberta] = useState(false);
+  const [avisoSenha, setAvisoSenha] = useState("");
 
   const editar = (definir: (v: string) => void) => (v: string) => {
     definir(v);
@@ -101,6 +105,36 @@ function Formulario({ conta }: { conta: Conta }) {
           {aviso?.tipo === "erro" && <p role="alert" className="text-sm text-ruim-ink">{aviso.texto}</p>}
         </div>
       </form>
+
+      <section className="cartao p-5 md:p-6" aria-labelledby="t-senha">
+        <h3 id="t-senha" className="font-display text-lg font-semibold text-tinta">{temSenha ? "Senha" : "Criar senha"}</h3>
+        <p className="mt-1 text-sm text-suave">
+          {temSenha
+            ? "Você entra com e-mail e senha. Se esquecer, recupera pelo WhatsApp em Entrar › Esqueci a senha."
+            : "Crie uma senha para entrar com e-mail, sem precisar do código do WhatsApp."}
+        </p>
+        {senhaAberta ? (
+          <div className="mt-4 max-w-[28rem]">
+            <FormSenha
+              emailInicial={conta.email}
+              botao={temSenha ? "Trocar senha" : "Criar senha"}
+              sairDosOutros={temSenha}
+              onPronto={() => {
+                setSenhaAberta(false);
+                setTemSenha(true);
+                setAvisoSenha(temSenha ? "Senha trocada. Os outros aparelhos saíram da conta." : "Senha criada. Da próxima vez, entre com e-mail e senha.");
+              }}
+            />
+          </div>
+        ) : (
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <button type="button" onClick={() => { setSenhaAberta(true); setAvisoSenha(""); }} className="botao-contorno">
+              {temSenha ? "Trocar senha" : "Criar senha"}
+            </button>
+            {avisoSenha && <p role="status" className="text-sm font-medium text-bom-ink">{avisoSenha}</p>}
+          </div>
+        )}
+      </section>
 
       <section className="cartao p-5 md:p-6" aria-labelledby="t-sessao">
         <h3 id="t-sessao" className="font-display text-lg font-semibold text-tinta">Sessões</h3>

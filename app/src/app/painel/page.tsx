@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { brand } from "@/config/brand";
-import { minhaConta, painel, type Painel } from "@/lib/api";
+import { minhaConta, painel, type Objetivo, type Painel } from "@/lib/api";
 import { dataCurta } from "@/lib/format";
 import { aplicarRendaDoPerfil, podeGastarPorDia, veredito } from "@/lib/painel";
 import { saudacao } from "@/lib/saudacao";
@@ -39,6 +39,7 @@ export default function PainelPage() {
   const [lancando, setLancando] = useState(false);
   const [privado, alternarPrivado] = useEscondido();
   const [boasVindas, setBoasVindas] = useState<string | null>(null);
+  const [objetivo, setObjetivo] = useState<Objetivo | null>(null);
 
   const mesAtual = mesDe(new Date());
   const periodo = useMemo(() => (modo === "mes" ? intervaloDoMes(mes) : intervalo(modo, new Date(), custom)), [modo, mes, custom]);
@@ -54,6 +55,7 @@ export default function PainelPage() {
       .then(([dados, c]) => {
         if (!ativo) return;
         setBoasVindas(c ? saudacao(c.nome, new Date()) : null);
+        setObjetivo(c?.objetivo ?? null);
         setResultado({ chave, estado: "ok", dados: aplicarRendaDoPerfil(dados, c?.renda_mensal ?? null) });
       })
       .catch((e: unknown) => {
@@ -141,7 +143,7 @@ export default function PainelPage() {
               <MaioresGastos itens={dados.maiores} />
             </Celula>
             <Celula className="lg:col-span-12">
-              <ProximosPassos p={dados} onLancar={() => setLancando(true)} />
+              <ProximosPassos p={dados} objetivo={objetivo} onLancar={() => setLancando(true)} />
             </Celula>
           </div>
         </>

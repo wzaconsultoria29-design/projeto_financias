@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Maquetes · login e primeiro acesso (proposta 2026-11-12)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Urbanist:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="../../design-system/tokens.css">
+<style>
+body{padding:28px 24px 80px;display:flex;flex-direction:column;align-items:center;gap:40px}
+.rotulo{width:100%;max-width:1200px;font:700 20px var(--font-display)}
+.rotulo small{display:block;font:400 14px var(--font-ui);color:var(--muted);margin-top:3px;max-width:900px}
+.frame{width:1200px;height:700px;background:var(--bg);border-radius:32px;border:1px solid #dfe4de;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.topo-ob{display:flex;align-items:center;justify-content:space-between;padding:26px 36px 0}
+.marca{display:flex;align-items:center;gap:10px;font:700 18px var(--font-display)}
+.marca span{width:40px;height:40px;border-radius:13px;background:var(--green-900);color:var(--lime);display:grid;place-items:center;font-size:22px}
+.passos{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.passos i{width:28px;height:6px;border-radius:99px;background:#dce2db;display:block}
+.passos i.on{background:var(--green-900)}
+.passos i.feito{background:var(--lime)}
+.miolo{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 40px 40px;text-align:center}
+.olho{font:600 12.5px var(--font-ui);color:var(--green-600);letter-spacing:.02em;margin-bottom:10px}
+.titulo{font:700 38px var(--font-display);letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:15.5px;margin-top:8px;max-width:560px}
+.opcoes4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px;width:100%;max-width:1040px;text-align:left}
+.op{background:#fff;border-radius:24px;padding:20px;border:2px solid transparent;box-shadow:var(--sombra);display:flex;flex-direction:column;gap:10px;min-height:170px}
+.op.on{border-color:var(--green-900)}
+.op b{font:700 17px var(--font-display)}
+.op span.d{color:var(--muted);font-size:13.5px;flex:1}
+.tecla{align-self:flex-start;width:26px;height:26px;border-radius:8px;background:var(--bg);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted)}
+.dica{font-size:12.5px;color:var(--faint);margin-top:18px}
+.cartao-form{background:#fff;border-radius:28px;box-shadow:var(--sombra);padding:32px;width:440px;text-align:left;display:flex;flex-direction:column;gap:14px}
+.campo label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.campo .in{height:48px;border-radius:14px;border:1px solid #d5dcd5;background:#fff;display:flex;align-items:center;gap:10px;padding:0 14px;color:var(--ink);font-size:15px}
+.campo .in.foco{border-color:var(--green-900);box-shadow:0 0 0 3px rgba(11,58,34,.12)}
+.campo .in i{color:var(--muted);font-size:18px}
+.campo .in .dir{margin-left:auto}
+.campo .ajuda{font-size:12.5px;color:var(--muted);margin-top:6px}
+.linha-ou{display:flex;align-items:center;gap:12px;color:var(--faint);font-size:12.5px}
+.linha-ou:before,.linha-ou:after{content:"";flex:1;height:1px;background:var(--line)}
+.btn-wa{background:#fff;border:1px solid #cfd6cf;color:var(--ink)}
+.btn-wa i{color:#1fa855}
+.link{color:var(--green-900);font-weight:600;font-size:13.5px}
+.forca{display:flex;gap:5px;margin-top:8px}
+.forca i{flex:1;height:5px;border-radius:9px;background:#e1e6e0}
+.forca i.ok{background:var(--pos)}
+.split{display:grid;grid-template-columns:1fr 1fr;height:100%}
+.split .lado{background:var(--hero);color:#fff;padding:44px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.split .lado .estrela{position:absolute;right:-60px;bottom:-60px;width:320px;height:320px;opacity:.12}
+.split .lado h2{font:700 36px var(--font-display);letter-spacing:-.02em;max-width:420px;line-height:1.1}
+.split .lado p{opacity:.8;font-size:15px;max-width:400px;margin-top:12px}
+.split .lado ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:12px;font-size:14.5px}
+.split .lado li{display:flex;gap:10px;align-items:center}
+.split .lado li i{color:var(--lime);font-size:18px}
+.split .form{display:flex;align-items:center;justify-content:center}
+.codigo{font:700 52px var(--font-display);letter-spacing:.18em;color:var(--green-900);background:var(--lime-100);border-radius:20px;padding:14px 26px;margin:6px 0}
+.esperando{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+.pulso{width:10px;height:10px;border-radius:50%;background:var(--pos);box-shadow:0 0 0 6px rgba(28,154,82,.18)}
+.renda{display:flex;align-items:center;gap:10px;background:#fff;border-radius:22px;box-shadow:var(--sombra);padding:10px 22px;margin-top:30px;border:2px solid var(--green-900)}
+.renda b{font:600 40px var(--font-display);letter-spacing:-.02em}
+.renda span{font:600 28px var(--font-display);color:var(--muted)}
+.chips{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;justify-content:center}
+.chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:13.5px;font-weight:500}
+.wa-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;width:100%;max-width:1000px;text-align:left}
+.conversa{background:#efe7dc;border-radius:24px;overflow:hidden;box-shadow:var(--sombra)}
+.conversa .cab{background:#0b6b4f;color:#fff;display:flex;align-items:center;gap:10px;padding:12px 16px;font-weight:600}
+.conversa .cab span{width:34px;height:34px;border-radius:50%;background:var(--lime);color:var(--green-900);display:grid;place-items:center;font-size:18px}
+.conversa .cab small{display:block;font-weight:400;opacity:.8;font-size:12px}
+.msgs{padding:16px;display:flex;flex-direction:column;gap:8px;font-size:13.5px}
+.msg{background:#fff;border-radius:12px;padding:9px 12px;max-width:82%;line-height:1.4}
+.msg.eu{background:#d9fdd3;align-self:flex-end}
+.msg small{display:block;text-align:right;color:#8a948e;font-size:11px;margin-top:2px}
+.qr{width:150px;height:150px;background:#fff;border-radius:18px;padding:12px;box-shadow:var(--sombra)}
+.lista-wa{display:flex;flex-direction:column;gap:12px;font-size:14.5px;margin:18px 0}
+.lista-wa div{display:flex;gap:10px;align-items:center}
+.lista-wa i{width:32px;height:32px;border-radius:10px;background:var(--lime-100);color:var(--green-900);display:grid;place-items:center;font-size:17px}
+.btn-verde{background:#1fa855;color:#fff}
+.anel{width:150px;height:150px;border-radius:50%;border:3px solid #cdeec0;display:grid;place-items:center;position:relative}
+.anel:after{content:"";position:absolute;inset:-14px;border-radius:50%;border:2px dashed #dbe8d6}
+.anel span{width:96px;height:96px;border-radius:30px;background:var(--green-900);color:var(--lime);display:grid;place-items:center;font-size:48px}
+.lanc{background:#fff;border-radius:22px;box-shadow:var(--sombra);padding:18px 20px;display:flex;align-items:center;gap:14px;width:420px;text-align:left;margin-top:22px}
+.lanc .v{margin-left:auto;font:700 17px var(--font-ui);color:var(--neg);font-variant-numeric:tabular-nums}
+.conf{font-size:120px;line-height:1}
+.celulares{display:flex;gap:26px;flex-wrap:wrap;justify-content:center}
+.cel{width:380px;height:780px;background:var(--bg);border-radius:44px;border:10px solid #101a14;overflow:hidden;display:flex;flex-direction:column}
+.cel .st{display:flex;justify-content:space-between;font:600 13px var(--font-ui);padding:12px 22px 0}
+.cel .corpo{flex:1;padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.cel .titulo{font-size:28px}
+.op-lin{background:#fff;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px;border:2px solid transparent;box-shadow:var(--sombra);text-align:left}
+.op-lin.on{border-color:var(--green-900)}
+.op-lin b{display:block;font:700 15.5px var(--font-display)}
+.op-lin small{color:var(--muted);font-size:12.5px}
+.op-lin .tecla{margin-left:auto;align-self:center}
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<div class="rotulo">1 · Entrar (todo dia)<small>E-mail e senha como caminho principal. O WhatsApp fica como alternativa para quem não tem senha ou trocou de aparelho. Marcar "Continuar conectado" mantém a sessão por 30 dias neste aparelho.</small></div>
+<div class="frame">
+  <div class="split">
+    <div class="lado">
+      <div class="marca" style="color:#fff"><span><i class="ph-fill ph-gauge"></i></span>Gastômetro</div>
+      <div>
+        <h2>Seu dinheiro, organizado pelo WhatsApp.</h2>
+        <p>Entre para ver para onde foi cada real, quanto ainda dá para gastar e o que mudou desde o mês passado.</p>
+      </div>
+      <ul>
+        <li><i class="ph-bold ph-lock-simple"></i>Seus dados só aparecem para você</li>
+        <li><i class="ph-bold ph-device-mobile"></i>Fica conectado no seu aparelho</li>
+        <li><i class="ph-bold ph-whatsapp-logo"></i>Esqueceu a senha? Recupera pelo seu WhatsApp</li>
+      </ul>
+      <svg class="estrela" viewBox="0 0 100 100"><path d="M50 4c4 26 20 42 46 46-26 4-42 20-46 46-4-26-20-42-46-46C30 46 46 30 50 4z" fill="#bff25f"/></svg>
+    </div>
+    <div class="form">
+      <div class="cartao-form" style="box-shadow:none;background:transparent;width:420px">
+        <div class="titulo" style="font-size:32px">Entrar</div>
+        <div class="sub" style="margin-top:-6px">Bem-vindo de volta.</div>
+        <div class="campo"><label>E-mail</label><div class="in"><i class="ph ph-envelope-simple"></i>wesley@exemplo.com</div></div>
+        <div class="campo"><label>Senha</label><div class="in foco"><i class="ph ph-lock-simple"></i>••••••••••<i class="ph ph-eye dir"></i></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13.5px">
+          <span style="display:flex;align-items:center;gap:8px"><i class="ph-fill ph-check-square" style="color:var(--green-900);font-size:20px"></i>Continuar conectado</span>
+          <span class="link">Esqueci a senha</span>
+        </div>
+        <button class="btn pri blk">Entrar</button>
+        <div class="linha-ou">ou</div>
+        <button class="btn btn-wa blk"><i class="ph-fill ph-whatsapp-logo"></i>Entrar pelo WhatsApp</button>
+        <p style="text-align:center;font-size:13.5px;color:var(--muted)">Ainda não tem conta? <span class="link">Criar conta grátis</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rotulo">2 · Entrar pelo WhatsApp (primeiro acesso, aparelho novo ou sem senha)<small>É o fluxo de hoje, mais claro: o botão já abre o WhatsApp com a mensagem pronta e a tela percebe sozinha quando o bot confirma. Funciona do computador também, porque o código aparece na tela e a confirmação vem do celular.</small></div>
+<div class="frame">
+  <div class="topo-ob"><div class="marca"><span><i class="ph-fill ph-gauge"></i></span>Gastômetro</div><span class="link"><i class="ph ph-arrow-left"></i> Entrar com e-mail e senha</span></div>
+  <div class="miolo">
+    <div class="olho">ENTRAR PELO WHATSAPP</div>
+    <div class="titulo">Mande este código do seu WhatsApp</div>
+    <div class="sub">Envie do número cadastrado. Assim temos certeza de que é você.</div>
+    <div class="codigo" style="margin-top:22px">PAINEL 482 913</div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn btn-verde"><i class="ph-fill ph-whatsapp-logo"></i>Abrir o WhatsApp com a mensagem pronta</button>
+      <button class="btn out"><i class="ph ph-copy"></i>Copiar</button>
+    </div>
+    <div class="esperando" style="margin-top:24px"><span class="pulso"></span>Esperando a confirmação… o código vale por 5 minutos (4:12)</div>
+    <div class="dica">No computador? Envie do celular e esta tela entra sozinha.</div>
+  </div>
+</div>
+
+<div class="rotulo">3 · Esqueci a senha<small>Sem depender de e-mail: a pessoa confirma pelo WhatsApp (mesmo mecanismo do código) e cria uma senha nova. Duas etapas na mesma tela.</small></div>
+<div class="frame">
+  <div class="topo-ob"><div class="marca"><span><i class="ph-fill ph-gauge"></i></span>Gastômetro</div><span class="link"><i class="ph ph-arrow-left"></i> Voltar para Entrar</span></div>
+  <div class="miolo" style="flex-direction:row;gap:28px;align-items:stretch;justify-content:center;padding-top:30px">
+    <div class="cartao-form" style="width:420px">
+      <span class="badge pos" style="align-self:flex-start"><i class="ph-bold ph-check"></i>Etapa 1 · confirmada</span>
+      <div style="font:700 22px var(--font-display)">Confirme pelo WhatsApp</div>
+      <div class="sub" style="margin:0;font-size:14px">Mandamos você ao WhatsApp com a mensagem <b>SENHA 715 204</b>. O bot confirmou que veio do número <b>(82) 9••••17</b>.</div>
+      <div class="esperando" style="color:var(--pos);font-weight:600"><i class="ph-fill ph-check-circle" style="font-size:20px"></i>Número confirmado agora há pouco</div>
+    </div>
+    <div class="cartao-form" style="width:440px;border:2px solid var(--green-900)">
+      <span class="badge lime" style="align-self:flex-start">Etapa 2</span>
+      <div style="font:700 22px var(--font-display)">Crie uma senha nova</div>
+      <div class="campo"><label>Nova senha</label><div class="in foco"><i class="ph ph-lock-simple"></i>••••••••••••<i class="ph ph-eye dir"></i></div>
+        <div class="forca"><i class="ok"></i><i class="ok"></i><i class="ok"></i><i></i></div>
+        <div class="ajuda">Boa. Use pelo menos 8 caracteres; uma frase fácil de lembrar funciona bem.</div></div>
+      <div class="campo"><label>Repita a senha</label><div class="in"><i class="ph ph-lock-simple"></i>••••••••••••<i class="ph-bold ph-check dir" style="color:var(--pos)"></i></div></div>
+      <button class="btn pri blk">Salvar e entrar</button>
+      <div class="ajuda" style="font-size:12.5px;color:var(--muted)">Por segurança, os outros aparelhos conectados saem da conta.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PRIMEIRO ACESSO ===================== -->
+<div class="rotulo">4 · Primeiro acesso, passo 1 de 4 · Objetivo<small>Uma pergunta por tela; a escolha já avança e as teclas 1 a 4 funcionam. A resposta muda o que o painel destaca e os "próximos passos".</small></div>
+<div class="frame">
+  <div class="topo-ob"><div class="marca"><span><i class="ph-fill ph-gauge"></i></span>Gastômetro</div><div class="passos">Passo 1 de 4 <i class="on"></i><i></i><i></i><i></i></div></div>
+  <div class="miolo">
+    <div class="olho">BOAS-VINDAS · LEVA MENOS DE 1 MINUTO</div>
+    <div class="titulo">O que você quer resolver primeiro?</div>
+    <div class="sub">Isso define o que o painel mostra em destaque. Dá para mudar depois.</div>
+    <div class="opcoes4">
+      <div class="op"><span class="sq c3"><i class="ph ph-receipt"></i></span><b>Controlar o dia a dia</b><span class="d">Saber para onde vai cada real</span><span class="tecla">1</span></div>
+      <div class="op on"><span class="sq lime"><i class="ph ph-piggy-bank"></i></span><b>Guardar dinheiro</b><span class="d">Sobrar no fim do mês e criar uma reserva</span><span class="tecla">2</span></div>
+      <div class="op"><span class="sq c8"><i class="ph ph-lifebuoy"></i></span><b>Sair do aperto</b><span class="d">Gastar menos do que entra</span><span class="tecla">3</span></div>
+      <div class="op"><span class="sq c1"><i class="ph ph-users-three"></i></span><b>Organizar a família</b><span class="d">Quem divide a casa, divide o controle</span><span class="tecla">4</span></div>
+    </div>
+    <div class="dica">use as teclas 1 a 4 · a escolha já avança</div>
+  </div>
+</div>
+
+<div class="rotulo">5 · Passo 2 de 4 · Renda mensal<small>O valor já alimenta o painel desde o primeiro dia (sem ele, o painel pede a renda). Atalhos de faixa ajudam quem não sabe o número exato. Dá para pular.</small></div>
+<div class="frame">
+  <div class="topo-ob"><div class="marca"><span><i class="ph-fill ph-gauge"></i></span>Gastômetro</div><div class="passos">Passo 2 de 4 <i class="feito"></i><i class="on"></i><i></i><i></i></div></div>
+  <div class="miolo">
+    <div class="titulo">Quanto entra por mês, mais ou menos?</div>
+    <div class="sub">Com isso o painel já mostra quanto sobra e quanto dá para gastar por dia. Fica só com você.</div>
+    <div class="renda"><span>R$</span><b>4.500</b><i class="ph ph-pencil-simple" style="color:var(--muted);font-size:20px;margin-left:8px"></i></div>
+    <div class="chips"><span class="chip">até R$ 2.000</span><span class="chip">R$ 2.000 a 4.000</span><span class="chip" style="border-color:var(--green-900);font-weight:700">R$ 4.000 a 7.000</span><span class="chip">mais de R$ 7.000</span><span class="chip">varia muito</span></div>
+    <div style="display:flex;gap:12px;margin-top:28px"><button class="btn out">Pular por agora</button><button class="btn pri" style="min-width:200px">Continuar<i class="ph-bold ph-arrow-right"></i></button></div>
+  </div>
+</div>
+
+<div class="rotulo">6 · Passo 3 de 4 · Criar senha<small>O momento natural para criar a senha: a pessoa acabou de provar o número pelo WhatsApp. O e-mail do cadastro aparece para conferir (ainda não temos como confirmar por e-mail, então dá para corrigir aqui).</small></div>
+<div class="frame">
+  <div class="topo-ob"><div class="marca"><span><i class="ph-fill ph-gauge"></i></span>Gastômetro</div><div class="passos">Passo 3 de 4 <i class="feito"></i><i class="feito"></i><i class="on"></i><i></i></div></div>
+  <div class="miolo">
+    <div class="titulo">Crie a sua senha</div>
+    <div class="sub">Da próxima vez você entra com e-mail e senha, sem precisar do código.</div>
+    <div class="cartao-form" style="margin-top:24px">
+      <div class="campo"><label>E-mail</label><div class="in"><i class="ph ph-envelope-simple"></i>wesley@exemplo.com<span class="link dir">Corrigir</span></div><div class="ajuda">Confira: é com ele que você vai entrar.</div></div>
+      <div class="campo"><label>Senha</label><div class="in foco"><i class="ph ph-lock-simple"></i>••••••••••<i class="ph ph-eye dir"></i></div>
+        <div class="forca"><i class="ok"></i><i class="ok"></i><i></i><i></i></div><div class="ajuda">Mínimo de 8 caracteres.</div></div>
+      <button class="btn pri blk">Criar senha e continuar</button>
+      <span class="link" style="text-align:center;font-weight:500;color:var(--muted)">Agora não (continuo entrando pelo WhatsApp)</span>
+    </div>
+  </div>
+</div>
+
+<div class="rotulo">7 · Passo 4 de 4 · Seu assistente no WhatsApp<small>Mostra como conversar, com o QR code para abrir no celular e o número mascarado para conferir. O botão abre o WhatsApp com um exemplo pronto.</small></div>
+<div class="frame">
+  <div class="topo-ob"><div class="marca"><span><i class="ph-fill ph-gauge"></i></span>Gastômetro</div><div class="passos">Passo 4 de 4 <i class="feito"></i><i class="feito"></i><i class="feito"></i><i class="on"></i></div></div>
+  <div class="miolo">
+    <div class="wa-grid">
+      <div class="conversa">
+        <div class="cab"><span><i class="ph-fill ph-gauge"></i></span><div>Gastômetro<small>assistente · online</small></div></div>
+        <div class="msgs">
+          <div class="msg eu">mercado 100<small>09:31 ✓✓</small></div>
+          <div class="msg">✅ Anotei: <b>R$ 100,00</b> em Alimentação · hoje<br>Responda <b>corrigir</b> se algo estiver errado.<small>09:31</small></div>
+          <div class="msg eu">🎤 áudio · "gastei 32 no almoço"<small>09:33 ✓✓</small></div>
+          <div class="msg">✅ Anotei: <b>R$ 32,00</b> em Alimentação · almoço<small>09:33</small></div>
+          <div class="msg eu">quanto gastei esta semana?<small>09:40 ✓✓</small></div>
+          <div class="msg">Esta semana: <b>R$ 412,90</b>. O maior foi Alimentação (R$ 232,00).<small>09:40</small></div>
+        </div>
+      </div>
+      <div>
+        <div class="titulo" style="font-size:32px">Seu assistente já está no WhatsApp</div>
+        <div class="sub" style="margin-left:0">Mande o primeiro gasto agora para ver aparecer aqui.</div>
+        <div class="lista-wa">
+          <div><i class="ph ph-text-t"></i>Texto, áudio ou foto do recibo</div>
+          <div><i class="ph ph-chat-circle-dots"></i>Perguntas: "quanto gastei com mercado?"</div>
+          <div><i class="ph ph-chart-line-up"></i>O painel atualiza na hora</div>
+        </div>
+        <div style="display:flex;gap:18px;align-items:center">
+          <svg class="qr" id="qr" viewBox="0 0 29 29"></svg>
+          <div style="font-size:13.5px;color:var(--muted);max-width:200px">Aponte a câmera do celular para abrir a conversa direto.</div>
+        </div>
+        <button class="btn btn-verde blk" style="margin-top:18px"><i class="ph-fill ph-whatsapp-logo"></i>Mandar meu primeiro gasto</button>
+        <div class="dica" style="text-align:center">Ligado ao seu número (82) 9••••17</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rotulo">8 · Esperando a primeira mensagem → 9 · Chegou!<small>A tela confere sozinha a cada poucos segundos. Quando o primeiro lançamento entra, mostra o gasto que a pessoa mandou: a prova de que funciona. "Pular" leva ao painel sem esperar.</small></div>
+<div class="frame" style="flex-direction:row">
+  <div class="miolo" style="border-right:1px solid var(--line)">
+    <div class="anel"><span><i class="ph-fill ph-whatsapp-logo"></i></span></div>
+    <div class="titulo" style="font-size:28px;margin-top:30px">Esperando o seu primeiro gasto…</div>
+    <div class="sub">Mande "mercado 100" ou um áudio. Ele aparece aqui na hora.</div>
+    <div class="chips"><span class="chip"><i class="ph ph-text-t"></i> "mercado 100"</span><span class="chip"><i class="ph ph-microphone"></i> áudio</span><span class="chip"><i class="ph ph-receipt"></i> foto do recibo</span></div>
+    <div class="esperando" style="margin-top:20px"><span class="pulso"></span>conversa aberta no seu WhatsApp</div>
+    <span class="link" style="margin-top:18px;color:var(--muted);font-weight:500">Pular e ir para o painel</span>
+  </div>
+  <div class="miolo">
+    <div class="conf"><i class="ph-fill ph-confetti" style="color:var(--green-900)"></i></div>
+    <div class="titulo" style="font-size:30px;margin-top:8px">Chegou! Já está no seu painel.</div>
+    <div class="sub">Pronto: é só continuar mandando pelo WhatsApp.</div>
+    <div class="lanc"><span class="sq c2"><i class="ph ph-shopping-cart"></i></span><div><b style="display:block">Mercado</b><span style="font-size:13px;color:var(--muted)">Alimentação · hoje, 09:31</span></div><span class="v">-R$ 100,00</span></div>
+    <button class="btn pri" style="margin-top:24px;min-width:260px">Ir para o meu painel<i class="ph-bold ph-arrow-right"></i></button>
+  </div>
+</div>
+
+<div class="rotulo">10 · No celular<small>Mesmas telas, uma coluna, botões ao alcance do polegar.</small></div>
+<div class="celulares">
+  <div class="cel"><div class="st"><span>9:41</span><span><i class="ph-fill ph-battery-full"></i></span></div>
+    <div class="corpo">
+      <div class="marca"><span><i class="ph-fill ph-gauge"></i></span>Gastômetro</div>
+      <div class="titulo" style="margin-top:18px">Entrar</div>
+      <div class="campo"><label>E-mail</label><div class="in"><i class="ph ph-envelope-simple"></i>wesley@exemplo.com</div></div>
+      <div class="campo"><label>Senha</label><div class="in foco"><i class="ph ph-lock-simple"></i>••••••••••<i class="ph ph-eye dir"></i></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px"><span><i class="ph-fill ph-check-square" style="color:var(--green-900)"></i> Continuar conectado</span><span class="link">Esqueci</span></div>
+      <button class="btn pri blk">Entrar</button>
+      <div class="linha-ou">ou</div>
+      <button class="btn btn-wa blk"><i class="ph-fill ph-whatsapp-logo"></i>Entrar pelo WhatsApp</button>
+    </div>
+  </div>
+  <div class="cel"><div class="st"><span>9:41</span><span><i class="ph-fill ph-battery-full"></i></span></div>
+    <div class="corpo">
+      <div class="passos">Passo 1 de 4 <i class="on"></i><i></i><i></i><i></i></div>
+      <div class="titulo" style="margin-top:10px;text-align:left">O que você quer resolver primeiro?</div>
+      <div class="op-lin"><span class="sq sm c3"><i class="ph ph-receipt"></i></span><div><b>Controlar o dia a dia</b><small>Para onde vai cada real</small></div><span class="tecla">1</span></div>
+      <div class="op-lin on"><span class="sq sm lime"><i class="ph ph-piggy-bank"></i></span><div><b>Guardar dinheiro</b><small>Sobrar e criar reserva</small></div><span class="tecla">2</span></div>
+      <div class="op-lin"><span class="sq sm c8"><i class="ph ph-lifebuoy"></i></span><div><b>Sair do aperto</b><small>Gastar menos do que entra</small></div><span class="tecla">3</span></div>
+      <div class="op-lin"><span class="sq sm c1"><i class="ph ph-users-three"></i></span><div><b>Organizar a família</b><small>Controle dividido</small></div><span class="tecla">4</span></div>
+    </div>
+  </div>
+  <div class="cel"><div class="st"><span>9:41</span><span><i class="ph-fill ph-battery-full"></i></span></div>
+    <div class="corpo" style="align-items:center;justify-content:center;text-align:center">
+      <div class="conf" style="font-size:90px"><i class="ph-fill ph-confetti" style="color:var(--green-900)"></i></div>
+      <div class="titulo" style="font-size:26px">Chegou! Já está no seu painel.</div>
+      <div class="lanc" style="width:100%"><span class="sq sm c2"><i class="ph ph-shopping-cart"></i></span><div><b style="display:block">Mercado</b><span style="font-size:12.5px;color:var(--muted)">Alimentação · hoje</span></div><span class="v">-R$ 100</span></div>
+      <button class="btn pri blk" style="margin-top:16px">Ir para o meu painel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// QR code ilustrativo (padrão aleatório fixo com os três "olhos"); o de verdade é gerado no app.
+(function(){
+  const svg=document.getElementById("qr"),N=29;let s=7;const r=()=>((s=(s*9301+49297)%233280)/233280);
+  const olho=(x,y)=>`<rect x="${x}" y="${y}" width="7" height="7" fill="#0f1a14"/><rect x="${x+1}" y="${y+1}" width="5" height="5" fill="#fff"/><rect x="${x+2}" y="${y+2}" width="3" height="3" fill="#0f1a14"/>`;
+  let h="";for(let y=0;y<N;y++)for(let x=0;x<N;x++){const canto=(x<8&&y<8)||(x>N-9&&y<8)||(x<8&&y>N-9);if(!canto&&r()>.52)h+=`<rect x="${x}" y="${y}" width="1" height="1" fill="#0f1a14"/>`;}
+  svg.innerHTML=h+olho(0,0)+olho(N-7,0)+olho(0,N-7);
+})();
+function ajusta(){const z=Math.min(1,(innerWidth-48)/1200);document.querySelectorAll(".frame,.rotulo").forEach(e=>e.style.zoom=z);}
+addEventListener("resize",ajusta);ajusta();
+</script>
+</body>
+</html>

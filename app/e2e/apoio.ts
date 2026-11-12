@@ -19,6 +19,7 @@ export const CONTA = {
   nome: "Maria Silva", email: "maria@exemplo.com", telefone_mascarado: "+55 11 *****-8888", renda_mensal: null, custo_vida_mensal: null,
   plano: null, assinatura: null, uso: { mensagens: 0, limite: null, restantes: null },
   consentimento: { em: "2026-10-24T12:00:00Z", versao: "v1-2026-10" }, // igual a VERSAO_LEGAL; outra versão abre o pedido de novo aceite
+  objetivo: null, primeiro_acesso_concluido: true, tem_senha: true,
 };
 
 export const PLANOS = {
@@ -56,6 +57,17 @@ export async function simular(page: Page, estados: Estados = {}, rpcs: Rpcs = {}
       const corpo = estado === "ok" ? { estado: "ok", token_hash: "hash-de-teste" } : { estado };
       return route.fulfill({ status: 200, headers: JSON_CORS, body: JSON.stringify(corpo) });
     }
+    if (url.includes("/auth/v1/token") && url.includes("grant_type=password")) {
+      // Login com senha: só a combinação de teste entra.
+      const corpo = JSON.parse(req.postData() ?? "{}") as { email?: string; password?: string };
+      if (corpo.email === "maria@exemplo.com" && corpo.password === "segredo123") {
+        return route.fulfill({
+          status: 200, headers: JSON_CORS,
+          body: JSON.stringify({ access_token: jwtFalso(), token_type: "bearer", expires_in: 3600, refresh_token: "refresh-teste", user: USUARIO }),
+        });
+      }
+      return route.fulfill({ status: 400, headers: JSON_CORS, body: JSON.stringify({ code: "invalid_credentials", error_code: "invalid_credentials", msg: "Invalid login credentials" }) });
+    }
     if (url.includes("/auth/v1/verify")) {
       return route.fulfill({
         status: 200, headers: JSON_CORS,
@@ -92,8 +104,9 @@ export async function simular(page: Page, estados: Estados = {}, rpcs: Rpcs = {}
   return { chamadasStatus, controle };
 }
 
+/** Entra pelo código do WhatsApp (o fluxo simulado confirma sozinho). */
 export async function entrar(page: Page) {
-  await page.goto("/entrar");
+  await page.goto("/entrar?modo=whatsapp");
   await page.getByRole("button", { name: "Gerar código" }).click();
   await expect(page).toHaveURL(/\/painel$/, { timeout: 15_000 });
 }

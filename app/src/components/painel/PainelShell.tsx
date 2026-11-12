@@ -64,6 +64,11 @@ export function PainelShell({ children }: { children: ReactNode }) {
           if (!ativo) return;
           setNome(c.nome);
           setVersaoAceita(c.consentimento.versao);
+          // Primeiro acesso ainda não feito: leva às telas de boas-vindas (menos na troca de senha, que tem tela própria).
+          const aqui = window.location.pathname;
+          if (c.primeiro_acesso_concluido === false && !aqui.startsWith("/painel/boas-vindas") && !aqui.startsWith("/painel/senha-nova")) {
+            router.replace("/painel/boas-vindas");
+          }
         })
         .catch(() => {});
     }
@@ -88,6 +93,16 @@ export function PainelShell({ children }: { children: ReactNode }) {
       <div className="flex min-h-[100dvh] items-center justify-center" role="status" aria-live="polite">
         <p className="text-sm text-suave">Abrindo o seu painel…</p>
       </div>
+    );
+  }
+
+  // Boas-vindas e senha nova ocupam a tela inteira, sem trilho nem abas.
+  if (caminho.startsWith("/painel/boas-vindas") || caminho.startsWith("/painel/senha-nova")) {
+    return (
+      <>
+        {children}
+        {versaoAceita !== undefined && <TermosAtualizados versaoAceita={versaoAceita} onAceito={() => setVersaoAceita(VERSAO_LEGAL)} />}
+      </>
     );
   }
 

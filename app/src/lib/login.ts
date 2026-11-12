@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { limparEmail } from "@/lib/senha";
 
 export type SessaoLogin = { sessaoId: string; codigo: string; expiraEm: string };
 export type EstadoLogin = "pendente" | "expirado" | "ok";
@@ -32,4 +33,20 @@ export async function statusLogin(sessaoId: string): Promise<EstadoLogin> {
   const { error } = await supabase.auth.verifyOtp({ token_hash: String(r.json.token_hash), type: "magiclink" });
   if (error) throw new Error("Não foi possível entrar. Gere um novo código.");
   return "ok";
+}
+
+/** Entra com e-mail e senha (Supabase Auth). A sessão fica guardada neste navegador e se renova sozinha. */
+export async function entrarComSenha(email: string, senha: string): Promise<void> {
+  let resultado: Awaited<ReturnType<typeof supabase.auth.signInWithPassword>>;
+  try {
+    resultado = await supabase.auth.signInWithPassword({ email: limparEmail(email), password: senha });
+  } catch {
+    throw new Error("Sem conexão com o servidor. Confira a internet e tente de novo.");
+  }
+  const { error } = resultado;
+  if (!error) return;
+  if (error.status === 429) throw new Error("Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente de novo.");
+  // Mesma mensagem para e-mail ou senha errados: não contamos qual dos dois existe.
+  if (error.status === 400 || error.code === "invalid_credentials") throw new Error("E-mail ou senha incorretos.");
+  throw new Error("Não foi possível entrar agora. Tente de novo em instantes.");
 }

@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { limparEmail } from "@/lib/senha";
 import type { Intervalo } from "@/lib/periodo";
 
 export type VisaoGeral = {
@@ -54,7 +55,13 @@ export type Conta = {
   assinatura: { status: string; periodo_inicio: string; periodo_fim: string | null } | null;
   uso: { mensagens: number; limite: number | null; restantes: number | null };
   consentimento: { em: string | null; versao: string | null };
+  /** Migração 021. Opcionais para quem lê uma resposta antiga. */
+  objetivo?: Objetivo | null;
+  primeiro_acesso_concluido?: boolean;
+  tem_senha?: boolean;
 };
+
+export type Objetivo = "dia_a_dia" | "guardar" | "aperto" | "familia";
 
 export class ApiError extends Error {
   constructor(public codigo: string, mensagem: string) {
@@ -90,6 +97,11 @@ const MENSAGENS: Record<string, string> = {
   usuario_bloqueado: "Esta conta não pode assinar um plano agora. Fale com o suporte.",
   falha_mercado_pago: "O Mercado Pago não respondeu. Tente de novo em instantes.",
   falha_rede: "Sem conexão com o servidor. Confira a internet e tente de novo.",
+  email_invalido: "Confira o e-mail: ele precisa ser um endereço que você usa.",
+  senha_invalida: "A senha precisa ter de 8 a 72 caracteres.",
+  senha_fraca: "Essa senha é fácil de adivinhar. Escolha outra.",
+  email_em_uso: "Esse e-mail já está em outra conta. Use outro ou fale com o suporte.",
+  objetivo_invalido: "Escolha uma das opções.",
 };
 
 function erro(motivo: string): ApiError {
@@ -269,4 +281,44 @@ export async function iniciarPagamento(plano: string): Promise<string> {
 /** Registra o aceite dos termos e da política na versão informada (migração 019). */
 export async function aceitarTermos(versao: string): Promise<void> {
   await executar("app_aceitar_termos", { p_versao: versao });
+}
+
+/** Chama uma função de borda com o login da pessoa; erros viram mensagens amigáveis. */
+async function chamarFuncaoLogada(nome: string, corpo: unknown): Promise<Record<string, unknown>> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) throw erro("nao_autenticado");
+  let r: Response;
+  try {
+    r = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/${nome}`, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+      body: JSON.stringify(corpo),
+    });
+  } catch {
+    throw erro("falha_rede");
+  }
+  const json = ((await r.json().catch(() => ({}))) ?? {}) as Record<string, unknown>;
+  if (!r.ok) throw erro(String(json.erro ?? "falha"));
+  return json;
+}
+
+/**
+ * Cria ou troca a senha e define o e-mail de login (função senha-definir; a senha vai só para o Supabase Auth).
+ * Com sairDosOutros, encerra a sessão nos outros aparelhos (usado ao recuperar ou trocar a senha).
+ */
+export async function definirSenha(d: { email: string; senha: string; sairDosOutros?: boolean }): Promise<void> {
+  await chamarFuncaoLogada("senha-definir", { email: limparEmail(d.email), senha: d.senha });
+  if (d.sairDosOutros) await supabase.auth.signOut({ scope: "others" });
+}
+
+/** Primeiro acesso (migração 021). */
+export async function salvarObjetivo(objetivo: Objetivo): Promise<void> {
+  await executar("app_salvar_objetivo", { p_objetivo: objetivo });
+}
+export async function salvarRenda(renda: number | null): Promise<void> {
+  await executar("app_salvar_renda", { p_renda: renda });
+}
+export async function concluirPrimeiroAcesso(): Promise<void> {
+  await executar("app_concluir_primeiro_acesso");
 }

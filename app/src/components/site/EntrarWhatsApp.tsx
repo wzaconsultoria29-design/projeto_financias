@@ -14,7 +14,8 @@ function formatarContagem(ms: number): string {
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
 }
 
-export function EntrarWhatsApp() {
+/** Entra pelo WhatsApp: mostra o código, abre a conversa com a mensagem pronta e entra sozinho quando o bot confirma. */
+export function EntrarWhatsApp({ destino = "/painel", palavra = "PAINEL" }: { destino?: string; palavra?: string }) {
   const router = useRouter();
   const [fase, setFase] = useState<Fase>("inicial");
   const [sessao, setSessao] = useState<SessaoLogin | null>(null);
@@ -60,7 +61,7 @@ export function EntrarWhatsApp() {
       try {
         const estado = await statusLogin(sessao.sessaoId);
         if (!ativo) return;
-        if (estado === "ok") return router.replace("/painel");
+        if (estado === "ok") return router.replace(destino);
         if (estado === "expirado") return setFase("expirado");
         timer = setTimeout(consultar, INTERVALO_MS);
       } catch (e) {
@@ -74,14 +75,14 @@ export function EntrarWhatsApp() {
       ativo = false;
       clearTimeout(timer);
     };
-  }, [fase, sessao, router]);
+  }, [fase, sessao, router, destino]);
 
   return (
-    <div className="cartao flex flex-col gap-6 p-6 md:p-8">
+    <div className="flex flex-col gap-5">
       {(fase === "inicial" || fase === "gerando") && (
         <>
           <p className="max-w-[48ch] leading-relaxed text-suave">
-            Você entra enviando um código pelo WhatsApp, do mesmo número que usa com o {brand.name}. Não precisa de senha.
+            Você confirma enviando um código pelo WhatsApp, do mesmo número que usa com o {brand.name}. Funciona também no computador: o código aparece aqui e você envia do celular.
           </p>
           <button type="button" className="botao w-full" onClick={gerar} disabled={fase === "gerando"}>
             {fase === "gerando" ? "Gerando…" : "Gerar código"}
@@ -93,7 +94,7 @@ export function EntrarWhatsApp() {
         <>
           <div>
             <p className="text-sm text-suave">Seu código</p>
-            <p className="mt-1 font-display text-5xl font-semibold tracking-[0.2em] text-tinta" aria-label={`Código ${sessao.codigo.split("").join(" ")}`}>
+            <p className="mt-2 inline-block rounded-[20px] bg-lima-suave px-6 py-3 font-display text-5xl font-bold tracking-[0.18em] text-verde-escuro" aria-label={`Código ${sessao.codigo.split("").join(" ")}`}>
               {sessao.codigo}
             </p>
             <p className="mt-3 text-sm text-suave">
@@ -102,12 +103,16 @@ export function EntrarWhatsApp() {
           </div>
           <a
             className="botao w-full"
-            href={brand.botWaUrl(`PAINEL ${sessao.codigo}`)}
+            href={brand.botWaUrl(`${palavra} ${sessao.codigo}`)}
             target="_blank"
             rel="noopener noreferrer"
           >
             Abrir WhatsApp
           </a>
+          <p className="flex items-center gap-2.5 text-sm text-suave" aria-live="polite">
+            <span aria-hidden="true" className="h-2.5 w-2.5 flex-none rounded-full bg-bom-ink shadow-[0_0_0_5px_rgba(28,154,82,0.18)]" />
+            Esperando a confirmação do WhatsApp…
+          </p>
           <p className="text-sm leading-relaxed text-suave">
             Envie a mensagem que vai aparecer pronta e volte para esta página. Ela entra sozinha assim que o bot confirmar. Nunca envie este código a pedido de outra pessoa: ele dá acesso ao seu painel.
           </p>
@@ -126,7 +131,7 @@ export function EntrarWhatsApp() {
 
       {fase === "erro" && (
         <>
-          <p role="alert" className="rounded-[12px] bg-folha px-4 py-3 text-sm text-tinta">{mensagem}</p>
+          <p role="alert" className="rounded-[12px] bg-ruim-bg px-4 py-3 text-sm text-ruim-ink">{mensagem}</p>
           <button type="button" className="botao w-full" onClick={gerar}>
             Gerar novo código
           </button>

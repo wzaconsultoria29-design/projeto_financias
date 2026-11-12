@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ChatCircleDots, Compass } from "@phosphor-icons/react/dist/ssr";
-import type { Painel } from "@/lib/api";
+import type { Objetivo, Painel } from "@/lib/api";
 import { brand } from "@/config/brand";
-import { proximosPassos, type AcaoPasso } from "@/lib/narrativa";
+import { passoDoObjetivo, proximosPassos, type AcaoPasso } from "@/lib/narrativa";
 import { Capitulo } from "./Capitulo";
 
 const PERGUNTAS = ["Onde posso economizar?", "Estou gastando muito com alimentação?", "Quanto gastei esta semana?"];
@@ -34,8 +34,10 @@ function Acao({ acao, primario, onLancar }: { acao: AcaoPasso; primario: boolean
 }
 
 /** O fim da história: o que fazer agora, escolhido pelos números do período, e perguntas prontas para o assistente. */
-export function ProximosPassos({ p, onLancar }: { p: Painel; onLancar: () => void }) {
-  const passos = proximosPassos(p);
+export function ProximosPassos({ p, onLancar, objetivo }: { p: Painel; onLancar: () => void; objetivo?: Objetivo | null }) {
+  // O passo do objetivo vem primeiro; os demais dependem dos números do período (no máximo três no total).
+  const doObjetivo = passoDoObjetivo(objetivo, p);
+  const passos = [...(doObjetivo ? [doObjetivo] : []), ...proximosPassos(p).filter((x) => x.id !== "tudo-certo" || !doObjetivo)].slice(0, 3);
 
   return (
     <Capitulo id="passos" titulo="O que fazer agora" icone={Compass} manchete="Passos escolhidos pelos seus números deste período.">

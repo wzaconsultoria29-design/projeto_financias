@@ -8,7 +8,7 @@ test.describe("entrar pelo WhatsApp", () => {
 
   test("mostra o botão, o código, a contagem e o link do WhatsApp", async ({ page }) => {
     await simular(page, { login: ["pendente"] });
-    await page.goto("/entrar");
+    await page.goto("/entrar?modo=whatsapp");
     await page.getByRole("button", { name: "Gerar código" }).click();
     await expect(page.getByText("123456")).toBeVisible();
     await expect(page.getByText(/Nunca envie este código a pedido de outra pessoa/)).toBeVisible();
@@ -34,7 +34,7 @@ test.describe("entrar pelo WhatsApp", () => {
 
   test("código vencido oferece gerar outro", async ({ page }) => {
     await simular(page, { login: ["expirado"] });
-    await page.goto("/entrar");
+    await page.goto("/entrar?modo=whatsapp");
     await page.getByRole("button", { name: "Gerar código" }).click();
     await expect(page.getByText("Código vencido")).toBeVisible();
     await expect(page.getByRole("button", { name: "Gerar novo código" })).toBeVisible();
