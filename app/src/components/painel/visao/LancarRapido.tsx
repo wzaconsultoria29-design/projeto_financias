@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { listarCategorias, salvarLancamento, type LancamentoInput } from "@/lib/api";
-import { CATEGORIAS } from "@/config/categorias";
+import { CATEGORIAS, mesclarCategorias } from "@/config/categorias";
 import { FormLancamento } from "@/components/painel/FormLancamento";
 
 type Props = { aberto: boolean; onFechar: () => void; onSalvo: () => void };
@@ -17,7 +17,7 @@ export function LancarRapido({ aberto, onFechar, onSalvo }: Props) {
     if (!aberto) return;
     let ativo = true;
     listarCategorias()
-      .then((c) => ativo && c.length > 0 && setCategorias(c))
+      .then((usadas) => ativo && usadas.length > 0 && setCategorias(mesclarCategorias(usadas))) // as padrão sempre ficam; as da pessoa entram junto
       .catch(() => {});
     return () => {
       ativo = false;

@@ -415,6 +415,7 @@ Levantamento técnico, **não é parecer jurídico**.
 - **2026-11-08:** migrações 016, 017 e 018 aplicadas no Supabase (conferido: colunas, 5 tabelas com RLS, 10 funções, nenhuma aberta ao `anon`, tabelas vazias). Os avisos do advisor sobre `SECURITY DEFINER` e "RLS sem política" são o padrão intencional (acesso só pelas funções `app_*`).
 - **2026-11-08 (local, ainda sem commit):** correção: a renda salva em Configurações agora aparece na Visão geral (`aplicarRendaDoPerfil`, nota no Resumo). Confirmado no banco que Salvar grava (renda 10000 e custo 20000 na conta do dono). 274 unitários e 130 E2E verdes.
 - **2026-11-08 (local, ainda sem commit):** novo visual Verde-lima no painel, Lançamentos e Configurações (tokens com escopo `.app-vl`, fontes Urbanist e Inter, casca flutuante, `PodeGastar`, rosca, `IconeCategoria`, tema escuro). Testes ajustados ao novo desenho (`PodeGastar`, rosca, fundo `.app-vl`); E2E de convite agora espera a requisição.
+- **2026-11-11 (local, ainda sem commit):** correção: o formulário "Lançar" da Visão geral (`LancarRapido`) mostrava só as categorias que a pessoa já usou; agora mistura as 10 padrão com as dela (`mesclarCategorias`), como a página Lançamentos já fazia. Teste novo `tests/lancar-rapido.test.tsx`; 280 unitários verdes.
 - Deploys de produção da Vercel acompanham cada push na `feat/fase-1-app` (último verificado: `a401844`, READY).
 
 ---
