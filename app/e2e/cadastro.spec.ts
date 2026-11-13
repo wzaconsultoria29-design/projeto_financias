@@ -61,6 +61,8 @@ test.describe("cadastro", () => {
     await expect(page.getByRole("heading", { name: "Falta 1 passo" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Abrir o WhatsApp" })).toHaveAttribute("href", "https://wa.me/5582991130317?text=ATIVAR%20ABC123");
     await expect(page.getByText("ABC123")).toBeVisible();
+    // depois de ativar, a tela leva ao painel (entrada pelo WhatsApp abre as boas-vindas)
+    await expect(page.getByRole("link", { name: "Já ativei: entrar no painel" })).toHaveAttribute("href", "/entrar?modo=whatsapp");
     expect(recebidas[0]).toMatchObject({ nome: "Maria Silva", telefone: "5511999998888", plano: "essencial", aceite: true, aceite_marketing: false, website: "" });
   });
 

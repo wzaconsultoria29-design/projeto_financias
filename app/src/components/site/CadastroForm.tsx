@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { enviarCadastro, mascararTelefone, normalizarTelefone } from "@/lib/cadastro";
 
@@ -63,6 +64,14 @@ export function CadastroForm({ planoInicial, emailInicial = "" }: { planoInicial
             Se a mensagem não aparecer, envie <strong className="font-semibold text-tinta">ATIVAR {sucesso.codigo}</strong> para o nosso número.
           </p>
         )}
+        <div className="mt-8 border-t border-linha pt-6">
+          <p className="max-w-[46ch] leading-relaxed text-suave">
+            Quando o assistente responder, entre no painel. No primeiro acesso você escolhe o seu objetivo e cria a senha.
+          </p>
+          <Link href="/entrar?modo=whatsapp" className="botao-contorno mt-4">
+            Já ativei: entrar no painel
+          </Link>
+        </div>
       </div>
     );
   }
