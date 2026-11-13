@@ -8,19 +8,19 @@ export function Hero() {
         <p className="arrive mx-auto w-fit rounded-full bg-white/10 px-4 py-1.5 text-[15px] font-medium text-white ring-1 ring-white/25">
           7 dias grátis, sem cartão
         </p>
-        <h1 className="lp-display lines mt-6 text-[clamp(2.2rem,6.2vw,5.25rem)] text-white">
+        <h1 className="lp-display lines mt-6 text-[length:min(clamp(2.2rem,6.2vw,5.25rem),calc((100vw_-_2.5rem)/11.8))] text-white">
           <span className="line">
-            <span data-line style={{ "--i": 0 } as React.CSSProperties}>Seu mês inteiro,</span>
+            <span data-line style={{ "--i": 0 } as React.CSSProperties}>Gastou?</span>
           </span>
           <span className="line">
             <span data-line style={{ "--i": 1 } as React.CSSProperties}>
-              <span className="sublinhado">sem planilha.</span>
+              Manda no <span className="sublinhado">WhatsApp.</span>
             </span>
           </span>
         </h1>
         <div className="arrive">
           <p className="mx-auto mt-5 max-w-[46ch] text-[clamp(1.0625rem,1rem+0.4vw,1.25rem)] leading-relaxed text-white/85">
-            Mande o gasto pelo WhatsApp, em texto, áudio ou foto. O painel mostra para onde o dinheiro foi.
+            Em texto, áudio ou foto. O assistente anota, separa por categoria e o painel mostra para onde o dinheiro foi.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link href="/cadastro" className="botao-lima">

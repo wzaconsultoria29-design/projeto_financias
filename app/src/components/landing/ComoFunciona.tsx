@@ -12,7 +12,7 @@ function Passo({ n, ultimo, titulo, texto, children }: { n: number; ultimo?: boo
   return (
     <li className="rise flex flex-col" style={{ transitionDelay: `${(n - 1) * 140}ms` }}>
       <div aria-hidden className="mb-4 flex items-center gap-3">
-        <span className="grid size-10 flex-none place-items-center rounded-full bg-[var(--botao)] text-[17px] font-semibold text-[var(--botao-fg)]">{n}</span>
+        <span className="grid size-10 flex-none place-items-center rounded-full bg-[var(--esmeralda)] text-[17px] font-bold text-[var(--lima)]">{n}</span>
         {!ultimo && (
           <span className="trilha hidden lg:block">
             <span className="preenche" style={{ transitionDelay: `${n * 450}ms` }} />

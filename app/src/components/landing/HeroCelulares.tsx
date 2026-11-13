@@ -75,7 +75,7 @@ export function HeroCelulares() {
       {lancamento("Netflix") && (
         <ChipLancamento className="right-[3%] top-[56%]" atraso={600} titulo="Netflix" detalhe="Assinaturas" valor={`-${brl(lancamento("Netflix")!.valor)}`} />
       )}
-      <div aria-hidden className="chip-entra absolute right-[20%] top-[8%] z-30 hidden items-center gap-2 rounded-full bg-[var(--lima)] px-3.5 py-1.5 text-[14px] font-semibold text-[#04261d] lg:flex" style={{ animationDelay: "2000ms" }}>
+      <div aria-hidden className="chip-entra absolute right-[20%] top-[8%] z-30 hidden items-center gap-2 rounded-full bg-[var(--lima)] px-3.5 py-1.5 text-[14px] font-semibold text-[var(--noite)] lg:flex" style={{ animationDelay: "2000ms" }}>
         <Check size={16} weight="bold" aria-hidden />
         Categorizado sozinho
       </div>

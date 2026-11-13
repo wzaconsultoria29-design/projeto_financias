@@ -6,7 +6,7 @@ test.describe("landing", () => {
     await page.goto("/");
     // Espera o React assumir a página: digitar antes disso faz o texto se misturar com o valor inicial.
     await page.waitForFunction(() =>
-      ["#demo-gasto", "#mensagens"].every((seletor) => {
+      ["#demo-gasto"].every((seletor) => {
         const el = document.querySelector(seletor);
         return !!el && Object.keys(el).some((k) => k.startsWith("__reactProps"));
       }),
@@ -15,7 +15,8 @@ test.describe("landing", () => {
 
   test("topo: promessa em até 2 linhas e botão visível sem rolar", async ({ page }) => {
     const h1 = page.getByRole("heading", { level: 1 });
-    await expect(h1).toContainText("sem planilha");
+    await expect(h1).toContainText("Gastou?");
+    await expect(h1).toContainText("Manda no WhatsApp.");
     // O título tem duas linhas escritas à mão; cada uma precisa caber em uma linha só, em qualquer largura.
     const alturas = await h1.locator("[data-line]").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height / parseFloat(getComputedStyle(e).lineHeight)));
     expect(alturas).toHaveLength(2);
@@ -46,15 +47,13 @@ test.describe("landing", () => {
     await expect(page.getByText("Não achei o valor. Tente assim: gastei 32 no almoço.")).toBeVisible();
   });
 
-  test("painel em duas metades: editar as mensagens muda o resultado", async ({ page }) => {
-    const mensagens = page.getByLabel(/Mensagens do mês/);
-    await mensagens.scrollIntoViewIfNeeded();
-    await mensagens.fill("mercado 100\nuber 50");
-    const secao = page.locator("#painel");
-    await expect(secao).toContainText("R$ 150,00");
-    await expect(secao).toContainText("2 de 2 mensagens entendidas");
-    await mensagens.fill("bom dia");
-    await expect(secao).toContainText("0 de 1 mensagem");
+  test("estrutura enxuta: cada demonstração aparece uma vez só", async ({ page }) => {
+    await expect(page.locator("#conversa")).toHaveCount(0);
+    await expect(page.locator("textarea#mensagens")).toHaveCount(0);
+    await expect(page.locator("#demo-gasto")).toHaveCount(1);
+    await expect(page.getByRole("heading", { name: /por que .* é pago/i })).toHaveCount(0);
+    expect(await page.locator("main > section").count()).toBeLessThanOrEqual(8);
+    await expect(page.locator("header nav a", { hasText: "Painel" })).toHaveAttribute("href", "#recursos");
   });
 
   test("recursos: trocar o período e comparar atualiza o painel fixo", async ({ page }) => {
@@ -64,8 +63,6 @@ test.describe("landing", () => {
     await expect(secao).toContainText("Esta semana");
     await secao.getByRole("switch").click();
     await expect(secao).toContainText("semana passada");
-    await secao.getByRole("button", { name: "Onde posso economizar?" }).click();
-    await expect(secao).toContainText("podemos definir um teto");
   });
 
   test("planos: três cartões, o do meio em destaque e Family com opção de assinar", async ({ page }) => {
@@ -97,16 +94,8 @@ test.describe("landing", () => {
   test("privacidade explícita e aviso de independência", async ({ page }) => {
     await expect(page.getByRole("heading", { name: "Seus dados são seus" })).toBeVisible();
     await expect(page.getByText("Não acessamos sua conta bancária")).toBeVisible();
+    await expect(page.locator("#privacidade")).toContainText("Sem anúncios nem oferta de crédito.");
     await expect(page.getByText("sem vínculo com a Meta nem com o WhatsApp")).toBeVisible();
-  });
-
-  test("conversa de demonstração: escolher uma mensagem mostra a resposta do assistente", async ({ page }) => {
-    const secao = page.locator("#conversa");
-    await secao.scrollIntoViewIfNeeded();
-    await secao.getByRole("button", { name: "Foto da notinha" }).click();
-    await expect(secao.getByRole("button", { name: "Mandar um áudio" })).toBeDisabled();
-    await expect(secao.getByText(/Li o cupom: R\$ 87,50/)).toBeVisible({ timeout: 6000 });
-    await expect(secao.getByRole("button", { name: "Mandar um áudio" })).toBeEnabled({ timeout: 6000 });
   });
 
   test("contador do topo sobe quando um gasto é escrito", async ({ page }) => {
@@ -121,7 +110,7 @@ test.describe("landing", () => {
   test("barra fixa: some no topo e nos planos, aparece entre as seções e leva ao cadastro", async ({ page }) => {
     const barra = page.locator("[data-barra-cta]");
     await expect(barra).toHaveAttribute("data-visivel", "false");
-    await page.locator("#conversa").scrollIntoViewIfNeeded();
+    await page.locator("#recursos").scrollIntoViewIfNeeded();
     await expect(barra).toHaveAttribute("data-visivel", "true");
     await expect(barra.getByRole("link", { name: "Começar grátis" })).toHaveAttribute("href", "/cadastro");
     await page.locator("#planos").scrollIntoViewIfNeeded();
@@ -131,8 +120,8 @@ test.describe("landing", () => {
   test("planos: custo por dia calculado e garantias à vista", async ({ page }) => {
     const secao = page.locator("#planos");
     await expect(secao.locator('[data-plano="essencial"]')).toContainText("Cerca de R$ 0,63 por dia");
-    await expect(secao).toContainText("Sem fidelidade: cancele quando quiser");
-    await expect(page.getByRole("heading", { name: /por que .* é pago/i })).toBeVisible();
+    await expect(secao).toContainText("Pix, cartão ou boleto pelo Mercado Pago");
+    await expect(secao).toContainText("Sem renovação automática");
   });
 
   test("sem rolagem horizontal", async ({ page }) => {
@@ -152,6 +141,15 @@ test.describe("landing", () => {
     await perguntas.nth(1).locator("summary").click();
     await expect(perguntas.nth(1)).toHaveAttribute("open", "");
     await expect(perguntas.nth(0)).not.toHaveAttribute("open", "");
+  });
+
+  test("perguntas frequentes: login com e-mail e senha, pagamento explicado e nada desatualizado", async ({ page }) => {
+    const faq = page.locator("#perguntas");
+    await faq.getByText("Como entro no painel?").click();
+    await expect(faq).toContainText("e-mail e senha");
+    await expect(faq).toContainText("Como eu pago?");
+    await expect(faq).not.toContainText("em desenvolvimento");
+    await expect(page.locator("main")).not.toContainText("confirma o e-mail");
   });
 
   test("chamada final leva o e-mail para o cadastro", async ({ page }) => {

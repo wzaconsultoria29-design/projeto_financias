@@ -2,13 +2,13 @@ import Link from "next/link";
 import { Check } from "@phosphor-icons/react/dist/ssr";
 import { planos, porDia } from "@/config/planos";
 
-const GARANTIAS = ["Teste de 7 dias sem cartão", "Preço final à vista, sem taxa escondida", "Sem fidelidade: cancele quando quiser"];
+const GARANTIAS = ["Pix, cartão ou boleto pelo Mercado Pago", "Preço final, sem taxa escondida", "Sem renovação automática: você renova se quiser"];
 
 export function Planos() {
   return (
     <section id="planos" data-barra-oculta="planos" className="mx-auto w-full max-w-7xl scroll-mt-16 px-4 py-24 md:px-8 md:py-32" aria-labelledby="titulo-planos">
       <h2 id="titulo-planos" className="lp-display rise text-center text-[clamp(2rem,4.4vw,3.75rem)] text-tinta">Planos</h2>
-      <p className="rise mx-auto mt-4 max-w-[48ch] text-center text-[18px] leading-relaxed text-suave">Comece grátis por 7 dias, sem cartão. Depois escolha o que cabe no seu mês.</p>
+      <p className="rise mx-auto mt-4 max-w-[48ch] text-center text-[18px] leading-relaxed text-suave">Teste por 7 dias. Depois escolha o que cabe no seu mês.</p>
 
       <div className="mt-14 grid items-stretch gap-5 lg:grid-cols-3">
         {planos.map((p) => {
@@ -19,7 +19,7 @@ export function Planos() {
               data-plano={p.codigo}
               className={`rise relative flex flex-col rounded-[28px] p-8 ${
                 destaque
-                  ? "bg-[linear-gradient(160deg,#0e4a3a,#04261d)] text-white shadow-[0_40px_80px_-30px_rgba(4,38,29,0.8)] lg:-my-4 lg:py-12"
+                  ? "bg-[radial-gradient(70%_50%_at_90%_0%,rgba(191,242,95,0.28),transparent_70%),linear-gradient(160deg,#12613a,#072a18)] text-white shadow-[0_40px_80px_-30px_rgba(4,38,29,0.8)] lg:-my-4 lg:py-12"
                   : "cartao-vivo text-tinta"
               }`}
             >

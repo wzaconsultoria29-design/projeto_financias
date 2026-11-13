@@ -11,7 +11,7 @@ export function CtaFinal() {
 
   return (
     <section data-barra-oculta="final" className="mx-auto w-full max-w-7xl px-4 pb-24 md:px-8 md:pb-32" aria-labelledby="titulo-cta">
-      <div className="hero-fundo grao rise relative overflow-hidden rounded-[32px] px-6 py-16 md:px-16 md:py-24" style={{ background: "radial-gradient(60% 80% at 85% 10%, rgba(47,158,116,0.55), transparent 70%), linear-gradient(160deg, #0e4a3a, #04261d)" }}>
+      <div className="hero-fundo grao rise relative overflow-hidden rounded-[32px] px-6 py-16 md:px-16 md:py-24" style={{ background: "radial-gradient(60% 80% at 85% 10%, rgba(191,242,95,0.3), transparent 70%), radial-gradient(50% 60% at 10% 100%, rgba(31,138,76,0.5), transparent 70%), linear-gradient(160deg, #12613a, #072a18)" }}>
         <Objeto3d nome="moeda" className="absolute -right-4 -top-4 size-40 md:right-10 md:top-8 md:size-60" />
         <h2 id="titulo-cta" className="lp-display relative max-w-[14ch] !leading-[1.08] text-[clamp(2.25rem,6vw,5rem)] text-white">Anote o próximo gasto</h2>
         <form
@@ -34,7 +34,7 @@ export function CtaFinal() {
           />
           <button type="submit" className="botao-lima !px-8 !py-4 !text-[18px]">Criar conta grátis</button>
         </form>
-        <p className="relative mt-4 max-w-[52ch] text-[16px] text-white/80">7 dias sem cartão. Depois do cadastro você confirma o e-mail e conecta o WhatsApp.</p>
+        <p className="relative mt-4 max-w-[52ch] text-[16px] text-white/80">7 dias sem cartão. O cadastro leva um minuto e o assistente já começa a anotar.</p>
       </div>
     </section>
   );

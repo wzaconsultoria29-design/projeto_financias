@@ -11,6 +11,50 @@
   }
 }
 
+/*
+  Cores Verde-lima (as mesmas do app logado, docs/design-system): fundo cinza-esverdeado, verde-escuro de ação
+  e o verde-limão como destaque. No escuro, a lima vira a cor viva, como no painel.
+*/
+.lp {
+  --papel: #eef1ed;
+  --superficie: #ffffff;
+  --tinta: #0f1a14;
+  --linha: #dfe5de;
+  --floresta: #0b3a22;
+  --folha: #e6efe1;
+  --botao: #0b3a22;
+  --botao-fg: #ffffff;
+  --bloco: #0b3a22;
+  --lima-suave: #edfad0;
+  background: var(--papel);
+}
+:root[data-tema="escuro"] .lp {
+  --papel: #0a120e;
+  --superficie: #121c17;
+  --tinta: #eaf2ec;
+  --linha: #1f2e26;
+  --floresta: #bff25f;
+  --folha: #1b2b22;
+  --botao: #bff25f;
+  --botao-fg: #0b3a22;
+  --bloco: #0f2a1d;
+  --lima-suave: #1d2f14;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) .lp {
+    --papel: #0a120e;
+    --superficie: #121c17;
+    --tinta: #eaf2ec;
+    --linha: #1f2e26;
+    --floresta: #bff25f;
+    --folha: #1b2b22;
+    --botao: #bff25f;
+    --botao-fg: #0b3a22;
+    --bloco: #0f2a1d;
+    --lima-suave: #1d2f14;
+  }
+}
+
 /* Título de exibição: Jost 700, caixa alta, apertado (type system sorteado). */
 .lp-display {
   font-weight: 700;
@@ -119,10 +163,10 @@ details.pergunta[open] {
 /* ===== Camada de vida: cor, profundidade e movimento ===== */
 
 .lp {
-  --noite: #04261d;
-  --esmeralda: #0e4a3a;
-  --vivo: #2f9e74;
-  --lima: #c8f56a;
+  --noite: #072a18;
+  --esmeralda: #0b3a22;
+  --vivo: #1f8a4c;
+  --lima: #bff25f;
   --menta: #d8f2e4;
 }
 
@@ -131,10 +175,10 @@ details.pergunta[open] {
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(55% 45% at 50% -5%, rgba(47, 158, 116, 0.6), transparent 70%),
-    radial-gradient(35% 35% at 88% 38%, rgba(200, 245, 106, 0.2), transparent 70%),
-    radial-gradient(40% 40% at 8% 52%, rgba(47, 158, 116, 0.35), transparent 70%),
-    linear-gradient(180deg, #04261d 0%, #0a3a2c 34%, #14604a 58%, #7cc7a8 80%, var(--papel) 100%);
+    radial-gradient(55% 45% at 50% -5%, rgba(31, 138, 76, 0.6), transparent 70%),
+    radial-gradient(35% 35% at 88% 38%, rgba(191, 242, 95, 0.3), transparent 70%),
+    radial-gradient(40% 40% at 8% 52%, rgba(191, 242, 95, 0.16), transparent 70%),
+    linear-gradient(180deg, #072a18 0%, #0b3a22 34%, #12613a 58%, #9fd77e 80%, var(--papel) 100%);
 }
 .grao::after {
   content: "";
@@ -175,12 +219,12 @@ details.pergunta[open] {
   padding: 0.95rem 1.9rem;
   font-weight: 700;
   font-size: 1rem;
-  box-shadow: 0 10px 30px -10px rgba(200, 245, 106, 0.55);
+  box-shadow: 0 10px 30px -10px rgba(191, 242, 95, 0.55);
   transition: transform 0.2s var(--ease), filter 0.2s, box-shadow 0.2s;
 }
 .botao-lima:hover {
   filter: brightness(1.05);
-  box-shadow: 0 14px 36px -10px rgba(200, 245, 106, 0.7);
+  box-shadow: 0 14px 36px -10px rgba(191, 242, 95, 0.7);
 }
 .botao-lima:active {
   transform: translateY(1px) scale(0.98);
@@ -336,14 +380,14 @@ details.pergunta[open] {
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(45% 60% at 88% 18%, rgba(47, 158, 116, 0.5), transparent 70%),
-    radial-gradient(40% 50% at 5% 90%, rgba(200, 245, 106, 0.12), transparent 70%),
-    linear-gradient(180deg, #04261d, #0a3a2c);
+    radial-gradient(45% 60% at 88% 18%, rgba(31, 138, 76, 0.55), transparent 70%),
+    radial-gradient(40% 50% at 5% 90%, rgba(191, 242, 95, 0.12), transparent 70%),
+    linear-gradient(180deg, #072a18, #0b3a22);
 }
 
 /* Sublinhado desenhado à mão sob a palavra de destaque do título: nasce da esquerda para a direita. */
 .sublinhado {
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 14' preserveAspectRatio='none'%3E%3Cpath d='M3 9 C60 3 110 11 165 6 S270 4 317 8' fill='none' stroke='%23c8f56a' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left 90% / 100% 0.26em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 14' preserveAspectRatio='none'%3E%3Cpath d='M3 9 C60 3 110 11 165 6 S270 4 317 8' fill='none' stroke='%23bff25f' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat left 90% / 100% 0.26em;
 }
 @media (prefers-reduced-motion: no-preference) {
   .js .sublinhado {

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { agregar } from "@/lib/demo";
-import { PERGUNTAS, PERIODOS, responder, type Pergunta, type Periodo } from "@/lib/demo-dados";
+import { PERIODOS, type Periodo } from "@/lib/demo-dados";
 import { PainelFragmento } from "./PainelFragmento";
 
 function Segmentado<T extends string>({ opcoes, valor, onChange, rotulo }: { opcoes: { id: T; rotulo: string }[]; valor: T | null; onChange: (v: T) => void; rotulo: string }) {
@@ -28,7 +28,6 @@ export function Recursos() {
   const [periodo, setPeriodo] = useState<Periodo>("mes");
   const [comparar, setComparar] = useState(false);
   const [categoria, setCategoria] = useState<string | null>(null);
-  const [pergunta, setPergunta] = useState<Pergunta | null>(null);
 
   const dados = PERIODOS[periodo];
   const categoriasDoPeriodo = agregar(dados.itens).categorias.slice(0, 4).map((c) => c.categoria);
@@ -37,7 +36,7 @@ export function Recursos() {
   return (
     <section id="recursos" className="scroll-mt-16 bg-papel" aria-labelledby="titulo-recursos">
       <div className="mx-auto max-w-7xl md:grid md:grid-cols-12 md:gap-x-8 md:px-8">
-        <div className="sticky top-16 z-10 bg-folha px-4 py-4 md:col-span-6 md:flex md:h-[calc(100svh-4rem)] md:items-center md:rounded-[28px] md:px-8 md:py-8 md:mt-8">
+        <div className="sticky top-16 z-10 bg-[var(--lima-suave)] px-4 py-4 md:col-span-6 md:flex md:h-[calc(100svh-4rem)] md:items-center md:rounded-[28px] md:px-8 md:py-8 md:mt-8">
           <div className="max-h-[42svh] w-full overflow-hidden md:max-h-none">
             <PainelFragmento
               titulo={dados.titulo}
@@ -48,12 +47,6 @@ export function Recursos() {
               destaque={categoriaAtiva}
               recentes={categoriaAtiva ? 3 : 2}
             />
-            {pergunta && (
-              <div data-ui className="mt-3 hidden flex-col gap-2 md:flex" aria-live="polite">
-                <p className="ml-auto max-w-[85%] rounded-2xl bg-[var(--botao)] px-4 py-2.5 text-[16px] text-[var(--botao-fg)]">{pergunta}</p>
-                <p className="max-w-[92%] rounded-2xl bg-superficie px-4 py-2.5 text-[16px] leading-snug text-tinta">{responder(pergunta)}</p>
-              </div>
-            )}
           </div>
         </div>
 
@@ -88,7 +81,7 @@ export function Recursos() {
             </button>
           </div>
 
-          <div className="flex min-h-[36vh] flex-col justify-center gap-4 py-12">
+          <div className="flex min-h-[36vh] flex-col justify-center gap-4 py-12 md:pb-[16vh]">
             <h3 className="text-[clamp(1.5rem,1.2rem+1vw,2rem)] font-semibold leading-tight text-tinta">Olhe uma categoria.</h3>
             <p className="max-w-[44ch] text-[17px] leading-relaxed text-suave">Toque em uma categoria e o painel destaca só os lançamentos dela.</p>
             <div role="group" aria-label="Categoria" className="flex flex-wrap gap-2">
@@ -106,18 +99,6 @@ export function Recursos() {
             </div>
           </div>
 
-          <div className="flex min-h-[36vh] flex-col justify-center gap-4 py-12 md:pb-[16vh]">
-            <h3 className="text-[clamp(1.5rem,1.2rem+1vw,2rem)] font-semibold leading-tight text-tinta">Pergunte sobre os seus gastos.</h3>
-            <p className="max-w-[44ch] text-[17px] leading-relaxed text-suave">
-              Se você perguntar, o assistente analisa só os seus lançamentos e sugere algo leve. Ele nunca puxa assunto e nunca indica investimento ou produto.
-            </p>
-            <Segmentado rotulo="Pergunta" valor={pergunta} onChange={setPergunta} opcoes={PERGUNTAS.map((p) => ({ id: p, rotulo: p }))} />
-            {pergunta && (
-              <div data-ui className="flex flex-col gap-2 md:hidden" aria-live="polite">
-                <p className="rounded-2xl bg-superficie px-4 py-3 text-[16px] leading-snug text-tinta">{responder(pergunta)}</p>
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </section>

@@ -6,6 +6,7 @@ const AFIRMACOES = [
   { frase: "Cada pessoa vê só os próprios dados.", detalhe: "O isolamento é feito no banco de dados, não só na tela." },
   { frase: "Baixe tudo quando quiser.", detalhe: "Envie MEUS DADOS no WhatsApp e receba um resumo e um arquivo com todos os lançamentos." },
   { frase: "Apague tudo com uma mensagem.", detalhe: "EXCLUIR MEUS DADOS remove lançamentos e conversas e anonimiza o cadastro." },
+  { frase: "Sem anúncios nem oferta de crédito.", detalhe: "Quem sustenta o produto é a assinatura, não os seus dados. Só seguimos de pé se você achar que vale." },
 ];
 
 export function Privacidade() {

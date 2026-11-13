@@ -4,7 +4,7 @@ import { OcultaAoRolar } from "./OcultaAoRolar";
 
 const LINKS = [
   { href: "#como-funciona", rotulo: "Como funciona" },
-  { href: "#painel", rotulo: "Painel" },
+  { href: "#recursos", rotulo: "Painel" },
   { href: "#planos", rotulo: "Planos" },
   { href: "#perguntas", rotulo: "Perguntas" },
 ];

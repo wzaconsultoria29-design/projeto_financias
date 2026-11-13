@@ -14,7 +14,7 @@ function Chip({ item }: { item: [string, string, string] }) {
     <li className="flex shrink-0 items-center gap-3 rounded-full bg-superficie px-5 py-3 text-[16px] shadow-[0_14px_30px_-18px_rgba(4,38,29,0.45)]">
       <span className="font-semibold text-tinta">{item[0]}</span>
       <span className="tabular-nums text-tinta">{item[1]}</span>
-      <span className="rounded-full bg-folha px-3 py-1 text-[14px] text-tinta">{item[2]}</span>
+      <span className="rounded-full bg-[var(--lima-suave)] px-3 py-1 text-[14px] font-medium text-tinta">{item[2]}</span>
     </li>
   );
 }

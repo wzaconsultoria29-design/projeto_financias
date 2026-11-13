@@ -1,11 +1,9 @@
 const PERGUNTAS = [
   { q: "Preciso instalar algum aplicativo?", a: "Não. Você usa o WhatsApp que já tem. O painel abre no navegador, no celular ou no computador." },
   { q: "O teste grátis pede cartão?", a: "Não. São 7 dias sem cartão, com 50 mensagens. Quem registra 5 gastos ganha mais 3 dias." },
-  { q: "Como entro no painel?", a: "Pelo site, confirmando que o número é seu pelo WhatsApp. Se perder o acesso, é só pedir de novo." },
+  { q: "Como entro no painel?", a: "Com e-mail e senha. No primeiro acesso você confirma pelo WhatsApp que o número é seu e cria a senha. Se esquecer, recupera pelo WhatsApp também." },
+  { q: "Como eu pago?", a: "Pelo Mercado Pago, com Pix, cartão ou boleto. O plano vale por um mês e não renova sozinho: você renova quando quiser." },
   { q: "O assistente dá dicas?", a: "Só se você perguntar. Ele analisa os seus gastos e sugere algo leve, como um teto para uma categoria. Não dá conselho de investimento nem indica bancos, aplicativos ou produtos." },
-  { q: "Vocês acessam minha conta bancária?", a: "Não. Você registra só o que quiser, e nós só vemos o que você mandar." },
-  { q: "Posso apagar meus dados?", a: "Sim. MEUS DADOS baixa tudo o que guardamos. EXCLUIR MEUS DADOS apaga lançamentos e conversas e anonimiza o cadastro." },
-  { q: "O plano Family já existe?", a: "Está em desenvolvimento. Cadastre-se para ser avisado quando abrir." },
 ];
 
 export function Faq() {
