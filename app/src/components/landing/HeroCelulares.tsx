@@ -17,7 +17,7 @@ const MAXIMO_ITENS = 30;
 /** Cartão de lançamento que flutua ao lado dos celulares: mostra o que o assistente fez com a mensagem. */
 function ChipLancamento({ titulo, detalhe, valor, className = "", atraso = 0 }: { titulo: string; detalhe: string; valor: string; className?: string; atraso?: number }) {
   return (
-    <div aria-hidden className={`chip-entra absolute z-30 hidden lg:block ${className}`} style={{ animationDelay: `${1400 + atraso}ms` }}>
+    <div aria-hidden className={`chip-entra absolute z-30 ${className}`} style={{ animationDelay: `${1400 + atraso}ms` }}>
       <div className="flutua flex items-center gap-4 rounded-2xl bg-white px-4 py-2.5 shadow-[0_18px_40px_-18px_rgba(2,20,14,0.7)]" style={{ animationDelay: `${atraso}ms` }}>
         <span className="flex flex-col leading-tight">
           <span className="text-[15px] font-semibold text-[#10201a]">{titulo}</span>
@@ -58,24 +58,24 @@ export function HeroCelulares() {
 
   return (
     <div className="relative mx-auto mt-14 max-w-6xl px-4 md:mt-16">
-      <Objeto3d nome="moeda" className="absolute -left-2 top-10 z-30 hidden size-40 md:block lg:left-6 lg:size-52" />
-      <Objeto3d nome="folha" lento atraso={1.2} className="absolute -right-2 top-4 z-30 hidden size-40 md:block lg:right-6 lg:size-56" />
-      <Objeto3d nome="recibo" atraso={0.6} className="absolute bottom-24 right-[14%] z-30 hidden size-28 lg:block" />
+      <Objeto3d nome="moeda" className="absolute -left-4 top-[44%] z-30 size-24 md:-left-2 md:top-10 md:size-40 lg:left-6 lg:size-52" />
+      <Objeto3d nome="folha" lento atraso={1.2} className="absolute -right-5 top-[19%] z-30 size-24 md:-right-2 md:top-4 md:size-40 lg:right-6 lg:size-56" />
+      <Objeto3d nome="recibo" atraso={0.6} className="absolute -right-3 top-[47%] z-30 size-16 md:hidden lg:bottom-24 lg:right-[14%] lg:top-auto lg:block lg:size-28" />
 
       <p
         aria-live="polite"
-        className="arrive absolute -top-9 left-1/2 z-30 hidden -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-white/10 px-4 py-1.5 text-[15px] text-white ring-1 ring-white/25 md:flex"
+        className="arrive absolute -top-9 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-white/10 px-4 py-1.5 text-[15px] text-white ring-1 ring-white/25"
       >
         <span key={itens.length} className="pulso font-semibold tabular-nums">{itens.length}</span>{" "}
         lançamentos organizados
       </p>
       {lancamento("Uber") && (
-        <ChipLancamento className="left-[2%] top-[46%]" titulo="Uber" detalhe="Transporte" valor={`-${brl(lancamento("Uber")!.valor)}`} />
+        <ChipLancamento className="-left-1 top-[13%] block origin-left scale-[0.85] md:hidden lg:left-[2%] lg:top-[46%] lg:block lg:scale-100" titulo="Uber" detalhe="Transporte" valor={`-${brl(lancamento("Uber")!.valor)}`} />
       )}
       {lancamento("Netflix") && (
-        <ChipLancamento className="right-[3%] top-[56%]" atraso={600} titulo="Netflix" detalhe="Assinaturas" valor={`-${brl(lancamento("Netflix")!.valor)}`} />
+        <ChipLancamento className="right-[3%] top-[56%] hidden lg:block" atraso={600} titulo="Netflix" detalhe="Assinaturas" valor={`-${brl(lancamento("Netflix")!.valor)}`} />
       )}
-      <div aria-hidden className="chip-entra absolute right-[20%] top-[8%] z-30 hidden items-center gap-2 rounded-full bg-[var(--lima)] px-3.5 py-1.5 text-[14px] font-semibold text-[var(--noite)] lg:flex" style={{ animationDelay: "2000ms" }}>
+      <div aria-hidden className="chip-entra absolute -right-1 top-[6%] z-30 flex items-center gap-2 rounded-full bg-[var(--lima)] px-3.5 py-1.5 text-[14px] font-semibold text-[var(--noite)] md:hidden lg:right-[20%] lg:top-[8%] lg:flex" style={{ animationDelay: "2000ms" }}>
         <Check size={16} weight="bold" aria-hidden />
         Categorizado sozinho
       </div>

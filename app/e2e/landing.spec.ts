@@ -65,6 +65,26 @@ test.describe("landing", () => {
     await expect(secao).toContainText("semana passada");
   });
 
+  test("recursos no celular: painel não fica fixo por cima do texto e vem logo depois dos botões", async ({ page }) => {
+    test.skip(test.info().project.name !== "mobile");
+    const secao = page.locator("#recursos");
+    await secao.scrollIntoViewIfNeeded();
+    const painel = secao.locator("[data-painel-recursos]");
+    expect(await painel.evaluate((e) => getComputedStyle(e).position), "painel fixo cobre o texto ao rolar").not.toBe("sticky");
+    const botao = (await secao.getByRole("button", { name: "Semana" }).boundingBox())!;
+    const caixa = (await painel.boundingBox())!;
+    expect(botao.y).toBeLessThan(caixa.y);
+    // o painel aparece inteiro, sem corte embaixo
+    expect(await painel.evaluate((e) => e.scrollHeight - e.clientHeight)).toBeLessThanOrEqual(1);
+  });
+
+  test("topo no celular também tem vida: objetos 3D, contador e cartões flutuantes", async ({ page }) => {
+    test.skip(test.info().project.name !== "mobile");
+    await expect(page.locator(".objeto3d:visible")).not.toHaveCount(0);
+    await expect(page.getByText("lançamentos organizados")).toBeVisible();
+    await expect(page.locator(".chip-entra:visible")).not.toHaveCount(0);
+  });
+
   test("planos: três cartões, o do meio em destaque e Family com opção de assinar", async ({ page }) => {
     const secao = page.locator("#planos");
     await secao.scrollIntoViewIfNeeded();
