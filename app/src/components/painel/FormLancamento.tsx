@@ -15,7 +15,9 @@ type Props = {
   onCancelar: () => void;
 };
 
-const campo = "rounded-[12px] border border-linha bg-superficie px-3 py-2.5 text-tinta";
+// 16px: abaixo disso o iPhone aumenta a página ao focar o campo e a janela "sai" da tela.
+// min-w-0 e w-full: o campo de data do iPhone tem largura mínima própria e empurrava a grade para fora.
+const campo = "w-full min-w-0 rounded-[12px] border border-linha bg-superficie px-3 py-2.5 text-base text-tinta";
 
 function valorInicial(v: number | undefined): string {
   return v === undefined ? "" : v.toFixed(2).replace(".", ",");
@@ -60,7 +62,7 @@ export function FormLancamento({ inicial, categorias: opcoesCategoria = CATEGORI
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto bg-tinta/40 p-4 sm:items-center">
-      <form onSubmit={enviar} role="dialog" aria-modal="true" aria-labelledby="form-titulo" className="cartao flex w-full max-w-lg flex-col gap-4 p-6 shadow-xl" noValidate>
+      <form onSubmit={enviar} role="dialog" aria-modal="true" aria-labelledby="form-titulo" className="cartao flex w-full min-w-0 max-w-lg flex-col gap-4 p-5 shadow-xl sm:p-6" noValidate>
         <h2 id="form-titulo" className="font-display text-xl font-semibold tracking-tight text-tinta">
           {inicial ? "Editar lançamento" : "Novo lançamento"}
         </h2>
@@ -80,14 +82,14 @@ export function FormLancamento({ inicial, categorias: opcoesCategoria = CATEGORI
           ))}
         </fieldset>
 
-        <div className="grid grid-cols-2 gap-4">
-          <label className="flex flex-col gap-1 text-sm text-suave">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-3 sm:gap-4">
+          <label className="flex min-w-0 flex-col gap-1 text-sm text-suave">
             Valor
             <input ref={primeiro} inputMode="decimal" value={valor} onChange={(e) => setValor(e.target.value)} placeholder="0,00" className={campo} />
           </label>
-          <label className="flex flex-col gap-1 text-sm text-suave">
+          <label className="flex min-w-0 flex-col gap-1 text-sm text-suave">
             Data
-            <input type="date" value={data} max={hojeIso(new Date())} onChange={(e) => setData(e.target.value)} className={campo} />
+            <input type="date" value={data} max={hojeIso(new Date())} onChange={(e) => setData(e.target.value)} className={`${campo} h-[46px] appearance-none`} />
           </label>
         </div>
 

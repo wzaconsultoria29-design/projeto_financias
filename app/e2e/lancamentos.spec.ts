@@ -45,6 +45,37 @@ test.describe("painel: lançamentos e conta", () => {
     await page.screenshot({ path: `../docs/screens/painel-lancamentos-${test.info().project.name}.png`, fullPage: true });
   });
 
+  test("celular: cada lançamento é uma linha compacta", async ({ page }) => {
+    test.skip(test.info().project.name !== "mobile");
+    await abrir(page, "Lançamentos");
+    const linha = page.locator("li", { hasText: "Almoço no restaurante" });
+    await expect(linha).toBeVisible();
+    // antes cada item virava um cartão de ~250px; agora cabe em uma faixa curta
+    expect((await linha.boundingBox())!.height).toBeLessThanOrEqual(96);
+    await expect(linha).toContainText("Alimentação");
+    await expect(linha).toContainText("R$ 32,90");
+    await expect(linha.getByRole("button", { name: /Editar/ })).toBeVisible();
+    await expect(linha.getByRole("button", { name: /Excluir/ })).toBeVisible();
+  });
+
+  test("celular: a janela de novo lançamento cabe na tela e não dá zoom no iPhone", async ({ page }) => {
+    test.skip(test.info().project.name !== "mobile");
+    await abrir(page, "Lançamentos");
+    await page.getByRole("button", { name: "Novo lançamento" }).click();
+    const janela = page.getByRole("dialog");
+    await expect(janela).toBeVisible();
+    const caixa = (await janela.boundingBox())!;
+    const largura = page.viewportSize()!.width;
+    expect(caixa.x).toBeGreaterThanOrEqual(0);
+    expect(caixa.x + caixa.width).toBeLessThanOrEqual(largura);
+    // o iPhone aumenta a página ao focar campo com letra menor que 16px, e a janela "sai" da tela
+    const tamanhos = await janela.locator("input, select").evaluateAll((els) => els.map((e) => parseFloat(getComputedStyle(e).fontSize)));
+    for (const t of tamanhos) expect(t).toBeGreaterThanOrEqual(16);
+    // nenhum campo passa da borda da janela (o campo de data do iPhone tem largura mínima própria)
+    const direitas = await janela.locator("input, select").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().right));
+    for (const d of direitas) expect(d).toBeLessThanOrEqual(caixa.x + caixa.width);
+  });
+
   test("novo lançamento envia o formulário com id nulo", async ({ page }) => {
     const salvos = await abrir(page, "Lançamentos");
     await page.getByRole("button", { name: "Novo lançamento" }).click();
