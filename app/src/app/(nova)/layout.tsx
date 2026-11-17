@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Mande o gasto por texto, áudio ou foto no WhatsApp. O assistente anota e o painel mostra para onde o dinheiro foi. 7 dias grátis, sem cartão.",
 };
 
-/** Landing alternativa (rota /nova). A landing de "/" continua separada. */
+/** Landing oficial em "/". A versão anterior continua em /antiga. */
 export default function NovaLayout({ children }: { children: React.ReactNode }) {
   return <Casca>{children}</Casca>;
 }

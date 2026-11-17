@@ -14,7 +14,7 @@ export function LandingHeader() {
     <OcultaAoRolar>
     <header>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-8">
-        <Link href="/" className="lh-marca text-xl font-bold tracking-tight text-tinta">
+        <Link href="/antiga" className="lh-marca text-xl font-bold tracking-tight text-tinta">
           {brand.name}
         </Link>
         <nav aria-label="Principal" className="hidden items-center gap-8 text-[15px] text-suave md:flex">

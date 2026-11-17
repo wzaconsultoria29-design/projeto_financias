@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("landing nova (/nova)", () => {
+test.describe("landing oficial (nova, em /)", () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/nova");
+    await page.goto("/");
     await page.waitForFunction(() => {
       const el = document.querySelector("#nv-gasto");
       return !!el && Object.keys(el).some((k) => k.startsWith("__reactProps"));

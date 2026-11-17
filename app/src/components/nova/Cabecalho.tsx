@@ -3,10 +3,10 @@ import { Gauge } from "@phosphor-icons/react/dist/ssr";
 import { brand } from "@/config/brand";
 
 const LINKS = [
-  { href: "/nova#como-funciona", texto: "Como funciona" },
-  { href: "/nova#painel", texto: "Painel" },
-  { href: "/nova#planos", texto: "Planos" },
-  { href: "/nova#perguntas", texto: "Perguntas" },
+  { href: "/#como-funciona", texto: "Como funciona" },
+  { href: "/#painel", texto: "Painel" },
+  { href: "/#planos", texto: "Planos" },
+  { href: "/#perguntas", texto: "Perguntas" },
 ];
 
 export function Marca() {
@@ -24,7 +24,7 @@ export function Cabecalho() {
   return (
     <header className="nv-cabecalho fixed inset-x-0 top-0 z-40">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-8">
-        <Link href="/nova" aria-label={`${brand.name}: início`}>
+        <Link href="/" aria-label={`${brand.name}: início`}>
           <Marca />
         </Link>
         <nav aria-label="Seções" className="hidden items-center gap-8 text-[15px] md:flex">

@@ -318,7 +318,7 @@ Ordem das seções (enxugada em 2026-11-12): Hero → Faixa (marquee) → Como f
 - Cabeçalho some ao rolar para baixo (`OcultaAoRolar`); entrada das seções com `RevealObserver`; `devIndicators: false`.
 - Texto da landing: sem travessão; sem emoji; sem prova inventada.
 - Aviso de independência: "sem vínculo com a Meta nem com o WhatsApp".
-- **Landing alternativa `/nova` (2026-11-17):** visual de fintech escura, rota separada, layout próprio (não usa `LandingHeader`/`landing.css`). Detalhes na linha de 2026-11-17 do histórico (seção 14). Para promover: trocar o conteúdo de `(landing)/page.tsx` pelo de `(nova)/nova/page.tsx` e mover o layout, ou apontar `/` para o grupo `(nova)`. Armadilha: o `next dev` imprime um aviso de vulnerabilidade e sai uma vez; rode o comando de novo.
+- **Landing oficial em `/` (2026-11-17):** visual de fintech escura (grupo `(nova)`, componentes em `components/nova/`). A versão anterior continua viva em `/antiga` (grupo `(landing)`, `landing.css`), e `/nova` só redireciona para `/`. Para voltar à antiga: mover `(landing)/antiga/page.tsx` de volta para `(landing)/page.tsx` e `(nova)/page.tsx` para `(nova)/nova/page.tsx`, trocando os links do `Cabecalho`. Armadilha: o `next dev` imprime um aviso de vulnerabilidade e sai uma vez; rode o comando de novo.
 
 ---
 

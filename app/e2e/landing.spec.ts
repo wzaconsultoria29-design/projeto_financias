@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("landing", () => {
   test.beforeEach(async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/");
+    await page.goto("/antiga");
     // Espera o React assumir a página: digitar antes disso faz o texto se misturar com o valor inicial.
     await page.waitForFunction(() =>
       ["#demo-gasto"].every((seletor) => {
