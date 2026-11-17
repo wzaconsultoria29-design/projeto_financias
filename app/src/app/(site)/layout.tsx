@@ -1,12 +1,6 @@
-import { Header } from "@/components/site/Header";
-import { Rodape } from "@/components/site/Rodape";
+import { Casca } from "@/components/nova/Casca";
 
+// Cadastro, termos, privacidade e convite no visual fintech escura.
 export default function SiteLayout({ children }: LayoutProps<"/">) {
-  return (
-    <>
-      <Header />
-      {children}
-      <Rodape />
-    </>
-  );
+  return <Casca>{children}</Casca>;
 }

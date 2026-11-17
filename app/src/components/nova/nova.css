@@ -699,3 +699,87 @@
     opacity: 1;
   }
 }
+
+/* ---------- Telas antigas dentro da casca escura ----------
+   Cadastro, termos, privacidade, convite e login foram escritos com os tokens do visual antigo
+   (--tinta, --suave, --superficie...). Dentro de .nv esses nomes ganham valores escuros, então
+   herdam o visual novo sem reescrever cada tela. */
+.nv {
+  --papel: #030a07;
+  --superficie: #0a1510;
+  --tinta: #ecf7f0;
+  --suave: #9db3a7;
+  --linha: #1a2a22;
+  --linha-forte: rgba(214, 255, 232, 0.22);
+  --floresta: #c8f65d;
+  --folha: #101f18;
+  --botao: #c8f65d;
+  --botao-fg: #04130b;
+  --bloco: #0a1510;
+  --sobre-bloco: #ecf7f0;
+  --lima: #c8f65d;
+  --lima-suave: rgba(200, 246, 93, 0.14);
+  --verde-escuro: #c8f65d;
+  --ativo-bg: #c8f65d;
+  --ativo-fg: #04130b;
+  --bom-bg: #12301f;
+  --bom-ink: #7fe0a8;
+  --ruim-bg: #3a1d12;
+  --ruim-ink: #ffa985;
+  --raio-cartao: 28px;
+  --sombra: none;
+  --borda-cartao: 0 solid transparent;
+}
+
+.nv .font-display {
+  font-family: var(--font-sora), var(--font-inter), system-ui, sans-serif;
+  letter-spacing: -0.03em;
+}
+
+.nv .cartao {
+  border: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015)), var(--nv-sup);
+  box-shadow: inset 0 0 0 1px var(--nv-linha);
+}
+
+.nv .botao {
+  min-height: 48px;
+  font-size: 1rem;
+  box-shadow: 0 0 0 1px rgba(200, 246, 93, 0.5), 0 12px 40px -14px rgba(200, 246, 93, 0.6);
+}
+
+.nv .botao:disabled {
+  box-shadow: none;
+}
+
+.nv .botao-contorno {
+  min-height: 48px;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--nv-linha-forte);
+  font-size: 1rem;
+}
+
+.nv .botao-contorno:hover {
+  border-color: var(--nv-lima);
+}
+
+.nv input,
+.nv select,
+.nv textarea {
+  color: var(--nv-texto);
+}
+
+.nv input::placeholder {
+  color: rgba(236, 247, 240, 0.4);
+}
+
+.nv select option {
+  background: #0a1510;
+  color: #ecf7f0;
+}
+
+/* Login: o lado esquerdo vira um bloco de luz da marca. */
+.nv .hero-degrade {
+  background: radial-gradient(70% 60% at 85% 0%, rgba(200, 246, 93, 0.22), transparent 70%), radial-gradient(60% 60% at 0% 100%, rgba(39, 224, 139, 0.3), transparent 70%), #07140e;
+  box-shadow: inset -1px 0 0 var(--nv-linha);
+}

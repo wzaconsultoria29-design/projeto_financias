@@ -3,10 +3,10 @@ import { Gauge } from "@phosphor-icons/react/dist/ssr";
 import { brand } from "@/config/brand";
 
 const LINKS = [
-  { href: "#como-funciona", texto: "Como funciona" },
-  { href: "#painel", texto: "Painel" },
-  { href: "#planos", texto: "Planos" },
-  { href: "#perguntas", texto: "Perguntas" },
+  { href: "/nova#como-funciona", texto: "Como funciona" },
+  { href: "/nova#painel", texto: "Painel" },
+  { href: "/nova#planos", texto: "Planos" },
+  { href: "/nova#perguntas", texto: "Perguntas" },
 ];
 
 export function Marca() {

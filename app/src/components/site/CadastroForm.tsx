@@ -51,8 +51,8 @@ export function CadastroForm({ planoInicial, emailInicial = "" }: { planoInicial
 
   if (sucesso) {
     return (
-      <div className="cartao p-8 md:p-10" role="status">
-        <h2 className="font-display text-3xl font-semibold tracking-tight text-tinta">Falta 1 passo</h2>
+      <div className="cartao p-6 md:p-10" role="status">
+        <h2 className="nv-titulo text-[clamp(1.75rem,4vw,2.25rem)] text-tinta">Falta 1 passo</h2>
         <p className="mt-4 max-w-[46ch] leading-relaxed text-suave">
           Abra o WhatsApp e envie a mensagem que já vai aparecer pronta. É assim que confirmamos que o número é seu.
         </p>
@@ -77,7 +77,7 @@ export function CadastroForm({ planoInicial, emailInicial = "" }: { planoInicial
   }
 
   return (
-    <form onSubmit={enviar} noValidate className="cartao flex flex-col gap-5 p-8 md:p-10">
+    <form onSubmit={enviar} noValidate className="cartao nv-feixe flex flex-col gap-5 p-6 md:p-10">
       <div>
         <label htmlFor="nome" className="mb-2 block text-sm font-medium text-tinta">Nome</label>
         <input id="nome" name="nome" autoComplete="name" value={nome} onChange={(e) => setNome(e.target.value)}

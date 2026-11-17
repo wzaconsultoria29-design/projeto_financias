@@ -107,3 +107,15 @@ test.describe("landing nova (/nova)", () => {
     await page.screenshot({ path: `../docs/screens/nova-${nome}.png`, fullPage: true });
   });
 });
+
+test.describe("telas públicas no visual escuro", () => {
+  for (const [nome, rota] of [["cadastro", "/cadastro"], ["termos", "/termos"], ["privacidade", "/privacidade"], ["convite", "/convite/ABCDEFGHJK"], ["login", "/entrar"]] as const) {
+    test(`${nome} usa a casca escura e não sobra rolagem lateral`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto(rota);
+      const fundo = await page.locator(".nv").first().evaluate((e) => getComputedStyle(e).backgroundColor);
+      expect(fundo).toBe("rgb(3, 10, 7)");
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+    });
+  }
+});

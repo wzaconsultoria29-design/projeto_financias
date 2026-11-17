@@ -21,8 +21,8 @@ export default function ConvitePage() {
   }, [valido, codigo]);
 
   return (
-    <div className="mx-auto flex w-full max-w-xl flex-col gap-5 px-4 py-16 md:py-24">
-      <h1 className="font-display text-3xl font-semibold tracking-tight text-tinta">
+    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-5 px-4 pb-24 pt-32 md:pt-40">
+      <h1 className="nv-titulo text-[clamp(2rem,5vw,3rem)] text-tinta">
         {valido ? "Você recebeu um convite" : "Este convite não está completo"}
       </h1>
       {valido ? (
@@ -39,6 +39,6 @@ export default function ConvitePage() {
       ) : (
         <p className="text-lg leading-relaxed text-suave">Confira se o link foi copiado inteiro ou peça um novo para quem convidou.</p>
       )}
-    </div>
+    </main>
   );
 }

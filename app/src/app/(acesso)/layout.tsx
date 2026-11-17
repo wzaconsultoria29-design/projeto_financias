@@ -1,6 +1,6 @@
-import { inter, urbanist } from "@/app/fontes";
+import { Casca } from "@/components/nova/Casca";
 
-// Telas de acesso no visual Verde-lima, sem o cabeçalho e o rodapé do site.
+// Login no visual fintech escura, sem o cabeçalho e o rodapé do site (a tela tem a própria moldura).
 export default function AcessoLayout({ children }: { children: React.ReactNode }) {
-  return <div className={`app-vl ${inter.variable} ${urbanist.variable}`}>{children}</div>;
+  return <Casca moldura={false}>{children}</Casca>;
 }

@@ -8,7 +8,7 @@ import { brand } from "@/config/brand";
 import { entrarComSenha } from "@/lib/login";
 import { EntrarWhatsApp } from "@/components/site/EntrarWhatsApp";
 
-const CAMPO = "flex h-12 items-center gap-2.5 rounded-[14px] border border-linha-forte bg-superficie px-3.5 text-tinta focus-within:border-tinta focus-within:shadow-[0_0_0_3px_rgba(11,58,34,0.12)]";
+const CAMPO = "flex h-12 items-center gap-2.5 rounded-[14px] border border-linha-forte bg-superficie px-3.5 text-tinta focus-within:border-lima focus-within:shadow-[0_0_0_3px_rgba(200,246,93,0.18)]";
 
 function Marca({ clara = false }: { clara?: boolean }) {
   return (
